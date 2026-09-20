@@ -384,73 +384,13 @@ var CODE_DEF=[
 {subj:'code',key:'c:o5',title:'Pętle i funkcje',sub:'Powtórz N razy',topic:'loop'},
 {subj:'code',key:'c:o6',title:'Lua i MakeCode',sub:'Roblox Studio i Minecraft Education',topic:'lua'}];
 function buildCode(){CODE_DEF.forEach(function(d){var s={subj:d.subj,key:d.key,g:'k',kid:true,title:d.title,sub:d.sub,topic:d.topic,parts:[],words:[],kw:[],sents:[],lessons:[],chunks:[],n:3,free:true,parent:null};SEC.push(s);SK[s.key]=s})}
-/* ---------- własne flagi i ikonki (bez emoji: na Windowsie flagi emoji się nie rysują) ---------- */
-// każdy kształt: ['r',x,y,w,h,kolor] prostokąt · ['c',x,y,r,kolor] koło · ['p','punkty',kolor] wielokąt
-// płótno 30 x 20
-var FLAGDEF={
- pl:[['r',0,0,30,10,'#fff'],['r',0,10,30,10,'#DC143C']],
- de:[['r',0,0,30,6.7,'#000'],['r',0,6.7,30,6.6,'#DD0000'],['r',0,13.3,30,6.7,'#FFCE00']],
- cz:[['r',0,0,30,10,'#fff'],['r',0,10,30,10,'#D7141A'],['p','0,0 15,10 0,20','#11457E']],
- sk:[['r',0,0,30,6.7,'#fff'],['r',0,6.7,30,6.6,'#0B4EA2'],['r',0,13.3,30,6.7,'#EE1C25'],['r',6,5,7,9,'#EE1C25'],['r',7.5,6.5,4,4,'#fff']],
- ua:[['r',0,0,30,10,'#005BBB'],['r',0,10,30,10,'#FFD500']],
- lt:[['r',0,0,30,6.7,'#FDB913'],['r',0,6.7,30,6.6,'#006A44'],['r',0,13.3,30,6.7,'#C1272D']],
- fr:[['r',0,0,10,20,'#002395'],['r',10,0,10,20,'#fff'],['r',20,0,10,20,'#ED2939']],
- es:[['r',0,0,30,5,'#AA151B'],['r',0,5,30,10,'#F1BF00'],['r',0,15,30,5,'#AA151B'],['r',7,8,4,5,'#AA151B']],
- it:[['r',0,0,10,20,'#008C45'],['r',10,0,10,20,'#fff'],['r',20,0,10,20,'#CD212A']],
- gb:[['r',0,0,30,20,'#012169'],['p','0,0 12,20 0,20','#012169'],['r',0,0,30,20,'#012169'],
-     ['p','0,0 4,0 30,17 30,20 26,20 0,3','#fff'],['p','26,0 30,0 30,3 4,20 0,20 0,17','#fff'],
-     ['p','0,0 2.5,0 30,18.5 30,20 27.5,20 0,1.5','#C8102E'],['p','27.5,0 30,0 30,1.5 2.5,20 0,20 0,18.5','#C8102E'],
-     ['r',12,0,6,20,'#fff'],['r',0,7,30,6,'#fff'],['r',13.5,0,3,20,'#C8102E'],['r',0,8.5,30,3,'#C8102E']],
- se:[['r',0,0,30,20,'#006AA7'],['r',9,0,4,20,'#FECC00'],['r',0,8,30,4,'#FECC00']],
- no:[['r',0,0,30,20,'#BA0C2F'],['r',8,0,6,20,'#fff'],['r',0,7,30,6,'#fff'],['r',9.5,0,3,20,'#00205B'],['r',0,8.5,30,3,'#00205B']],
- fi:[['r',0,0,30,20,'#fff'],['r',9,0,5,20,'#003580'],['r',0,7.5,30,5,'#003580']],
- dk:[['r',0,0,30,20,'#C8102E'],['r',9,0,4,20,'#fff'],['r',0,8,30,4,'#fff']],
- gr:[['r',0,0,30,20,'#fff'],['r',0,0,30,2.2,'#0D5EAF'],['r',0,4.4,30,2.3,'#0D5EAF'],['r',0,8.9,30,2.2,'#0D5EAF'],['r',0,13.3,30,2.3,'#0D5EAF'],['r',0,17.8,30,2.2,'#0D5EAF'],['r',0,0,11.1,11.1,'#0D5EAF'],['r',4.4,0,2.3,11.1,'#fff'],['r',0,4.4,11.1,2.3,'#fff']],
- pt:[['r',0,0,12,20,'#006600'],['r',12,0,18,20,'#FF0000'],['c',12,10,4,'#FFFF00'],['c',12,10,2.4,'#FF0000']],
- nl:[['r',0,0,30,6.7,'#AE1C28'],['r',0,6.7,30,6.6,'#fff'],['r',0,13.3,30,6.7,'#21468B']],
- at:[['r',0,0,30,6.7,'#ED2939'],['r',0,6.7,30,6.6,'#fff'],['r',0,13.3,30,6.7,'#ED2939']],
- be:[['r',0,0,10,20,'#000'],['r',10,0,10,20,'#FDDA24'],['r',20,0,10,20,'#EF3340']],
- ch:[['r',0,0,30,20,'#DA291C'],['r',12.5,5,5,10,'#fff'],['r',10,7.5,10,5,'#fff']],
- us:[['r',0,0,30,20,'#fff'],['r',0,0,30,1.55,'#B22234'],['r',0,3.1,30,1.55,'#B22234'],['r',0,6.2,30,1.55,'#B22234'],['r',0,9.2,30,1.55,'#B22234'],['r',0,12.3,30,1.55,'#B22234'],['r',0,15.4,30,1.55,'#B22234'],['r',0,18.4,30,1.55,'#B22234'],['r',0,0,12,10.8,'#3C3B6E']],
- jp:[['r',0,0,30,20,'#fff'],['c',15,10,6,'#BC002D']],
- cn:[['r',0,0,30,20,'#DE2910'],['p','5,3 6.4,7 10.5,7 7.2,9.4 8.4,13.4 5,11 1.6,13.4 2.8,9.4 -0.5,7 3.6,7','#FFDE00']],
- br:[['r',0,0,30,20,'#009C3B'],['p','15,1.5 28.5,10 15,18.5 1.5,10','#FFDF00'],['c',15,10,4.2,'#002776']],
- ca:[['r',0,0,30,20,'#D80621'],['r',7.5,0,15,20,'#fff'],['p','15,3 16.4,7.5 19,6.5 18,10.5 21,10 19.5,12.5 16.5,12 16.8,17 15,15.5 13.2,17 13.5,12 10.5,12.5 9,10 12,10.5 11,6.5 13.6,7.5','#D80621']],
- au:[['r',0,0,30,20,'#00008B'],['r',0,0,15,10,'#00008B'],['p','0,0 2,0 15,8.5 15,10 13,10 0,1.5','#fff'],['p','13,0 15,0 15,1.5 2,10 0,10 0,8.5','#fff'],['r',6,0,3,10,'#fff'],['r',0,3.5,15,3,'#fff'],['r',6.8,0,1.6,10,'#C8102E'],['r',0,4.2,15,1.6,'#C8102E'],['c',22,12,2,'#fff'],['c',25,5,1.4,'#fff'],['c',19,5,1.2,'#fff']]
-};
-function flagSvg(code,h){h=h||60;var d=FLAGDEF[code];if(!d)return'';var w=Math.round(h*1.5);
-  var body=d.map(function(s){
-    if(s[0]==='r')return'<rect x="'+s[1]+'" y="'+s[2]+'" width="'+s[3]+'" height="'+s[4]+'" fill="'+s[5]+'"/>';
-    if(s[0]==='c')return'<circle cx="'+s[1]+'" cy="'+s[2]+'" r="'+s[3]+'" fill="'+s[4]+'"/>';
-    return'<polygon points="'+s[1]+'" fill="'+s[2]+'"/>'}).join('');
-  return'<svg class="flag" viewBox="0 0 30 20" width="'+w+'" height="'+h+'" role="img" aria-label="flaga"><clipPath id="fc'+code+'"><rect width="30" height="20"/></clipPath><g clip-path="url(#fc'+code+')">'+body+'</g><rect x="0.25" y="0.25" width="29.5" height="19.5" fill="none" stroke="#1B1B1B" stroke-opacity=".45" stroke-width=".5"/></svg>'}
-// rysowane ikonki krajobrazu — emoji bywały mylące (kajak zamiast rzeki)
-var ICON={
- gora:'<svg viewBox="0 0 48 32" class="picon" aria-label="góra"><rect width="48" height="32" fill="#BFE3F5"/><polygon points="2,32 16,8 30,32" fill="#6B7A5E"/><polygon points="16,8 10,18 22,18" fill="#fff"/><polygon points="22,32 34,14 46,32" fill="#8A9A78"/></svg>',
- morze:'<svg viewBox="0 0 48 32" class="picon" aria-label="morze"><rect width="48" height="32" fill="#BFE3F5"/><rect y="12" width="48" height="20" fill="#2F80ED"/><rect y="12" width="48" height="3" fill="#8FC4F7"/><rect x="0" y="28" width="48" height="4" fill="#F2D399"/></svg>',
- jezioro:'<svg viewBox="0 0 48 32" class="picon" aria-label="jezioro"><rect width="48" height="32" fill="#BFE3F5"/><rect y="20" width="48" height="12" fill="#3F7A1F"/><ellipse cx="24" cy="24" rx="15" ry="7" fill="#2F80ED"/><polygon points="4,20 10,10 16,20" fill="#3F7A1F"/></svg>',
- las:'<svg viewBox="0 0 48 32" class="picon" aria-label="las"><rect width="48" height="32" fill="#BFE3F5"/><rect y="26" width="48" height="6" fill="#6B4A2B"/><polygon points="12,26 20,6 28,26" fill="#2E7D32"/><polygon points="28,26 35,12 42,26" fill="#3FA34D"/><polygon points="4,26 10,14 16,26" fill="#3FA34D"/></svg>',
- wyspa:'<svg viewBox="0 0 48 32" class="picon" aria-label="wyspa"><rect width="48" height="32" fill="#2F80ED"/><ellipse cx="24" cy="26" rx="14" ry="5" fill="#F2D399"/><rect x="23" y="12" width="2" height="12" fill="#6B4A2B"/><circle cx="24" cy="12" r="6" fill="#3FA34D"/></svg>',
- pustynia:'<svg viewBox="0 0 48 32" class="picon" aria-label="pustynia"><rect width="48" height="32" fill="#F7D488"/><circle cx="40" cy="7" r="5" fill="#FFB300"/><path d="M0 26 Q12 18 24 26 T48 26 L48 32 L0 32Z" fill="#E0B063"/><rect x="20" y="14" width="3" height="10" fill="#3FA34D"/><rect x="16" y="17" width="3" height="4" fill="#3FA34D"/></svg>',
- rzeka:'<svg viewBox="0 0 48 32" class="picon" aria-label="rzeka"><rect width="48" height="32" fill="#8FBF6A"/><path d="M14 0 L22 0 L18 12 L26 20 L22 32 L14 32 L18 20 L10 12 Z" fill="#2F80ED"/><polygon points="34,32 40,18 46,32" fill="#6B7A5E"/></svg>',
- wulkan:'<svg viewBox="0 0 48 32" class="picon" aria-label="wulkan"><rect width="48" height="32" fill="#4A3B4F"/><polygon points="6,32 20,8 34,32" fill="#5B5147"/><polygon points="16,10 24,10 26,4 20,7 14,2" fill="#E2561F"/><rect x="18" y="8" width="6" height="3" fill="#E2561F"/></svg>'
-};
-
-/* ---------- moduły życiowe: kieszonkowe, przyroda i ciało, geografia ---------- */
+/* ---------- moduł Kieszonkowe ---------- */
 function lvl(){var p=P();return p.lvl||(p.kid?6:8)}
-function isLife(sj){return sj==='fin'||sj==='nat'||sj==='geo'}
-function lsc(d){var L=lvl();return Math.max(0,Math.min(1,d*(L===6?.7:L===7?.85:1)))}
+function isLife(sj){return sj==='fin'}
 function lmc(lab,eq,ans,opts,expl){return{t:'nname',lab:lab,eq:eq,ans:ans,opts:shuffle(opts.slice(0,4)),expl:expl||ans}}
 function lnum(lab,text,ans,expl){var L=lvl(),q={t:L===6?'nmc':'nin',lab:lab,text:text,ans:ans,expl:expl||text.replace('□',ans)};
   if(q.t==='nmc')q.opts=numOpts(ans,Math.max(0,ans-6),ans+6);return q}
-// pytanie „co to jest" z listy par [nazwa, ikona/opis]
-function lpick(list,lab,fwd){var it=pickOne(list),dis=kdisL(list,it,3);
-  if(fwd)return lmc(lab,esc(it[1]),it[0],[it[0]].concat(dis.map(function(x){return x[0]})),it[1]+' to '+it[0]);
-  return lmc(lab,'<span style="font-size:.7em">'+esc(it[0])+'</span>',it[1],[it[1]].concat(dis.map(function(x){return x[1]})),it[0]+' — '+it[1])}
-function kdisL(list,it,n){var c=shuffle(list.filter(function(x){return x[0]!==it[0]&&x[1]!==it[1]}));return c.slice(0,n)}
 function lyn(lab,eq,yes,expl){return lmc(lab,eq,yes?'Tak':'Nie',['Tak','Nie'],expl)}
-
-/* ---- kieszonkowe ---- */
 var COINS=[1,2,5,10,20,50],NOTES=[10,20,50,100];
 var NEEDS=[['chleb',1],['buty do szkoły',1],['lekarstwo',1],['bilet do szkoły',1],['woda',1],['kurtka na zimę',1],
   ['nowa gra',0],['lody',0],['naklejki',0],['zabawka z reklamy',0],['czapka z bajki',0],['batonik przy kasie',0]];
@@ -461,7 +401,7 @@ var LGEN={
      return lmc('Co jest warte więcej?',x+' zł czy '+y+' zł?',(x>y?x:y)+' zł',[x+' zł',y+' zł'],(x>y?x:y)+' zł to więcej')}
    if(v<.8&&L>6){var n=pickOne(NOTES),k=Math.floor(n/5);return lnum('Ile monet 5 zł to '+n+' zł?','□ × 5 zł = '+n+' zł',k)}
    var c=pickOne(COINS),k2=ri(2,L===6?3:5);return lnum('Ile masz pieniędzy?',k2+' monet po '+c+' zł = □ zł',c*k2)},
- pay:function(){var L=lvl(),mx=L===6?10:L===7?20:50,pay=pickOne(L===6?[5,10]:L===7?[10,20]:[20,50,100]);
+ pay:function(){var L=lvl(),pay=pickOne(L===6?[5,10]:L===7?[10,20]:[20,50,100]);
    var price=ri(1,pay-1);if(L>6)price=ri(Math.floor(pay/3),pay-1);
    if(Math.random()<.25)return lyn('Czy wystarczy pieniędzy?','Masz '+pay+' zł. Zabawka kosztuje '+(pay+ri(1,9))+' zł.',false,'Za mało — brakuje pieniędzy');
    return lnum('Ile dostaniesz reszty?','Płacisz '+pay+' zł za rzecz za '+price+' zł. Reszta: □ zł',pay-price,pay+' − '+price+' = '+(pay-price))},
@@ -481,71 +421,13 @@ var LGEN={
    if(Math.random()<.5&&L>6){var n=ri(2,5);return lnum('Ile zarobisz łącznie?','Zysk '+(s-k)+' zł na sztuce, sprzedajesz '+n+' sztuk. Razem: □ zł',(s-k)*n)}
    return lmc('Skąd biorą się pieniądze w rodzinie?','<span style="font-size:.55em">Skąd rodzice mają pieniądze?</span>','Z pracy',['Z pracy','Z bankomatu','Z reklamy','Z telefonu'],'Bankomat tylko wydaje pieniądze, które ktoś wcześniej zarobił')}
 };
-
-/* ---- przyroda i ciało ---- */
-var BODY=[['serce','🫀'],['mózg','🧠'],['płuca','🫁'],['oko','👁️'],['ucho','👂'],['ząb','🦷'],['kość','🦴'],['ręka','✋'],['noga','🦵'],['nos','👃']];
-var BODYJOB=[['serce','pompuje krew'],['płuca','biorą powietrze'],['mózg','myśli i pamięta'],['żołądek','trawi jedzenie'],['kości','trzymają ciało'],['skóra','chroni ciało'],['zęby','rozdrabniają jedzenie'],['mięśnie','poruszają ciałem']];
-var SENSE=[['oczy','wzrok'],['uszy','słuch'],['nos','węch'],['język','smak'],['skóra','dotyk']];
-var ANIM=[['pies','ssak'],['kot','ssak'],['krowa','ssak'],['nietoperz','ssak'],['wróbel','ptak'],['sowa','ptak'],['bocian','ptak'],['karp','ryba'],['rekin','ryba'],['żaba','płaz'],['ropucha','płaz'],['wąż','gad'],['jaszczurka','gad'],['mrówka','owad'],['pszczoła','owad'],['motyl','owad']];
-var PLANT=[['korzeń','pije wodę z ziemi'],['łodyga','trzyma roślinę'],['liść','łapie światło'],['kwiat','przyciąga owady'],['nasiono','z niego rośnie nowa roślina']];
-var SEAS=[['wiosna','🌷'],['lato','☀️'],['jesień','🍂'],['zima','❄️']];
-var TRASH=[['butelka PET','żółty'],['gazeta','niebieski'],['słoik','zielony'],['obierki','brązowy'],['puszka','żółty'],['karton','niebieski'],['szklanka','zielony']];
-var HEALTH=[['myć zęby 2 razy dziennie',1],['spać 10 godzin',1],['pić wodę',1],['biegać i skakać',1],['jeść warzywa',1],
-  ['grać w grę do północy',0],['jeść słodycze zamiast obiadu',0],['siedzieć cały dzień',0],['pić colę do śniadania',0]];
-LGEN.body=function(){if(Math.random()<.5)return lpick(BODYJOB,'Która część ciała to robi?',false);
-  var it=pickOne(BODYJOB);return lmc('Co robi '+it[0]+'?','<span style="font-size:.5em">'+esc(it[0])+'</span>',it[1],[it[1]].concat(kdisL(BODYJOB,it,3).map(function(x){return x[1]})),it[0]+': '+it[1])};
-LGEN.sense=function(){var it=pickOne(SENSE);return lmc('Który zmysł?','<span style="font-size:.6em">'+esc(it[1])+'</span>',it[0],[it[0]].concat(kdisL(SENSE,it,3).map(function(x){return x[0]})),it[1]+' to '+it[0])};
-LGEN.anim=function(){var it=pickOne(ANIM),grp=['ssak','ptak','ryba','płaz','gad','owad'];
-  return lmc('Do jakiej grupy należy?','<span style="font-size:.7em">'+esc(it[0])+'</span>',it[1],[it[1]].concat(shuffle(grp.filter(function(g){return g!==it[1]})).slice(0,3)),it[0]+' to '+it[1])};
-LGEN.plant=function(){return lpick(PLANT,'Która część rośliny to robi?',false)};
-LGEN.seas=function(){var L=lvl(),it=pickOne(SEAS);
-  if(L===6||Math.random()<.5)return lpick(SEAS,'Jaka to pora roku?',true);
-  var m=pickOne([['styczeń','zima'],['kwiecień','wiosna'],['lipiec','lato'],['październik','jesień'],['grudzień','zima'],['maj','wiosna']]);
-  return lmc('W jakiej porze roku jest ten miesiąc?','<span style="font-size:.7em">'+esc(m[0])+'</span>',m[1],[m[1]].concat(shuffle(['wiosna','lato','jesień','zima'].filter(function(s){return s!==m[1]})).slice(0,3)),m[0]+' to '+m[1])};
-LGEN.eco=function(){var it=pickOne(TRASH),cols=['żółty','niebieski','zielony','brązowy'];
-  return lmc('Do którego pojemnika?','<span style="font-size:.6em">'+esc(it[0])+'</span>',it[1],[it[1]].concat(shuffle(cols.filter(function(c){return c!==it[1]})).slice(0,3)),it[0]+' → pojemnik '+it[1])};
-LGEN.health=function(){var it=pickOne(HEALTH);
-  return lmc('Czy to zdrowe?','<span style="font-size:.55em">'+esc(it[0])+'</span>',it[1]?'Zdrowe':'Niezdrowe',['Zdrowe','Niezdrowe'],it[1]?'Tak, to dobre dla ciała':'To lepiej robić rzadko')};
-
-/* ---- geografia i flagi ---- */
-var FLAGS=[['Polska','pl'],['Niemcy','de'],['Czechy','cz'],['Słowacja','sk'],['Ukraina','ua'],['Litwa','lt'],['Francja','fr'],['Hiszpania','es'],['Włochy','it'],['Wielka Brytania','gb'],['Szwecja','se'],['Norwegia','no'],['Dania','dk'],['Finlandia','fi'],['Grecja','gr'],['Portugalia','pt'],['Holandia','nl'],['Austria','at'],['Belgia','be'],['Szwajcaria','ch']];
-var FARFLAGS=[['Stany Zjednoczone','us'],['Japonia','jp'],['Brazylia','br'],['Kanada','ca'],['Australia','au'],['Chiny','cn']];
-var CAPS=[['Polska','Warszawa'],['Niemcy','Berlin'],['Czechy','Praga'],['Francja','Paryż'],['Hiszpania','Madryt'],['Włochy','Rzym'],['Wielka Brytania','Londyn'],['Ukraina','Kijów'],['Słowacja','Bratysława'],['Litwa','Wilno'],['Szwecja','Sztokholm'],['Austria','Wiedeń']];
-var PLCITY=[['Warszawa','stolica Polski'],['Kraków','Wawel i smok'],['Gdańsk','port nad Bałtykiem'],['Zakopane','góry Tatry'],['Poznań','koziołki na ratuszu'],['Wrocław','krasnale i Odra'],['Toruń','pierniki i Kopernik'],['Łódź','ulica Piotrkowska']];
-var PLNAT=[['Wisła','najdłuższa rzeka Polski'],['Odra','rzeka na zachodzie'],['Bałtyk','morze na północy'],['Tatry','najwyższe góry'],['Mazury','kraina jezior'],['Śnieżka','szczyt w Karkonoszach']];
-var CONT=[['Europa','tu leży Polska'],['Azja','największy kontynent'],['Afryka','Sahara i słonie'],['Ameryka Północna','Kanada i USA'],['Ameryka Południowa','Amazonia'],['Australia','kangury'],['Antarktyda','lód i pingwiny']];
-var LAND=[['góra','gora'],['morze','morze'],['jezioro','jezioro'],['las','las'],['wyspa','wyspa'],['pustynia','pustynia'],['rzeka','rzeka'],['wulkan','wulkan']];
-LGEN.flag=function(){var L=lvl(),pool=L>=8?FLAGS.concat(FARFLAGS):FLAGS.slice(0,L===6?8:14),it=pickOne(pool);
-  var q=lmc('Czyja to flaga?',flagSvg(it[1],120),it[0],[it[0]].concat(kdisL(pool,it,3).map(function(x){return x[0]})),'To flaga: '+it[0]);
-  q.say=it[0];return q};
-LGEN.cap=function(){var it=pickOne(CAPS);
-  if(Math.random()<.5)return lmc('Jaka to stolica?','<span style="font-size:.7em">'+esc(it[0])+'</span>',it[1],[it[1]].concat(kdisL(CAPS,it,3).map(function(x){return x[1]})),'Stolica: '+it[0]+' — '+it[1]);
-  return lmc('Stolicą jakiego kraju jest to miasto?','<span style="font-size:.7em">'+esc(it[1])+'</span>',it[0],[it[0]].concat(kdisL(CAPS,it,3).map(function(x){return x[0]})),it[1]+' to stolica: '+it[0])};
-LGEN.plgeo=function(){var use=Math.random()<.5?PLCITY:PLNAT;return lpick(use,'O czym mowa?',false)};
-LGEN.cont=function(){return lpick(CONT,'Który to kontynent?',false)};
-LGEN.land=function(){var it=pickOne(LAND),dis=kdisL(LAND,it,3);
-  var q=lmc('Co widzisz na obrazku?',ICON[it[1]],it[0],[it[0]].concat(dis.map(function(x){return x[0]})),'To '+it[0]);q.say=it[0];return q};
-
-/* ---- sekcje ---- */
 var LIFE_SECS=[
  {subj:'fin',key:'l:f1',title:'Monety i banknoty',sub:'Ile to razem, co więcej',min:6,gen:'coins'},
  {subj:'fin',key:'l:f2',title:'Potrzeba czy zachcianka',sub:'Na co naprawdę warto wydać',min:6,gen:'need'},
  {subj:'fin',key:'l:f3',title:'Płacenie i reszta',sub:'Ile dostaniesz z powrotem',min:6,gen:'pay'},
  {subj:'fin',key:'l:f4',title:'Oszczędzanie na cel',sub:'Ile tygodni do celu',min:7,gen:'save'},
  {subj:'fin',key:'l:f5',title:'Zakupy i promocje',sub:'Cena za sztukę, co się opłaca',min:7,gen:'shop'},
- {subj:'fin',key:'l:f6',title:'Skąd się biorą pieniądze',sub:'Praca, koszt, zysk',min:8,gen:'earn'},
- {subj:'nat',key:'l:n1',title:'Moje ciało',sub:'Serce, mózg, płuca',min:6,gen:'body'},
- {subj:'nat',key:'l:n2',title:'Pięć zmysłów',sub:'Wzrok, słuch, węch, smak, dotyk',min:6,gen:'sense'},
- {subj:'nat',key:'l:n3',title:'Pory roku',sub:'Wiosna, lato, jesień, zima',min:6,gen:'seas'},
- {subj:'nat',key:'l:n4',title:'Rośliny',sub:'Korzeń, łodyga, liść, kwiat',min:6,gen:'plant'},
- {subj:'nat',key:'l:n5',title:'Grupy zwierząt',sub:'Ssak, ptak, ryba, płaz, gad, owad',min:7,gen:'anim'},
- {subj:'nat',key:'l:n6',title:'Segregacja śmieci',sub:'Który pojemnik',min:7,gen:'eco'},
- {subj:'nat',key:'l:n7',title:'Zdrowe nawyki',sub:'Sen, ruch, zęby, jedzenie',min:7,gen:'health'},
- {subj:'geo',key:'l:g1',title:'Flagi',sub:'Sąsiedzi i Europa',min:6,gen:'flag'},
- {subj:'geo',key:'l:g2',title:'Co to jest?',sub:'Góra, morze, jezioro, wyspa',min:6,gen:'land'},
- {subj:'geo',key:'l:g3',title:'Polska',sub:'Miasta, rzeki, góry',min:7,gen:'plgeo'},
- {subj:'geo',key:'l:g4',title:'Kontynenty',sub:'Siedem kontynentów',min:7,gen:'cont'},
- {subj:'geo',key:'l:g5',title:'Stolice',sub:'Kraje Europy i ich stolice',min:8,gen:'cap'}
+ {subj:'fin',key:'l:f6',title:'Skąd się biorą pieniądze',sub:'Praca, koszt, zysk',min:8,gen:'earn'}
 ];
 function buildLife(){var L=lvl();LIFE_SECS.forEach(function(m){if(m.min>L)return;
   var s={subj:m.subj,key:m.key,g:'l',title:m.title,sub:m.sub,gen:m.gen,parts:[],words:[],sents:[],lessons:[],chunks:[],n:4,free:true,parent:null};
@@ -564,23 +446,14 @@ var LINTRO={
  pay:['Płacenie i reszta','Gdy dajesz więcej, niż kosztuje rzecz, dostajesz <b>resztę</b>. Reszta = ile dałeś − ile kosztuje.'],
  save:['Oszczędzanie','Jeśli odkładasz trochę regularnie, uzbierasz na większą rzecz. To się nazywa <b>oszczędzanie</b>, a rzecz, na którą zbierasz — <b>cel</b>.'],
  shop:['Mądre zakupy','Ta sama rzecz może mieć różne ceny. Warto policzyć <b>cenę za jedną sztukę</b> i dopiero wtedy wybrać.'],
- earn:['Skąd się biorą pieniądze','Pieniądze biorą się z <b>pracy</b>. Kto coś sprzedaje, najpierw musi to kupić albo zrobić — różnica między ceną sprzedaży a kosztem to <b>zysk</b>.'],
- body:['Moje ciało','Serce pompuje krew, płuca biorą powietrze, a mózg myśli i pamięta. Każda część ciała ma swoje zadanie.'],
- anim:['Grupy zwierząt','Zwierzęta dzielimy na grupy: <b>ssaki</b> (mają sierść i mleko), <b>ptaki</b> (pióra), <b>ryby</b> (łuski i skrzela), <b>płazy</b>, <b>gady</b> i <b>owady</b> (sześć nóg).'],
- eco:['Segregacja śmieci','Żółty — plastik i metal. Niebieski — papier. Zielony — szkło. Brązowy — resztki jedzenia.'],
- flag:['Flagi','Każdy kraj ma swoją flagę. Flaga Polski jest biało-czerwona. Zaczniemy od sąsiadów Polski.'],
- cont:['Kontynenty','Na Ziemi jest siedem kontynentów. Polska leży w <b>Europie</b>.'],
- cap:['Stolice','Stolica to najważniejsze miasto kraju — tam pracuje rząd. Stolicą Polski jest Warszawa.']
+ earn:['Skąd się biorą pieniądze','Pieniądze biorą się z <b>pracy</b>. Kto coś sprzedaje, najpierw musi to kupić albo zrobić — różnica między ceną sprzedaży a kosztem to <b>zysk</b>.']
 };
 function lifeHome(h){var nl=nextLesson(D.subject);
   h+=nl?'<div class="cont"><div><div class="lab">Dalej</div><h3>'+esc(secTitle(nl.s))+' · '+(nl.j===nl.s.n-1?'Test sekcji':'Lekcja '+(nl.j+1))+'</h3></div><button class="btn" data-act="lesson" data-k="'+esc(nl.s.key)+'" data-j="'+nl.j+'">Start</button></div>'
    :'<div class="cont"><div><div class="lab">Wszystko zaliczone</div><h3>'+esc(subjName(D.subject))+'</h3></div></div>';
   h+=nSecs(D.subject).map(secCard).join('');
   msg='';return h+'<div class="note">Ten moduł dopiero rośnie — dokładamy tematy w ciągu roku szkolnego.</div><button class="link" data-act="settings">Ustawienia</button>'}
-function lifeCards(){return'<button class="subj-card" data-act="subject" data-s="fin"><span class="si" style="background:#2E9E5B">zł</span><span><b>Kieszonkowe</b><small>Monety, reszta, oszczędzanie, mądre zakupy</small></span></button>'+
- '<button class="subj-card" data-act="subject" data-s="nat"><span class="si" style="background:#7A5AF8">🌿</span><span><b>Przyroda i ciało</b><small>Ciało, zwierzęta, rośliny, pory roku</small></span></button>'+
- '<button class="subj-card" data-act="subject" data-s="geo"><span class="si" style="background:#0E9A9A">🌍</span><span><b>Geografia i flagi</b><small>Flagi, Polska, kontynenty, stolice</small></span></button>'}
-
+function lifeCards(){return'<button class="subj-card" data-act="subject" data-s="fin"><span class="si" style="background:#2E9E5B">zł</span><span><b>Kieszonkowe</b><small>Monety, reszta, oszczędzanie, mądre zakupy</small></span></button>'}
 
 buildUnits();
 function nSecs(sj){sj=sj||'en';return SEC.filter(function(s){return s.g!=='x'&&s.subj===sj})}
@@ -926,7 +799,7 @@ function speak(t,lang){if(!SPK)return;try{var lg=SPKLANG[lang]||lang||'en-US',pr
   if(vcache[lg])u.voice=vcache[lg];speechSynthesis.speak(u)}catch(e){}}
 function sp(t,c,l){return SPK?'<button class="sp'+(c?' '+c:'')+'" data-act="say" data-t="'+esc(t)+'"'+(l?' data-l="'+l+'"':'')+' aria-label="Posłuchaj">'+ICON.spk+'</button>':''}
 function subjAllowed(s){if(isLife(s))return true;return P().kid?(isKidSubj(s)||s==='kcode'||s==='3d'):(s==='en'||s==='math'||s==='code'||s==='3d')}
-function subjName(s){return {en:'Angielski',math:'Matematyka',ken:'Angielski',kmath:'Matematyka',kread:'Czytanie i pisanie',code:'Programowanie',kcode:'Programowanie','3d':'Projekty 3D',fin:'Kieszonkowe',nat:'Przyroda i ciało',geo:'Geografia i flagi'}[s]||''}
+function subjName(s){return {en:'Angielski',math:'Matematyka',ken:'Angielski',kmath:'Matematyka',kread:'Czytanie i pisanie',code:'Programowanie',kcode:'Programowanie','3d':'Projekty 3D',fin:'Kieszonkowe'}[s]||''}
 function kidSubjects(){return header()+'<div class="lab" style="margin-top:6px">Cześć, '+esc(P().name)+'!</div><h2 style="font-size:32px;margin-bottom:14px">Czego się dziś uczysz?</h2><div class="subjects">'+
   '<button class="subj-card" data-act="subject" data-s="kread"><span class="si" style="background:var(--teal)">Aa</span><span><b>Czytanie i pisanie</b><small>Litery, sylaby, słowa po polsku i angielsku</small></span></button>'+
   '<button class="subj-card" data-act="subject" data-s="kmath"><span class="si" style="background:var(--accent)">1 2</span><span><b>Matematyka</b><small>Liczenie, cyfry, dodawanie i odejmowanie do 10</small></span></button>'+
@@ -1321,7 +1194,7 @@ var BKTXT='';
 /* ---------- konta i dostęp do modułów (Supabase) ---------- */
 var AUTH={on:!!((typeof SB_URL!=='undefined'&&SB_URL&&SB_KEY)||window.__SB_MOCK),user:null,profile:null,mods:{},modDefs:[],mode:'in',nomail:false,err:'',info:'',busy:false,recovery:false,adm:null,unlock:null,syncErr:false};
 var SBC=null,syncTimer=null;
-var MODS={en:'en',ken:'en',math:'math',kmath:'math',kread:'read',code:'code',kcode:'code','3d':'3d',fin:'life',nat:'life',geo:'life'};
+var MODS={en:'en',ken:'en',math:'math',kmath:'math',kread:'read',code:'code',kcode:'code','3d':'3d',fin:'life'};
 function modOf(s){return MODS[s]||s}
 function modInfo(id){return AUTH.modDefs.filter(function(m){return m.id===id})[0]}
 function isAdmin(){return !!(AUTH.profile&&AUTH.profile.role==='admin')}
