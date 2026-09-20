@@ -966,12 +966,16 @@ function bstage(id){var st=stageOf(id),ex=designFor(id);if(ex)return bopen(ex.i)
 function bpaint(x,y){var g=BLD,ix=bidx(g,x,y,g.z),nv=g.c[ix]===g.col?0:g.col;g.undo.push(g.c.slice());if(g.undo.length>30)g.undo.shift();g.c[ix]=nv;
   if(g.sym){var mx=g.n-1-x;g.c[bidx(g,mx,y,g.z)]=nv}}
 function bundo(){var g=BLD;if(g.undo.length)g.c=g.undo.pop()}
+function estGrams(g){var s=g.s,cnt=0,faces=0,cols={},D=[[1,0,0],[-1,0,0],[0,1,0],[0,-1,0],[0,0,1],[0,0,-1]];
+  for(var z=0;z<g.h;z++)for(var y=0;y<g.n;y++)for(var x=0;x<g.n;x++)if(bget(g,x,y,z)){cnt++;cols[bcol(g,x,y,z)]=1;D.forEach(function(d){if(!bget(g,x+d[0],y+d[1],z+d[2]))faces++})}
+  var vol=cnt*Math.pow(s,3)/1000,area=faces*s*s/100,shell=Math.min(vol,area*0.09),infill=Math.max(0,vol-shell)*0.15,nc=Object.keys(cols).length,waste=nc>1?(nc-1)*6:0;
+  return cnt?Math.max(1,Math.round(((shell+infill)*1.24+waste)*10)/10):0}
 function bstats(g){var cnt=0,minx=99,miny=99,maxx=-1,maxy=-1,maxz=-1,floating=0,cols={};
   for(var z=0;z<g.h;z++)for(var y=0;y<g.n;y++)for(var x=0;x<g.n;x++)if(bget(g,x,y,z)){cnt++;cols[bcol(g,x,y,z)]=1;minx=Math.min(minx,x);maxx=Math.max(maxx,x);miny=Math.min(miny,y);maxy=Math.max(maxy,y);maxz=Math.max(maxz,z);if(z>0&&!bget(g,x,y,z-1))floating++}
   var conn=true;if(cnt){var seen={},q=[],start=null;for(var z2=0;z2<g.h&&!start;z2++)for(var y2=0;y2<g.n&&!start;y2++)for(var x2=0;x2<g.n&&!start;x2++)if(bget(g,x2,y2,z2))start=[x2,y2,z2];
     seen[start.join()]=1;q.push(start);var got=0;while(q.length){var c=q.pop();got++;[[1,0,0],[-1,0,0],[0,1,0],[0,-1,0],[0,0,1],[0,0,-1]].forEach(function(d){var nx=c[0]+d[0],ny=c[1]+d[1],nz=c[2]+d[2],k=nx+','+ny+','+nz;if(bget(g,nx,ny,nz)&&!seen[k]){seen[k]=1;q.push([nx,ny,nz])}})}conn=got===cnt}
   var vol=cnt*Math.pow(g.s/10,3);
-  return{cnt:cnt,w:cnt?(maxx-minx+1):0,d:cnt?(maxy-miny+1):0,hh:cnt?(maxz+1):0,floating:floating,conn:conn,colors:Object.keys(cols).map(Number).sort(),grams:Math.round(vol*1.24*0.4)}}
+  return{cnt:cnt,w:cnt?(maxx-minx+1):0,d:cnt?(maxy-miny+1):0,hh:cnt?(maxz+1):0,floating:floating,conn:conn,colors:Object.keys(cols).map(Number).sort(),grams:estGrams(g)}}
 function shade(hex,f){var n=parseInt(hex.slice(1),16),r=(n>>16)&255,gg=(n>>8)&255,b=n&255;function c(v){return Math.max(0,Math.min(255,Math.round(v*f)))}return'#'+((1<<24)+(c(r)<<16)+(c(gg)<<8)+c(b)).toString(16).slice(1)}
 function isoSvg(g){var C=16,pts=[],minx=1e9,maxx=-1e9,miny=1e9,maxy=-1e9;
   for(var z=0;z<g.h;z++)for(var y=0;y<g.n;y++)for(var x=0;x<g.n;x++)if(bget(g,x,y,z))pts.push([x,y,z,bcol(g,x,y,z)]);
@@ -1020,12 +1024,12 @@ function buildView(){var g=BLD,st=bstats(g),cells='',mm=function(v){return v*g.s
     '<div class="lab" style="margin-top:8px">Warstwa (od dołu)</div><div class="row" style="margin-top:6px">'+Array.apply(null,Array(g.h)).map(function(_,z){return'<button class="chip" aria-pressed="'+(z===g.z)+'" data-act="wlayer" data-z="'+z+'">'+(z+1)+'</button>'}).join('')+'</div>'+
     '<div class="bgrid" style="grid-template-columns:repeat('+g.n+',1fr)">'+cells+'</div>'+
     '<div class="row" style="margin-top:0"><button class="btn alt" data-act="wsym" aria-pressed="'+g.sym+'" style="padding:8px 14px;font-size:15px">Symetria: '+(g.sym?'włączona':'wyłączona')+'</button><button class="btn alt" data-act="wundo" style="padding:8px 14px;font-size:15px"'+(g.undo.length?'':' disabled')+'>Cofnij</button></div>'+warns+
-    '<div class="hint" style="margin-top:10px">Bloków: <b>'+st.cnt+'</b>'+(st.cnt?' · rozmiar: <b>'+mm(st.w)+' × '+mm(st.d)+' × '+mm(st.hh)+' mm</b> · filament: ok. <b>'+st.grams+' g</b> (orientacyjnie) · kolory: <b>'+st.colors.length+'</b>':'')+'</div>'+
+    '<div class="hint" style="margin-top:10px">Bloków: <b>'+st.cnt+'</b>'+(st.cnt?' · rozmiar: <b>'+mm(st.w)+' × '+mm(st.d)+' × '+mm(st.hh)+' mm</b> · filament: ok. <b>'+st.grams+' g</b> (orientacyjnie, z zapasem na zmiany koloru) · kolory: <b>'+st.colors.length+'</b>':'')+'</div>'+
     (st.colors.length>4?'':'')+
     '<div class="lab">Wielkość jednego bloku</div><div class="seg" style="margin-top:6px">'+[4,5,6,8,10,12,15].map(function(s){return'<label><input type="radio" name="bs" data-act="wsize" data-s="'+s+'"'+(g.s===s?' checked':'')+'> '+s+' mm</label>'}).join('')+'</div>'+
     '<div class="row"><button class="btn" data-act="wsave">Zapisz</button><button class="btn alt" data-act="wexp"'+(st.cnt?'':' disabled')+'>Pobierz do druku</button><button class="btn alt" data-act="wclear">Wyczyść</button></div>'+
     (st.colors.length>1?'<div class="note">Model ma <b>'+st.colors.length+' kolory</b>. Dostaniesz osobny plik STL dla każdego koloru i jeden plik z całością. W Bambu Studio zaimportuj pliki kolorów naraz (jeśli program zapyta, wczytaj jako jeden obiekt z wieloma częściami) i przypisz każdej części filament z AMS.</div>':'')+
-    '<div class="note">Przed wydrukiem sprawdź rozmiar w Bambu Studio, ustaw model płasko na stole i pokaż go dorosłemu. W Claude pliki zapisują się w ZIP: rozpakuj go.</div></div>'}
+    orderBox(st)+'<div class="note">Przed wydrukiem sprawdź rozmiar w Bambu Studio, ustaw model płasko na stole i pokaż go dorosłemu. W Claude pliki zapisują się w ZIP: rozpakuj go.</div></div>'}
 function bsave(){var p=d3(),g=BLD,rec={name:g.name,n:g.n,h:g.h,s:g.s,c:g.c.join(''),stage:g.stage||null,pv:2};if(g.i>=0)p.designs[g.i]=rec;else{p.designs.push(rec);g.i=p.designs.length-1}save();msg='Zapisano projekt „'+g.name+'”.'}
 
 var BKTXT='';
@@ -1090,13 +1094,13 @@ function authView(){var m=AUTH.mode||'in',T={in:'Zaloguj się',up:'Załóż kont
   var links=m==='up'?'<button class="link" data-act="anomail">'+(AUTH.nomail?'Mam adres e-mail: załóż konto z e-mailem':'Nie mam e-maila: konto z samym imieniem')+'</button><button class="link" data-act="amode" data-m="in">Wróć do logowania</button>':m==='in'?'<button class="link" data-act="amode" data-m="up">Nie mam konta. Załóż je</button><button class="link" data-act="amode" data-m="reset">Nie pamiętam hasła</button>':(m==='new'&&AUTH.user?'<button class="link" data-act="amode" data-m="in">Anuluj</button>':'<button class="link" data-act="amode" data-m="in">Wróć do logowania</button>');
   return'<div class="top"><div class="logo">Word<b>box</b></div></div><div class="card"><h2 style="font-size:28px;margin-bottom:10px">'+T+'</h2>'+(AUTH.err?'<div class="fb bad">'+esc(AUTH.err)+'</div>':'')+(AUTH.info?'<div class="fb ok">'+esc(AUTH.info)+'</div>':'')+
     (m==='reset'?'<div class="hint">Podaj adres e-mail konta. Wyślemy link do ustawienia nowego hasła.</div>':'')+f+'<div class="row"><button class="btn" data-act="asubmit"'+(AUTH.busy?' disabled':'')+'>'+(AUTH.busy?'Chwileczkę…':btn)+'</button></div><div style="display:flex;flex-direction:column;align-items:flex-start">'+links+'</div></div>'}
-function acctBar(){if(!AUTH.on||!AUTH.user||!AUTH.profile)return'';return'<div class="acct"><span>'+esc(AUTH.profile.full_name||AUTH.profile.email)+' · <b>'+(AUTH.profile.credits||0)+' kr.</b></span><button class="link" data-act="apw">Zmień hasło</button>'+(isAdmin()?'<button class="link" data-act="aadmin">Panel admina</button>':'')+'<button class="link" data-act="alogout">Wyloguj</button>'+(AUTH.syncErr?'<span class="syncerr">Nie zapisano na serwerze</span>':'')+'</div>'}
+function acctBar(){if(!AUTH.on||!AUTH.user||!AUTH.profile)return'';return'<div class="acct"><span>'+esc(AUTH.profile.full_name||AUTH.profile.email)+' · <b>'+(AUTH.profile.credits||0)+' kr.</b></span><button class="link" data-act="olist">Zamówienia</button><button class="link" data-act="apw">Zmień hasło</button>'+(isAdmin()?'<button class="link" data-act="aadmin">Panel admina</button>':'')+'<button class="link" data-act="alogout">Wyloguj</button>'+(AUTH.syncErr?'<span class="syncerr">Nie zapisano na serwerze</span>':'')+'</div>'}
 function lockBadges(html){if(!AUTH.on)return html;Object.keys(MODS).forEach(function(s){var id=MODS[s];if(!hasModule(id)){var m=modInfo(id);html=html.split('data-act="subject" data-s="'+s+'">').join('data-act="subject" data-s="'+s+'"><span class="lockb">🔒 '+(m?m.price:'')+' kr.</span>')}});return html}
 function unlockView(){var m=modInfo(AUTH.unlock)||{title:AUTH.unlock,price:0},cr=AUTH.profile?AUTH.profile.credits:0,ok=cr>=m.price;
   return header()+'<div class="card"><div class="lab">Moduł płatny</div><h2 style="font-size:28px;margin:6px 0">'+esc(m.title)+'</h2><div class="hint">Cena: <b>'+m.price+' kr.</b> · Twoje kredyty: <b>'+cr+' kr.</b></div>'+(AUTH.err?'<div class="fb bad">'+esc(AUTH.err)+'</div>':'')+
     '<div class="row"><button class="btn" data-act="aunlock"'+(ok&&!AUTH.busy?'':' disabled')+'>Odblokuj za '+m.price+' kr.</button><button class="btn alt" data-act="aback">Wróć</button></div>'+(ok?'':'<div class="note">Brakuje '+(m.price-cr)+' kr. Kredyty możesz na razie dostać od administratora. Płatności online będą dostępne wkrótce.</div>')+'</div>'}
 function adminLoad(){var c=sbc();AUTH.adm={loading:true};render();
-  Promise.all([c.from('profiles').select('*').order('created_at',{ascending:false}),c.from('module_access').select('*'),c.from('modules').select('*').order('sort')]).then(function(rs){AUTH.adm={users:rs[0].data||[],access:rs[1].data||[],mods:rs[2].data||[],err:(rs[0].error&&rs[0].error.message)||'',msg:(AUTH.adm&&AUTH.adm.msg)||''};render()},function(e){AUTH.adm={users:[],access:[],mods:[],err:tr(e&&e.message)};render()})}
+  Promise.all([c.from('profiles').select('*').order('created_at',{ascending:false}),c.from('module_access').select('*'),c.from('modules').select('*').order('sort'),c.from('print_orders').select('*').order('created_at',{ascending:false}),c.from('settings').select('*')]).then(function(rs){AUTH.adm={users:rs[0].data||[],access:rs[1].data||[],mods:rs[2].data||[],orders:rs[3].data||[],settings:rs[4].data||[],err:(rs[0].error&&rs[0].error.message)||'',msg:(AUTH.adm&&AUTH.adm.msg)||''};render()},function(e){AUTH.adm={users:[],access:[],mods:[],err:tr(e&&e.message)};render()})}
 function adminView(){var A=AUTH.adm||{},h=header()+'<div class="sess-top"><button class="x" data-act="aback" aria-label="Wróć">×</button><h2 style="font-size:24px;flex:1">Panel admina</h2></div>';
   if(A.loading)return h+'<div class="hint">Ładowanie…</div>';
   if(A.err)h+='<div class="fb bad">'+esc(A.err)+'</div>';if(A.msg)h+='<div class="fb ok">'+esc(A.msg)+'</div>';
@@ -1107,6 +1111,7 @@ function adminView(){var A=AUTH.adm||{},h=header()+'<div class="sess-top"><butto
       (paid.length?'<div class="steps" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px">'+paid.map(function(m){var on=mine.indexOf(m.id)>-1;return'<button class="chip" aria-pressed="'+on+'" data-act="amod" data-u="'+u.id+'" data-m="'+m.id+'" data-on="'+(on?1:0)+'">'+esc(m.title)+'</button>'}).join('')+'</div>':'')+
       '<div class="row" style="margin-top:0"><input type="text" inputmode="numeric" id="cr_'+u.id+'" placeholder="+/− kredyty" style="width:130px;font-size:16px"><button class="btn alt" data-act="agrant" data-u="'+u.id+'" style="padding:8px 14px;font-size:15px">Dodaj kredyty</button>'+(isNickEmail(u.email)?'<span class="hintline">Hasło: Supabase → Authentication → Users</span>':'<button class="btn alt" data-act="areset" data-e="'+esc(u.email)+'" style="padding:8px 14px;font-size:15px">Reset hasła</button>')+'</div></section>'}).join('');
   h+='<h2 class="sect">Moduły i ceny</h2><div class="hint">Zaznacz „bezpłatny”, żeby moduł był dostępny dla wszystkich. Cena jest w kredytach.</div>'+A.mods.map(function(m){return'<div class="chk" style="gap:8px;flex-wrap:wrap"><b style="min-width:140px">'+esc(m.title)+'</b><input type="checkbox" id="mf_'+m.id+'"'+(m.free?' checked':'')+'><label for="mf_'+m.id+'">bezpłatny</label><input type="text" inputmode="numeric" id="mp_'+m.id+'" value="'+m.price+'" style="width:80px;font-size:16px" aria-label="Cena '+esc(m.title)+'"></div>'}).join('')+'<div class="row"><button class="btn" data-act="amsave">Zapisz moduły</button></div>';
+  h+=adminOrdersHtml();
   return h}
 function rpcDone(r,okMsg){if(r&&r.error){AUTH.adm=Object.assign(AUTH.adm||{},{msg:''});AUTH.adm.err=tr(r.error.message);render();return false}AUTH.adm.msg=okMsg||'Zapisano.';return true}
 function authAct(a,b){var c=sbc(),A=AUTH.adm;
@@ -1122,6 +1127,54 @@ function authAct(a,b){var c=sbc(),A=AUTH.adm;
   else if(a==='amod'){var on=b.dataset.on==='1';Promise.resolve(c.rpc(on?'admin_revoke_module':'admin_grant_module',{p_user:b.dataset.u,p_module:b.dataset.m})).then(function(r){if(rpcDone(r,on?'Odebrano dostęp.':'Nadano dostęp.'))adminLoad()})}
   else if(a==='areset'){Promise.resolve(c.auth.resetPasswordForEmail(b.dataset.e,{redirectTo:redirectUrl()})).then(function(r){AUTH.adm.msg=(r&&r.error)?'':'Wysłano link do resetu hasła na '+b.dataset.e;AUTH.adm.err=(r&&r.error)?tr(r.error.message):'';render()})}
   else if(a==='amsave'){var ups=A.mods.map(function(m){var f=document.getElementById('mf_'+m.id),p=document.getElementById('mp_'+m.id);return{id:m.id,title:m.title,sort:m.sort,free:!!(f&&f.checked),price:Math.max(0,parseInt(p&&p.value,10)||0)}});Promise.resolve(c.from('modules').upsert(ups)).then(function(r){if(rpcDone(r,'Zapisano moduły.'))refreshAccount().then(adminLoad)})}}
+
+/* ---------- zamówienia wydruków 3D (dla osób bez drukarki) ---------- */
+var ORD_ST={nowe:'Czeka na wycenę',wycena:'Wyceniono: czeka na płatność',oplacone:'Opłacone, czeka na druk',w_druku:'Drukujemy',gotowe:'Gotowe do odbioru',odebrane:'Odebrane',anulowane:'Anulowane'};
+function orderSettings(){var s={price_per_kg:80,markup:4,min_price:3};(AUTH.settings||[]).forEach(function(r){s[r.key]=Number(r.value)});return s}
+function orderPrice(g,set){set=set||orderSettings();return Math.max(set.min_price,Math.ceil(g*set.price_per_kg/1000*set.markup))}
+function fmtGr(v){return String(Math.round(v*10)/10).replace('.',',')}
+function designToG(d){return{n:d.n,h:d.h,s:d.s,c:String(d.c).split('').map(function(v){v=Number(v);return d.pv===2?v:([0,1,3,4,1][v]||0)}),col:1,sym:false,undo:[],z:0}}
+function orderBox(st){
+  if(!st.cnt)return'';
+  if(!AUTH.on)return'<div class="note"><b>Nie masz drukarki?</b> Zamawianie wydruków działa na koncie. Zaloguj się na stronie aplikacji (GitHub).</div>';
+  if(!AUTH.user)return'';
+  var set=orderSettings(),price=orderPrice(st.grams,set),perG=(set.price_per_kg/1000*set.markup).toFixed(2).replace('.',',');
+  return'<div class="note"><b>Nie masz drukarki? Zamów wydruk u nas.</b><br>Szacunek: filament ok. <b>'+fmtGr(st.grams)+' g</b>, cena orientacyjna <b>'+price+' kr.</b> (zużyty filament × '+set.markup+', czyli '+perG+' kr. za gram, minimum '+set.min_price+' kr.). Ostateczną cenę podamy po pocięciu modelu w Bambu Studio, przed płatnością.<br><input type="text" id="o_note" maxlength="200" placeholder="Uwagi (np. odbiór osobisty)" aria-label="Uwagi do zamówienia" style="font-size:16px;margin-top:8px"><div class="row" style="margin-top:8px"><button class="btn" data-act="omake">Zamów wydruk</button><button class="btn alt" data-act="olist">Moje zamówienia</button></div></div>'}
+function loadOrders(){var c=sbc();AUTH.orders=AUTH.orders||[];
+  Promise.all([c.from('print_orders').select('*').eq('user_id',AUTH.user.id).order('created_at',{ascending:false}),c.from('settings').select('*')]).then(function(rs){AUTH.orders=rs[0].data||[];AUTH.settings=rs[1].data||AUTH.settings;AUTH.ordErr=(rs[0].error&&tr(rs[0].error.message))||'';render()},function(e){AUTH.ordErr=tr(e&&e.message);render()})}
+function ordersView(){var h=header()+'<div class="sess-top"><button class="x" data-act="aback" aria-label="Wróć">×</button><h2 style="font-size:24px;flex:1">Zamówienia wydruków</h2></div>';
+  if(AUTH.ordErr)h+='<div class="fb bad">'+esc(AUTH.ordErr)+'</div>';if(msg){h+='<div class="fb ok">'+esc(msg)+'</div>';msg=''}
+  var L=AUTH.orders||[];if(!L.length)return h+'<div class="hint">Nie masz jeszcze zamówień. Zaprojektuj model i kliknij „Zamów wydruk”.</div>';
+  var cr=AUTH.profile?AUTH.profile.credits:0;
+  return h+L.map(function(o){var g=designToG(o.design),price=o.final_price!=null?o.final_price:o.est_price,pay=o.status==='wycena';
+    return'<section class="unit"><div class="uh"><div style="display:flex;gap:12px;align-items:center"><span class="thumb big">'+isoSvg(g)+'</span><div><h3>'+esc(o.design_name)+'</h3><div class="hintline">#'+o.id+' · '+esc(String(o.created_at||'').slice(0,10))+'</div></div></div><small><b>'+price+'</b> kr.'+(o.final_price!=null?'':' (orient.)')+'</small></div>'+
+      '<div class="hint" style="margin:0 0 8px"><b>'+esc(ORD_ST[o.status]||o.status)+'</b>'+(o.actual_grams!=null?' · filament '+fmtGr(o.actual_grams)+' g':' · szacunek '+fmtGr(o.est_grams)+' g')+(o.admin_note?' · '+esc(o.admin_note):'')+'</div>'+
+      (pay?'<div class="row" style="margin-top:0"><button class="btn" data-act="opay" data-id="'+o.id+'"'+(cr>=o.final_price?'':' disabled')+'>Zapłać '+o.final_price+' kr.</button>'+(cr>=o.final_price?'':'<span class="hintline">Masz '+cr+' kr. Brakuje '+(o.final_price-cr)+' kr.</span>')+'<button class="btn alt" data-act="ocancel" data-id="'+o.id+'">Anuluj</button></div>':(o.status==='nowe'?'<div class="row" style="margin-top:0"><button class="btn alt" data-act="ocancel" data-id="'+o.id+'">Anuluj</button></div>':''))+'</section>'}).join('')}
+function adminOrdersHtml(){var A=AUTH.adm||{},O=A.orders||[],set={price_per_kg:80,markup:4,min_price:3};(A.settings||[]).forEach(function(r){set[r.key]=Number(r.value)});
+  var byId={};(A.users||[]).forEach(function(u){byId[u.id]=u});
+  var h='<h2 class="sect">Zamówienia wydruków ('+O.filter(function(o){return o.status!=='odebrane'&&o.status!=='anulowane'}).length+' aktywnych)</h2>';
+  h+='<div class="hint">Cena = filament (g) × cena za gram × narzut. Dziś: '+set.price_per_kg+' zł/kg × '+set.markup+' = '+(set.price_per_kg/1000*set.markup).toFixed(2).replace('.',',')+' zł za gram, minimum '+set.min_price+' kr.</div>';
+  h+='<div class="row" style="margin-top:0"><input type="text" inputmode="decimal" id="st_price_per_kg" value="'+set.price_per_kg+'" style="width:90px;font-size:16px" aria-label="Cena za kg"><span class="hintline">zł/kg</span><input type="text" inputmode="decimal" id="st_markup" value="'+set.markup+'" style="width:70px;font-size:16px" aria-label="Narzut"><span class="hintline">narzut</span><input type="text" inputmode="decimal" id="st_min_price" value="'+set.min_price+'" style="width:70px;font-size:16px" aria-label="Minimum"><span class="hintline">min. kr.</span><button class="btn alt" data-act="oset" style="padding:8px 14px;font-size:15px">Zapisz cennik</button></div>';
+  if(!O.length)return h+'<div class="hint">Brak zamówień.</div>';
+  return h+O.map(function(o){var u=byId[o.user_id]||{},g=designToG(o.design),quotable=o.status==='nowe'||o.status==='wycena';
+    return'<section class="unit"><div class="uh"><div style="display:flex;gap:12px;align-items:center"><span class="thumb big">'+isoSvg(g)+'</span><div><h3>'+esc(o.design_name)+'</h3><div class="hintline">#'+o.id+' · '+esc(u.full_name||u.email||'?')+(o.note?' · „'+esc(o.note)+'”':'')+'</div></div></div><small><b>'+esc(ORD_ST[o.status]||o.status)+'</b></small></div>'+
+      '<div class="hint" style="margin:0 0 8px">Szacunek: '+fmtGr(o.est_grams)+' g ('+o.est_price+' kr.)'+(o.actual_grams!=null?' · wycena: '+fmtGr(o.actual_grams)+' g = '+o.final_price+' kr.':'')+'</div>'+
+      '<div class="row" style="margin-top:0"><button class="btn alt" data-act="odl" data-id="'+o.id+'" style="padding:8px 14px;font-size:15px">Pobierz pliki STL</button>'+
+      (quotable?'<input type="text" inputmode="decimal" id="og_'+o.id+'" placeholder="gramy ze slicera" style="width:140px;font-size:16px" aria-label="Gramy"><button class="btn" data-act="oquote" data-id="'+o.id+'" style="padding:8px 14px;font-size:15px">Wyceń</button>':'')+
+      (['oplacone','w_druku','gotowe'].indexOf(o.status)>-1?'<button class="btn alt" data-act="ostatus" data-id="'+o.id+'" data-s="w_druku" style="padding:8px 14px;font-size:15px">W druku</button><button class="btn alt" data-act="ostatus" data-id="'+o.id+'" data-s="gotowe" style="padding:8px 14px;font-size:15px">Gotowe</button><button class="btn alt" data-act="ostatus" data-id="'+o.id+'" data-s="odebrane" style="padding:8px 14px;font-size:15px">Odebrane</button>':'')+
+      (o.status!=='odebrane'&&o.status!=='anulowane'?'<button class="btn alt" data-act="ostatus" data-id="'+o.id+'" data-s="anulowane" style="padding:8px 14px;font-size:15px">Anuluj'+(o.final_price!=null&&o.status!=='nowe'&&o.status!=='wycena'?' (zwrot)':'')+'</button>':'')+'</div></section>'}).join('')}
+function orderAct(a,b){var c=sbc(),id=b&&b.dataset?+b.dataset.id:0;
+  if(a==='omake'){var g=BLD,st=bstats(g);if(!st.cnt)return;bsave();var note=document.getElementById('o_note');
+    Promise.resolve(c.rpc('order_print',{p_design:{name:g.name,n:g.n,h:g.h,s:g.s,c:g.c.join(''),pv:2},p_name:g.name,p_grams:st.grams,p_note:(note&&note.value)||''})).then(function(r){if(r.error){msg='';AUTH.ordErr=tr(r.error.message);view='orders';render();return}msg='Zamówienie wysłane. Wycenimy je po pocięciu w Bambu Studio i damy znać tutaj.';view='orders';BLD=null;loadOrders()})}
+  else if(a==='olist'){view='orders';AUTH.ordErr='';loadOrders()}
+  else if(a==='opay'){Promise.resolve(c.rpc('pay_order',{p_id:id})).then(function(r){if(r.error){AUTH.ordErr=tr(r.error.message);render();return}AUTH.ordErr='';msg='Zapłacono. Dziękujemy! Zamówienie czeka na druk.';refreshAccount().then(loadOrders)})}
+  else if(a==='ocancel'){Promise.resolve(c.rpc('cancel_order',{p_id:id})).then(function(r){if(r.error){AUTH.ordErr=tr(r.error.message);render();return}AUTH.ordErr='';loadOrders()})}
+  else if(a==='oquote'){var el=document.getElementById('og_'+id),gr=parseFloat(String((el&&el.value)||'').replace(',','.'));if(!(gr>0)){AUTH.adm.err='Podaj gramy ze slicera (liczba większa od 0).';render();return}
+    Promise.resolve(c.rpc('admin_quote_order',{p_id:id,p_grams:gr,p_note:''})).then(function(r){if(rpcDone(r,'Wyceniono zamówienie #'+id+'.'))adminLoad()})}
+  else if(a==='ostatus'){Promise.resolve(c.rpc('admin_set_order_status',{p_id:id,p_status:b.dataset.s})).then(function(r){if(rpcDone(r,'Zmieniono status zamówienia #'+id+'.'))adminLoad()})}
+  else if(a==='odl'){var o=((AUTH.adm&&AUTH.adm.orders)||[]).filter(function(x){return x.id===id})[0];if(o){var gg=designToG(o.design);dlFile('zamowienie_'+id,exportFiles(gg,'zam'+id))}}
+  else if(a==='oset'){var ks=['price_per_kg','markup','min_price'],ps=ks.map(function(k){var e=document.getElementById('st_'+k);return c.rpc('admin_set_setting',{p_key:k,p_value:parseFloat(String((e&&e.value)||'').replace(',','.'))})});
+    Promise.all(ps).then(function(rs){var bad=rs.filter(function(r){return r&&r.error})[0];if(bad){AUTH.adm.err=tr(bad.error.message);render();return}AUTH.adm.msg='Zapisano cennik.';adminLoad()})}}
 
 /* ---------- sessions ---------- */
 var S=null,view='home',msg='',confirmReset=false,setup=null;
@@ -1320,7 +1373,7 @@ function settings(){
   '<div class="sec"><h3>Postępy</h3><button class="btn alt" data-act="reset">'+(confirmReset?'Na pewno? Kliknij jeszcze raz':'Wyzeruj postępy: '+esc(P().name))+'</button></div>'+
   '<div class="row"><button class="btn" data-act="home">Gotowe</button></div><div class="note">Postępy zapisują się w przeglądarce, na tym urządzeniu. Na telefonie i komputerze są osobne.</div>'}
 function render(){var app=document.getElementById('app');
-  app.innerHTML=view==='auth'?authView():view==='admin'?adminView():view==='unlock'?unlockView():view==='play'?play():view==='result'?result():view==='settings'?settings():view==='test'?testView():view==='build'?buildView():home();
+  app.innerHTML=view==='auth'?authView():view==='admin'?adminView():view==='unlock'?unlockView():view==='orders'?ordersView():view==='play'?play():view==='result'?result():view==='settings'?settings():view==='test'?testView():view==='build'?buildView():home();
   var a=document.getElementById('ans');if(a&&!a.disabled)a.focus();else{var n=document.getElementById('nx');if(n&&view==='play')n.focus()}
   window.scrollTo(0,0)}
 
@@ -1329,6 +1382,7 @@ document.addEventListener('input',function(e){if(e.target.getAttribute&&e.target
 document.addEventListener('keydown',function(e){if(e.key==='Enter'&&view==='auth'&&e.target.tagName==='INPUT'&&e.target.type!=='checkbox'){e.preventDefault();authSubmit();return}if(e.key!=='Enter'||view!=='play'||!S)return;
   if(e.target.id==='ans'&&S.phase==='ask'){e.preventDefault();checkWrite()}else if(S.phase==='fb'&&e.target.tagName!=='BUTTON')next()});
 document.addEventListener('click',function(e){var b=e.target.closest('[data-act]');if(!b)return;var a=b.dataset.act,q=S&&S.qs?S.qs[S.i]:null;
+  if(/^o(make|list|pay|cancel|quote|status|dl|set)$/.test(a)){orderAct(a,b);return}
   if(/^a(submit|nomail|mode|logout|pw|back|admin|unlock|grant|mod|reset|msave)$/.test(a)){authAct(a,b);return}
   if(a==='who'){D.active=+b.dataset.i;if(!subjAllowed(D.subject))D.subject=null;save();if(view==='play'||view==='result')view='home';render()}
   else if(a==='subjects'){D.subject=null;save();view='home';render()}
