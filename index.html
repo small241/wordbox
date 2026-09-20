@@ -1008,6 +1008,7 @@ function buildView(){var g=BLD,st=bstats(g),cells='',mm=function(v){return v*g.s
     '<div class="note">Przed wydrukiem w Bambu Studio sprawdź rozmiar, ustaw model płasko na stole i pokaż go dorosłemu. W Claude plik zapisuje się jako ZIP, rozpakuj go, a w środku jest plik .stl.</div></div>'}
 function bsave(){var p=d3(),g=BLD,rec={name:g.name,n:g.n,h:g.h,s:g.s,c:g.c.join(''),stage:g.stage||null};if(g.i>=0)p.designs[g.i]=rec;else{p.designs.push(rec);g.i=p.designs.length-1}save();msg='Zapisano projekt „'+g.name+'”.'}
 
+var BKTXT='';
 /* ---------- konta i dostęp do modułów (Supabase) ---------- */
 var AUTH={on:!!((typeof SB_URL!=='undefined'&&SB_URL&&SB_KEY)||window.__SB_MOCK),user:null,profile:null,mods:{},modDefs:[],mode:'in',err:'',info:'',busy:false,recovery:false,adm:null,unlock:null,syncErr:false};
 var SBC=null,syncTimer=null;
@@ -1287,6 +1288,7 @@ function settings(){
   '<div class="chk"><input type="checkbox" id="swap"><label for="swap">Polskie słowo jest pierwsze</label></div>'+
   '<div class="row"><button class="btn" data-act="add">Dodaj</button></div></div>'+
   '<div class="sec"><h3>Moje dodane słówka ('+D.custom.length+')</h3><div class="wl">'+D.custom.map(function(w,i){return'<div><span>'+esc(w.en)+' <small>'+esc(w.pl)+' · '+esc(w.l)+'</small></span><span style="display:flex;gap:6px;align-items:center">'+sp(w.en,'sm')+'<button data-act="del" data-i="'+i+'" aria-label="Usuń '+esc(w.en)+'">×</button></span></div>'}).join('')+'</div></div>'+
+  '<div class="sec"><h3>Kopia postępów</h3><div class="hint">Przenieś postępy obu chłopców między wersjami aplikacji (np. z Claude na stronę GitHub). W starej wersji kliknij „Utwórz kopię” i skopiuj tekst. W nowej wklej go poniżej i kliknij „Wczytaj”.</div><div class="row" style="margin-top:0"><button class="btn alt" data-act="bkexp">Utwórz kopię</button></div>'+(BKTXT?'<textarea readonly id="bkout" aria-label="Kopia postępów" style="min-height:90px;font-family:monospace;font-size:11px;margin-top:8px">'+esc(BKTXT)+'</textarea>':'')+'<textarea id="bkin" aria-label="Wklej kopię postępów" placeholder="Wklej tutaj kopię z drugiej wersji" style="min-height:90px;font-family:monospace;font-size:11px;margin-top:8px"></textarea><div class="row" style="margin-top:8px"><button class="btn alt" data-act="bkimp">Wczytaj (zastępuje obecne postępy)</button></div></div>'+
   '<div class="sec"><h3>Postępy</h3><button class="btn alt" data-act="reset">'+(confirmReset?'Na pewno? Kliknij jeszcze raz':'Wyzeruj postępy: '+esc(P().name))+'</button></div>'+
   '<div class="row"><button class="btn" data-act="home">Gotowe</button></div><div class="note">Postępy zapisują się w przeglądarce, na tym urządzeniu. Na telefonie i komputerze są osobne.</div>'}
 function render(){var app=document.getElementById('app');
@@ -1341,6 +1343,8 @@ document.addEventListener('click',function(e){var b=e.target.closest('[data-act]
   else if(a==='wexp'){bsave();dlFile(BLD.name.replace(/[^A-Za-z0-9_-]/g,'_')||'model',stlText(BLD,BLD.name));BLD.show=true;render()}
   else if(a==='wreq'){var pq=d3(),ri2=+b.dataset.i;if(!printItem(ri2)){pq.printq.push({di:ri2,done:false,d:dstr(new Date())});save();msg='Dodano do wydruku. Poproś rodzica.'}render()}
   else if(a==='wdone'){var it=printItem(+b.dataset.i);if(it){it.done=!it.done;save()}render()}
+  else if(a==='bkexp'){BKTXT=JSON.stringify(D);msg='Kopia gotowa. Skopiuj cały tekst z pola poniżej.';render()}
+  else if(a==='bkimp'){var bta=document.getElementById('bkin');try{var bn=normState(JSON.parse(((bta&&bta.value)||'').trim()));if(!bn)throw 0;D=bn;buildUnits();save();S=null;BLD=null;BKTXT='';msg='Wczytano postępy.'}catch(e){msg='To nie wygląda na kopię postępów. Skopiuj cały tekst z drugiej wersji.'}render()}
   else if(a==='home'){clearTimeout(codeTimer);view='home';BLD=null;msg='';S=null;render()}
   else if(a==='tab'){D.tab=b.dataset.t;save();view='home';render()}
   else if(a==='settings'){view='settings';msg='';confirmReset=false;render()}
