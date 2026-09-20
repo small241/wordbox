@@ -169,6 +169,8 @@ pre.code{background:#111a33;color:#e8eeff;border-radius:12px;padding:14px;font-f
 .acct{font-size:13px;color:var(--muted);margin-bottom:6px;display:flex;gap:10px;flex-wrap:wrap;align-items:center}.acct .link{margin:0;padding:0;font-size:13px}.acct b{color:var(--ink)}.syncerr{color:var(--bad);font-weight:800}.subj-card{position:relative}.lockb{position:absolute;top:10px;right:12px;background:var(--ink);color:var(--bg);border-radius:999px;padding:2px 10px;font-size:12px;font-weight:800}
 .agebadge{background:var(--ink);color:var(--bg);border-radius:999px;padding:1px 10px;font-weight:800;font-size:12px}.subjbar .link{font-size:13px}
 .swatch{display:inline-block;width:110px;height:110px;border-radius:50%;border:4px solid var(--line);vertical-align:middle}.nwp .swatch{width:44px;height:44px;border-width:3px}
+.testbar{background:#FFE8E0;border:2px solid var(--accent);color:#8A2B0C;border-radius:12px;padding:6px 12px;font-weight:800;font-size:13px;margin-bottom:8px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.testbar .link{margin:0;padding:0;font-size:13px}
 .conf{position:fixed;left:0;right:0;top:0;bottom:0;pointer-events:none;z-index:60;overflow:hidden}
 .conf i{position:absolute;top:-20px;width:10px;height:16px;border-radius:2px;animation:cfall 1.5s linear forwards}
 @keyframes cfall{to{transform:translateY(110vh) rotate(540deg);opacity:.15}}
@@ -738,11 +740,12 @@ function kidHome(h){var nl=nextLesson(D.subject);
 function isCode(s){return s==='code'||s==='kcode'}
 function starsTotal(){var t=0,p=P().sec;Object.keys(p).forEach(function(k){if(k.indexOf('c:')===0)return;(p[k]||[]).forEach(function(x){t+=x||0})});return t}
 function secBonusCount(){return SEC.filter(function(s){return s.subj!=='code'&&s.subj!=='kcode'&&secDone(s)}).length}
+function testIdx(){for(var i=0;i<D.profiles.length;i++)if(D.profiles[i].test)return i;return -1}
 function shopSpent(){var t=0,sh=P().shop||{};Object.keys(sh).forEach(function(k){t+=sh[k]||0});return t}
-function tokensInfo(){var st=starsTotal(),earned=Math.floor(st/2)+2*secBonusCount(),used=Object.keys(P().cunlock||{}).length+shopSpent()+frzN();return{earned:earned,used:used,avail:Math.max(0,earned-used),next:2-st%2,sections:secBonusCount()}}
+function tokensInfo(){var st=starsTotal(),earned=Math.floor(st/2)+2*secBonusCount()+(P().tbonus||0),used=Object.keys(P().cunlock||{}).length+shopSpent()+frzN();return{earned:earned,used:used,avail:Math.max(0,earned-used),next:2-st%2,sections:secBonusCount()}}
 function codeGate(s,j){var p=P();p.cunlock=p.cunlock||{};var key=s.key+'#'+j;if(p.cunlock[key])return true;
   var t=tokensInfo();if(t.avail<1){msg='Potrzebujesz żetonu. Zdobądź jeszcze '+t.next+' '+pl3(t.next,['gwiazdkę','gwiazdki','gwiazdek'])+' w lekcjach angielskiego, matematyki lub czytania.';return false}
-  var d=dstr(new Date()),cd=(p.cday&&p.cday.d===d)?p.cday:{d:d,n:0};if(cd.n>=3){msg='Na dziś wystarczy programowania: 3 nowe poziomy dziennie. Wróć jutro!';return false}
+  var d=dstr(new Date()),cd=(p.cday&&p.cday.d===d)?p.cday:{d:d,n:0};if(cd.n>=3&&!P().test){msg='Na dziś wystarczy programowania: 3 nowe poziomy dziennie. Wróć jutro!';return false}
   cd.n++;p.cday=cd;p.cunlock[key]=1;save();return true}
 function tokenBar(){var t=tokensInfo();return'<div class="tokbar"><span class="coin"></span><b>'+t.avail+'</b> '+pl3(t.avail,['żeton','żetony','żetonów'])+'<small>Następny za '+t.next+' '+pl3(t.next,['gwiazdkę','gwiazdki','gwiazdek'])+'</small></div>'}
 function codeBlk(q){return q.code?'<pre class="code">'+esc(q.code)+'</pre>':''}
@@ -1313,7 +1316,9 @@ function checkBuild(){var q=S.qs[S.i];if(!q.sel.length)return;
   done(ok,null,{say:clean(q.s.en)})}
 
 /* ---------- views ---------- */
-function header(){return acctBar()+'<div class="top"><div class="logo">Word<b>box</b></div><div class="who" role="group" aria-label="Kto ćwiczy">'+
+function testBar(){if(!P().test)return'';var t=tokensInfo();
+  return'<div class="testbar">🧪 TRYB TESTOWY — to piaskownica, nie konto dziecka. Żetony: <b>'+t.avail+'</b> <button class="link" data-act="tgive">+50 żetonów</button> <button class="link" data-act="topenall">otwórz sekcje</button> <button class="link" data-act="tcode">zalicz programowanie</button> <button class="link" data-act="settings">ustawienia</button></div>'}
+function header(){return acctBar()+testBar()+'<div class="top"><div class="logo">Word<b>box</b></div><div class="who" role="group" aria-label="Kto ćwiczy">'+
   D.profiles.map(function(p,i){return'<button class="chip" aria-pressed="'+(i===D.active)+'" data-act="who" data-i="'+i+'">'+esc(p.name)+'</button>'}).join('')+'</div></div>'}
 function ring(){var g=D.goal||20,n=Math.min(g,todayN()),c=2*Math.PI*26,off=c*(1-n/g);
   return'<div class="ring" aria-label="Dzisiejszy cel: '+n+' z '+g+'"><svg width="64" height="64" viewBox="0 0 64 64"><circle class="ring-bg" cx="32" cy="32" r="26" fill="none" stroke-width="7"/><circle class="ring-fg" cx="32" cy="32" r="26" fill="none" stroke-width="7" stroke-linecap="round" stroke-dasharray="'+c.toFixed(1)+'" stroke-dashoffset="'+off.toFixed(1)+'" transform="rotate(-90 32 32)"/></svg><b>'+n+'/'+g+'</b></div>'}
@@ -1437,6 +1442,8 @@ function settings(){
   '<div class="sec"><h3>Imiona</h3>'+D.profiles.map(function(p,i){return'<div style="margin-bottom:8px"><input type="text" id="nm'+i+'" data-name="'+i+'" value="'+esc(p.name)+'" aria-label="Imię '+(i+1)+'" maxlength="16"><div class="chk"><input type="checkbox" id="kid'+i+'" data-act="kid" data-i="'+i+'"'+(p.kid?' checked':'')+'><label for="kid'+i+'">Wersja dla młodszego dziecka (6 lat)</label></div></div>'}).join('')+'</div>'+
   '<div class="sec"><h3>Dzienny cel</h3><div class="seg">'+[10,20,30,50].map(function(n){return'<label><input type="radio" name="goal" data-act="goal" data-n="'+n+'"'+((D.goal||20)===n?' checked':'')+'> '+n+' zadań</label>'}).join('')+'</div></div>'+
   '<div class="sec"><h3>Mikrofon</h3><div class="chk"><input type="checkbox" id="micck" data-act="micon"'+(D.micOff?'':' checked')+'><label for="micck">Próbuj rozpoznawania mowy w aplikacji</label></div><div class="hint">Gdy przeglądarka blokuje mikrofon, zadania „Mów” działają przez dyktowanie z klawiatury.</div></div>'+
+  '<div class="sec"><h3>Tryb testowy (dla rodzica)</h3><div class="hint">Osobny profil-piaskownica: zapas żetonów, wszystkie sekcje otwarte i bez limitu 3 poziomów dziennie. Postępy dzieci zostają nietknięte. Zamówienia wydruku i panel administratora działają dopiero po podłączeniu kont online.</div>'+
+  '<div class="row">'+(testIdx()<0?'<button class="btn alt" data-act="mktest">Utwórz profil testowy</button>':'<button class="btn alt" data-act="mktest">Przełącz na profil testowy</button><button class="btn alt" data-act="tdel">Usuń profil testowy</button>')+'</div></div>'+
   '<div class="sec"><h3>Dźwięk i efekty</h3><div class="chk"><input type="checkbox" id="sndck" data-act="sound"'+(D.sound!==false?' checked':'')+'><label for="sndck">Dźwięki przy odpowiedziach</label></div><div class="chk"><input type="checkbox" id="fxck" data-act="fx"'+(D.fx!==false?' checked':'')+'><label for="fxck">Konfetti po udanej lekcji</label></div><div class="chk"><input type="checkbox" id="rdck" data-act="read"'+(D.read!==false?' checked':'')+'><label for="rdck">Czytaj polecenia na głos (wersja dla 6 lat)</label></div></div>'+
   '<div class="sec"><h3>Ścieżka</h3><div class="chk"><input type="checkbox" id="exck" data-act="extras"'+(D.extras!==false?' checked':'')+'><label for="exck">Pokazuj dodatkowe sekcje spoza zeszytu (dom, jedzenie, liczby do 100...)</label></div><div class="row"><button class="btn alt" data-act="openall">Odblokuj wszystkie sekcje</button></div></div>'+
   '<div class="sec"><h3>Dodaj słówka</h3><div class="hint">Jedno w linii: <b>apple - jabłko</b>. Wiersz <b>Lekcja 7</b> albo <b>Zeszły rok - Lekcja 3</b> przypisuje kolejne słówka do tej lekcji. Ścieżka sama podzieli słówka na sekcje.</div>'+
@@ -1473,6 +1480,12 @@ document.addEventListener('click',function(e){var b=e.target.closest('[data-act]
   else if(a==='say'){speak(b.dataset.t,b.dataset.l)}
   else if(a==='relab'){sayLab(true)}
   else if(a==='badges'){view='badges';msg='';render()}
+  else if(a==='mktest'){var ti=testIdx();
+    if(ti<0){var np=newProfile('Test (piaskownica)',false);np.test=true;np.tbonus=50;SEC.forEach(function(s){np.open[s.key]=1});D.profiles.push(np);ti=D.profiles.length-1}
+    D.active=ti;D.subject=null;save();view='home';msg='';S=null;render()}
+  else if(a==='tgive'){if(P().test){P().tbonus=(P().tbonus||0)+50;save();snd('win');msg='Dodano 50 żetonów.'}render()}
+  else if(a==='tcode'){if(P().test){SEC.forEach(function(s){if(isCode(s.subj)){var ca=sst(s);for(var ci=0;ci<s.n;ci++)ca[ci]=Math.max(ca[ci]||0,1)}});save();msg='Sekcje programowania zaliczone — modele w sklepie są dostępne.'}render()}
+  else if(a==='tdel'){var td=testIdx();if(td>=0){D.profiles.splice(td,1);D.active=0;D.subject=null;save();S=null;msg='Profil testowy usunięty.'}render()}
   else if(a==='skiptest'){startSkip(b.dataset.k)}
   else if(a==='freeze'){var fd=dstr(new Date());
     if(todayN()>0){msg='Dziś już ćwiczysz — ten dzień liczy się do serii.'}
