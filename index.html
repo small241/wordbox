@@ -1,4 +1,9 @@
 <title>Wordbox</title>
+<meta name="theme-color" content="#EAF1FF">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Wordbox">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@500;700;800&display=swap">
 <style>
 :root{
@@ -164,6 +169,16 @@ pre.code{background:#111a33;color:#e8eeff;border-radius:12px;padding:14px;font-f
 .acct{font-size:13px;color:var(--muted);margin-bottom:6px;display:flex;gap:10px;flex-wrap:wrap;align-items:center}.acct .link{margin:0;padding:0;font-size:13px}.acct b{color:var(--ink)}.syncerr{color:var(--bad);font-weight:800}.subj-card{position:relative}.lockb{position:absolute;top:10px;right:12px;background:var(--ink);color:var(--bg);border-radius:999px;padding:2px 10px;font-size:12px;font-weight:800}
 .agebadge{background:var(--ink);color:var(--bg);border-radius:999px;padding:1px 10px;font-weight:800;font-size:12px}.subjbar .link{font-size:13px}
 .swatch{display:inline-block;width:110px;height:110px;border-radius:50%;border:4px solid var(--line);vertical-align:middle}.nwp .swatch{width:44px;height:44px;border-width:3px}
+.conf{position:fixed;left:0;right:0;top:0;bottom:0;pointer-events:none;z-index:60;overflow:hidden}
+.conf i{position:absolute;top:-20px;width:10px;height:16px;border-radius:2px;animation:cfall 1.5s linear forwards}
+@keyframes cfall{to{transform:translateY(110vh) rotate(540deg);opacity:.15}}
+.bdgs{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
+.bdg{display:flex;align-items:center;gap:8px;background:var(--surface);border:2px solid var(--line);border-radius:16px;padding:8px 12px;font-weight:800;font-size:14px;box-shadow:var(--shadow)}
+.bdg i{font-style:normal;font-size:22px;filter:grayscale(1);opacity:.35}
+.bdg small{display:block;color:var(--muted);font-weight:700;font-size:12px}
+.bdg.on{border-color:var(--sun)}.bdg.on i{filter:none;opacity:1}
+.frz{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.relab{border:2px solid var(--line);background:var(--surface);border-radius:999px;padding:4px 10px;font-weight:800;font-size:14px}
 </style>
 <div class="wrap"><div id="app"></div></div>
 <script>
@@ -217,9 +232,9 @@ var COLORHEX={black:'#151515',orange:'#FF8A00',red:'#E53935',blue:'#1E88E5',gree
 var SENT_RAW=[
 "Z25|This is my [aunt].|To jest moja [ciocia].","Z25|This is my [uncle].|To jest mój [wujek].","Z25|My family is big.|Moja rodzina jest duża.","Z30|The [vet] helps animals.|[Weterynarz] pomaga zwierzętom.","Z30|The [doctor] helps me.|[Lekarz] mi pomaga.","Z31|I like [cheese].|Lubię ser.","Z31|The [milk] is white.|[Mleko] jest białe.","Z31|I eat [eggs].|Jem jajka.","Z32|I'm [hungry]!|Jestem głodny!","Z32|The pizza is delicious.|Pizza jest pyszna.","Z38|I have a [fork].|Mam [widelec].","Z38|The [plate] is on the table.|[Talerz] jest na stole.","Z39|The [elephant] is big.|[Słoń] jest duży.","Z39|The [frog] can jump.|[Żaba] umie skakać.","Z39|The [snake] is green.|[Wąż] jest zielony.","Z43|Birds can [fly].|Ptaki umieją [latać].","Z43|The monkey can climb.|Małpa umie się wspinać.","Z46|The [chick] is small.|[Kurczaczek] jest mały.","Z50|This is my [kite].|To jest mój [latawiec].","Z50|The [doll] is on the table.|[Lalka] jest na stole.","Z50|The [car] is under the table.|[Samochód] jest pod stołem.","Z50|I have a [bike].|Mam [rower].","Z51|Where's my [skateboard]?|Gdzie jest moja [deskorolka]?","Z51|I can't find my doll.|Nie mogę znaleźć mojej lalki.","Z53|The car is made of plastic.|Samochód jest zrobiony z plastiku.","Z53|The table is made of wood.|Stół jest zrobiony z drewna.",
 "Z1|Hello! My name is [Tiger].|Cześć! Mam na imię [Tygrys].","Z1|[Goodbye]!|[Do widzenia]!","Z1|I can [jump].|Umiem [skakać].","Z1|I can [run].|Umiem [biegać].","Z1|The tiger can [roar].|Tygrys umie ryczeć.","Z1|The mouse is [black].|Mysz jest czarna.","Z2|What's your name? I'm Tiger.|Jak masz na imię? Jestem Tygrys.","Z2|How old are you? I'm [eight].|Ile masz lat? Mam osiem lat.","Z2|This is my [brother].|To jest mój [brat].","Z2|This is my [sister].|To jest moja [siostra].","Z2|It's a [cat].|To jest [kot].","Z2|It's a [dog].|To jest [pies].","Z2|I have a [ball].|Mam piłkę.","Z4|This is my [pencil case].|To jest mój [piórnik].","Z4|I have a [ruler].|Mam linijkę.","Z4|Can I have a pen, [please]?|Czy mogę dostać długopis, [proszę]?","Z4|[Thank you]!|[Dziękuję]!","Z6|Can I have this pen, please? Yes, of course.|Czy mogę dostać ten długopis? Tak, oczywiście.","Z6|Can I have this pen, please? No, sorry.|Czy mogę dostać ten długopis? Nie, przepraszam.","Z9|Do you [sing] at school? Yes, I do.|Czy śpiewasz w szkole? Tak.","Z9|I [draw] at school.|Rysuję w szkole.","Z11|My [teacher] is nice.|Mój [nauczyciel] jest miły.","Z11|I'm from Poland.|Jestem z Polski.","Z12|This is my [nose].|To jest mój [nos].","Z12|This is my [head].|To jest moja [głowa].","Z12|These are my [eyes].|To są moje [oczy].","Z12|I see with my eyes.|Widzę oczami.","Z16|I [smell] with my nose.|Wącham nosem.","Z16|I [see] with my eyes.|Widzę oczami.","Z17|I listen with my ears.|Słucham uszami.","Z17|What a surprise!|Co za niespodzianka!","Z18|Clap your hands.|Klaszcz w dłonie.","Z18|[Stand up], please.|Wstań, proszę.","Z21|This is my [mother].|To jest moja [mama].","Z21|This is my [father].|To jest mój [tata].","Z21|This is my [grandmother].|To jest moja [babcia].","Z21|This is my [family].|To jest moja [rodzina].","Z22|How are you? I'm fine, thanks.|Jak się masz? Dobrze, dziękuję.","Z22|Have you got a sister? Yes, I have.|Czy masz siostrę? Tak, mam.","Z22|Have you got a brother? No, I haven't.|Czy masz brata? Nie, nie mam.",
-"1|[Hello]! I'm Tom.|[Cześć]! Jestem Tomek.","1|How are you? I'm fine, thank you.|Jak się masz? Dobrze, dziękuję.","1|[Goodbye]! See you soon.|[Do widzenia]! Do zobaczenia wkrótce.",
+"1|[Hello]! I'm Bartek.|[Cześć]! Jestem Bartek.","1|How are you? I'm fine, thank you.|Jak się masz? Dobrze, dziękuję.","1|[Goodbye]! See you soon.|[Do widzenia]! Do zobaczenia wkrótce.",
 "1|I like to [sing].|Lubię [śpiewać].","1|I can [read].|Umiem [czytać].","1|We [speak] English.|Mówimy po angielsku.","1|Let's [count] to fifteen.|Policzmy do piętnastu.","1|Eleven, twelve, thirteen, fourteen, fifteen.|Jedenaście, dwanaście, trzynaście, czternaście, piętnaście.",
-"2|What's your name? I'm Tom.|Jak masz na imię? Jestem Tomek.","2|How old are you? I'm eight.|Ile masz lat? Mam osiem lat.","2|I can [ride a bike].|Umiem [jeździć na rowerze].","2|I can [climb a tree].|Umiem [wspinać się na drzewo].","2|I like to [eat ice cream].|Lubię [jeść lody].","2|Let's [play on a swing]!|Bawmy się na huśtawce!","2|Let's go! [Good idea]!|Chodźmy! [Dobry pomysł]!",
+"2|What's your name? I'm Bartek.|Jak masz na imię? Jestem Bartek.","2|How old are you? I'm eight.|Ile masz lat? Mam osiem lat.","2|I can [ride a bike].|Umiem [jeździć na rowerze].","2|I can [climb a tree].|Umiem [wspinać się na drzewo].","2|I like to [eat ice cream].|Lubię [jeść lody].","2|Let's [play on a swing]!|Bawmy się na huśtawce!","2|Let's go! [Good idea]!|Chodźmy! [Dobry pomysł]!",
 "3|What number is on the kite?|Jaki numer jest na latawcu?","3|The number on the kite is [thirty].|Numer na latawcu to trzydzieści.","3|The number on the swing is [ninety].|Numer na huśtawce to dziewięćdziesiąt.","3|I have [twenty] stickers.|Mam dwadzieścia naklejek.","3|One, two, three... [ten]!|Raz, dwa, trzy... dziesięć!",
 "4|Today is [Thursday].|Dzisiaj jest [czwartek].","4|What day is it today?|Jaki dzień jest dzisiaj?","4|[Monday] is the first day of the week.|[Poniedziałek] jest pierwszym dniem tygodnia.","4|Today is [Friday].|Dzisiaj jest [piątek].","4|There are seven days in a [week].|W [tygodniu] jest siedem dni.","4|[Sunday] is a fun day.|[Niedziela] to fajny dzień.",
 "5|Is this our classroom? Yes, it is.|Czy to nasza klasa? Tak.","5|Is this our kitchen? No, it isn't.|Czy to nasza kuchnia? Nie, to nie jest.","5|Is this our garage? Yes, it is.|Czy to nasz garaż? Tak, to jest.","5|This is our [kitchen].|To jest nasza [kuchnia].","5|I sleep in the [bedroom].|Śpię w sypialni.","5|We eat in the [dining room].|Jemy w jadalni.","5|What is it? It's a [garage].|Co to jest? To jest [garaż].","5|This is our [house].|To jest nasz [dom].","5|I take a bath in the [bathroom].|Kąpię się w łazience.",
@@ -249,10 +264,10 @@ function dstr(d){return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'
 function clean(s){return s.replace(/[\[\]]/g,'')}
 
 /* ---------- state ---------- */
-function newProfile(n,kid){return{name:n,kid:!!kid,stats:{},xp:0,sec:{},open:{},last:null,days:{}}}
-function blank(){return{custom:[],extras:true,goal:20,tab:'path',active:0,profiles:[newProfile('Chłopiec 1'),newProfile('Chłopiec 2',true)]}}
+function newProfile(n,kid){return{name:n,kid:!!kid,stats:{},xp:0,sec:{},open:{},last:null,days:{},freeze:{}}}
+function blank(){return{custom:[],extras:true,goal:20,tab:'path',active:0,profiles:[newProfile('Bartek'),newProfile('Mati',true)]}}
 function load(){
-  try{var s=JSON.parse(localStorage.getItem(KEY));if(s&&s.profiles){if(s.profiles[1]&&s.profiles[1].kid===undefined)s.profiles[1].kid=true;return s}}catch(e){}
+  try{var s=JSON.parse(localStorage.getItem(KEY));if(s&&s.profiles){if(s.profiles[1]&&s.profiles[1].kid===undefined)s.profiles[1].kid=true;if(s.profiles[1]&&s.profiles[1].name==='Brat')s.profiles[1].name='Mati';return s}}catch(e){}
   var d=blank();
   try{var o=JSON.parse(localStorage.getItem(OLD));if(o&&o.profiles){
     d.profiles=o.profiles.map(function(p){var n=newProfile(p.name);n.stats=p.stats||{};n.xp=p.xp||0;return n});d.active=o.active||0;
@@ -261,7 +276,7 @@ function load(){
   return d}
 var D=load();
 function save(){var au=(typeof AUTH!=='undefined'&&AUTH&&AUTH.on&&AUTH.user)?AUTH:null;try{localStorage.setItem(au?KEY+':'+au.user.id:KEY,JSON.stringify(D))}catch(e){}if(au)queueSync()}
-function P(){var p=D.profiles[D.active];if(!p.sec)p.sec={};if(!p.open)p.open={};if(!p.days)p.days={};if(!p.stats)p.stats={};return p}
+function P(){var p=D.profiles[D.active];if(!p.sec)p.sec={};if(!p.open)p.open={};if(!p.days)p.days={};if(!p.freeze)p.freeze={};if(!p.stats)p.stats={};return p}
 
 /* ---------- units (lekcje z zeszytu) i sekcje ścieżki ---------- */
 var U=[],UM={},SEC=[],SK={};
@@ -398,7 +413,10 @@ function dp(){return POOLMODE==='path'?knownPath():knownAll()}
 function secMastered(s){return s.words.filter(function(w){return box(w)>=3}).length}
 function prevSecs(s){var N=nSecs();return (s.g==='x'?N:N.slice(0,Math.max(0,N.indexOf(s)))).filter(secStarted)}
 function prevWords(s){var r=[];prevSecs(s).forEach(function(p){r=r.concat(p.words)});return uniq(r).sort(function(a,b){return box(a)-box(b)})}
-function streak(){var days=P().days||{},d=new Date(),n=0;if(!days[dstr(d)])d.setDate(d.getDate()-1);while(days[dstr(d)]>0){n++;d.setDate(d.getDate()-1)}return n}
+function frz(){var p=P();if(!p.freeze)p.freeze={};return p.freeze}
+function frzN(){return Object.keys(frz()).length}
+function dayOk(d){var k=dstr(d);return ((P().days||{})[k]>0)||!!frz()[k]}
+function streak(){var d=new Date(),n=0;if(!dayOk(d))d.setDate(d.getDate()-1);while(dayOk(d)){n++;d.setDate(d.getDate()-1)}return n}
 function todayN(){return (P().days||{})[dstr(new Date())]||0}
 function nextLesson(sj){
   var cand=nSecs(sj).filter(function(s){return secOpen(s)&&!secDone(s)});if(!cand.length)return null;
@@ -683,6 +701,25 @@ function kidPlay(q){
   return''}
 
 var SPKLANG={pl:'pl-PL',en:'en-US'},vcache={};
+var AC=null;
+function snd(kind){if(D.sound===false)return;
+  try{var Ctx=window.AudioContext||window.webkitAudioContext;if(!Ctx)return;AC=AC||new Ctx();if(AC.state==='suspended')AC.resume();
+    var t=AC.currentTime,seq=kind==='ok'?[[660,0,.1],[990,.09,.16]]:kind==='bad'?[[233,0,.2]]:kind==='win'?[[523,0,.11],[659,.11,.11],[784,.22,.11],[1047,.33,.3]]:[[880,0,.09]];
+    seq.forEach(function(s){var o=AC.createOscillator(),g=AC.createGain();o.type='triangle';o.frequency.value=s[0];
+      g.gain.setValueAtTime(.0001,t+s[1]);g.gain.exponentialRampToValueAtTime(.22,t+s[1]+.02);g.gain.exponentialRampToValueAtTime(.0001,t+s[1]+s[2]);
+      o.connect(g);g.connect(AC.destination);o.start(t+s[1]);o.stop(t+s[1]+s[2]+.06)})}catch(e){}}
+function confetti(n){if(D.fx===false)return;
+  try{if(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+    var box=document.createElement('div');box.className='conf';document.body.appendChild(box);
+    var cols=['#FF6A3D','#FFC53D','#0E9A9A','#2F80ED','#7A5AF8'];
+    for(var i=0;i<(n||28);i++){var s=document.createElement('i');s.style.left=(3+Math.random()*94).toFixed(1)+'%';s.style.background=cols[i%cols.length];
+      s.style.animationDelay=(Math.random()*.3).toFixed(2)+'s';s.style.animationDuration=(1.1+Math.random()*.7).toFixed(2)+'s';box.appendChild(s)}
+    setTimeout(function(){if(box.parentNode)box.parentNode.removeChild(box)},2400)}catch(e){}}
+function readAloudOn(){return SPK&&P().kid&&D.read!==false}
+function labText(){var el=document.querySelector('#app .card .lab');return el?(el.textContent||'').trim():''}
+function sayLab(force){if(!SPK||(!force&&!readAloudOn()))return;var q=S&&S.qs[S.i];
+  if(q&&(q.t==='listen'||q.t==='rlpick'||(q.t==='build'&&q.dir==='listen')))return;
+  var t=labText();if(t)speak(t,'pl')}
 function speak(t,lang){if(!SPK)return;try{var lg=SPKLANG[lang]||lang||'en-US',pre=lg.slice(0,2);speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(t);u.lang=lg;u.rate=.85;
   var vs=speechSynthesis.getVoices();if(!vcache[lg])vcache[lg]=vs.filter(function(v){return v.lang.replace('_','-').toLowerCase()===lg.toLowerCase()})[0]||vs.filter(function(v){return v.lang.toLowerCase().indexOf(pre)===0})[0]||null;
   if(vcache[lg])u.voice=vcache[lg];speechSynthesis.speak(u)}catch(e){}}
@@ -702,7 +739,7 @@ function isCode(s){return s==='code'||s==='kcode'}
 function starsTotal(){var t=0,p=P().sec;Object.keys(p).forEach(function(k){if(k.indexOf('c:')===0)return;(p[k]||[]).forEach(function(x){t+=x||0})});return t}
 function secBonusCount(){return SEC.filter(function(s){return s.subj!=='code'&&s.subj!=='kcode'&&secDone(s)}).length}
 function shopSpent(){var t=0,sh=P().shop||{};Object.keys(sh).forEach(function(k){t+=sh[k]||0});return t}
-function tokensInfo(){var st=starsTotal(),earned=Math.floor(st/2)+2*secBonusCount(),used=Object.keys(P().cunlock||{}).length+shopSpent();return{earned:earned,used:used,avail:Math.max(0,earned-used),next:2-st%2,sections:secBonusCount()}}
+function tokensInfo(){var st=starsTotal(),earned=Math.floor(st/2)+2*secBonusCount(),used=Object.keys(P().cunlock||{}).length+shopSpent()+frzN();return{earned:earned,used:used,avail:Math.max(0,earned-used),next:2-st%2,sections:secBonusCount()}}
 function codeGate(s,j){var p=P();p.cunlock=p.cunlock||{};var key=s.key+'#'+j;if(p.cunlock[key])return true;
   var t=tokensInfo();if(t.avail<1){msg='Potrzebujesz żetonu. Zdobądź jeszcze '+t.next+' '+pl3(t.next,['gwiazdkę','gwiazdki','gwiazdek'])+' w lekcjach angielskiego, matematyki lub czytania.';return false}
   var d=dstr(new Date()),cd=(p.cday&&p.cday.d===d)?p.cday:{d:d,n:0};if(cd.n>=3){msg='Na dziś wystarczy programowania: 3 nowe poziomy dziennie. Wróć jutro!';return false}
@@ -929,6 +966,30 @@ function card3d(){var t=tokensInfo(),tgt=null;COLL.forEach(function(st){if(!tgt&
   if(tgt){var price=SHOP[tgt.id].price,req=shopReq(tgt.id),rd=!req||secDone(req);pct=Math.min(100,Math.round(t.avail/price*100));
     goal='Cel: '+tgt.t+' · '+price+' '+pl3(price,['żeton','żetony','żetonów'])+' (masz '+t.avail+')'+(rd?(t.avail>=price?' · możesz kupić!':''):' · najpierw ukończ: '+secTitle(req))}
   return'<button class="subj-card shopcard" data-act="subject" data-s="3d"><span class="si" style="background:var(--teal)">3D</span><span style="flex:1;min-width:0"><b>Sklep 3D</b><small>Modele do wydruku za żetony</small><span class="thumbs">'+th+'</span><span class="goal">'+esc(goal)+'</span><span class="gbar"><i style="width:'+pct+'%"></i></span></span></button>'}
+function badgeList(){var sk=streak(),stt=starsTotal(),sec=secBonusCount(),ds=(P().designs||[]).length,mx=0,dd=P().days||{};
+  Object.keys(dd).forEach(function(k){if(dd[k]>mx)mx=dd[k]});
+  var mastered=0,stm=P().stats||{};Object.keys(stm).forEach(function(k){if(stm[k].box>=3)mastered++});
+  return[{k:'start',ic:'🌱',t:'Pierwsze kroki',d:'Zdobądź pierwszą gwiazdkę',on:stt>=1},
+   {k:'s3',ic:'🔥',t:'Trzy dni z rzędu',d:'Seria 3 dni',on:sk>=3},
+   {k:'s7',ic:'🔥',t:'Tydzień bez przerwy',d:'Seria 7 dni',on:sk>=7},
+   {k:'s30',ic:'🏔️',t:'Miesiąc nauki',d:'Seria 30 dni',on:sk>=30},
+   {k:'st10',ic:'⭐',t:'10 gwiazdek',d:'Zbierz 10 gwiazdek',on:stt>=10},
+   {k:'st50',ic:'🌟',t:'50 gwiazdek',d:'Zbierz 50 gwiazdek',on:stt>=50},
+   {k:'sec1',ic:'📗',t:'Pierwsza sekcja',d:'Ukończ całą sekcję',on:sec>=1},
+   {k:'sec5',ic:'📚',t:'Pięć sekcji',d:'Ukończ 5 sekcji',on:sec>=5},
+   {k:'day30',ic:'💪',t:'30 zadań w jeden dzień',d:'Popracuj porządnie jednego dnia',on:mx>=30},
+   {k:'mast',ic:'🧠',t:'50 opanowanych słów',d:'Utrwal 50 słówek',on:mastered>=50},
+   {k:'maker',ic:'🧊',t:'Konstruktor',d:'Zapisz swój model 3D',on:ds>=1}]}
+function badgesView(){var L=badgeList(),n=L.filter(function(b){return b.on}).length;
+  return header()+'<div class="subjbar"><button class="link" data-act="home">‹ Wróć</button> · <b>Odznaki</b></div>'+
+  (msg?'<div class="fb ok">'+esc(msg)+'</div>':'')+
+  '<div class="card"><div class="lab">Zdobyte</div><div class="big">'+n+' / '+L.length+'</div></div>'+
+  '<div class="bdgs">'+L.map(function(b){return'<div class="bdg'+(b.on?' on':'')+'"><i>'+b.ic+'</i><span>'+esc(b.t)+'<small>'+esc(b.d)+'</small></span></div>'}).join('')+'</div>'+
+  freezeBox()}
+function freezeBox(){var t=tokensInfo(),sk=streak(),today=dstr(new Date()),has=!!frz()[today],dn=todayN()>0;
+  return'<div class="card"><div class="lab">Zamrożenie serii</div><div class="hint">Jeśli jednego dnia nie da się poćwiczyć, zamroź ten dzień za 1 żeton — seria nie przepadnie.</div>'+
+   '<div class="frz" style="margin-top:10px"><b>🔥 '+sk+'</b> <small>· zamrożone dni: '+frzN()+'</small>'+
+   (dn?'<span class="hint" style="margin:0">Dziś już ćwiczysz — zamrażanie niepotrzebne.</span>':has?'<span class="hint" style="margin:0">Dziś zamrożone ❄️</span>':'<button class="btn alt" data-act="freeze"'+(t.avail<1?' disabled':'')+'>❄️ Zamroź dziś (1 żeton)</button>')+'</div></div>'}
 function tokChip(){if(isCode(D.subject)||D.subject==='3d')return'';var t=tokensInfo();return'<div class="tokchip"><span class="coin"></span><b>'+t.avail+'</b> '+pl3(t.avail,['żeton','żetony','żetonów'])+' <small>· następny za '+t.next+' '+pl3(t.next,['gwiazdkę','gwiazdki','gwiazdek'])+'</small></div>'}
 function threeDHome(h){var p=d3(),t=tokensInfo();
   h+=tokenBar();
@@ -1181,6 +1242,8 @@ var S=null,view='home',msg='',confirmReset=false,setup=null;
 function begin(kind,qs,extra){S={kind:kind,qs:qs,i:0,score:0,xp:0,phase:'ask',log:[],tries:0,heard:'',err:''};for(var k in extra||{})S[k]=extra[k];view='play';render();autoSay()}
 function scoredN(){return S.qs.filter(function(q){return q.t!=='intro'&&q.t!=='mintro'&&q.t!=='rintro'}).length}
 function autoSay(){var q=S.qs[S.i];if(q&&(q.t==='listen'||(q.t==='build'&&q.dir==='listen')))speak(q.t==='listen'?q.w.en:clean(q.s.en));else if(q&&q.t==='rlpick')speak(q.w.txt,q.w.lang)}
+function startSkip(k){var s=SK[k];if(!s||!secOpen(s)||secDone(s))return;POOLMODE='path';P().last=k;save();
+  begin('skip',s.kid?kidQs(s,s.n-1):s.subj==='math'?mathQs(s,s.n-1):lessonQs(s,s.n-1),{s:s,j:s.n-1})}
 function startLesson(k,j){var s=SK[k];if(!s||!lessonOpen(s,j))return;if(isCode(s.subj)&&!codeGate(s,j)){view='home';render();return}POOLMODE='path';P().last=k;save();begin('level',s.kid?kidQs(s,j):s.subj==='math'?mathQs(s,j):lessonQs(s,j),{s:s,j:j})}
 function startReview(){POOLMODE='all';var pool=knownAll().filter(function(w){return P().stats[w.en]});if(pool.length<4)pool=knownAll();
   var w=pool.slice().sort(function(a,b){return box(a)-box(b)}).slice(0,Math.min(pool.length,25));
@@ -1208,6 +1271,7 @@ function startTest(){POOLMODE='all';
 function startPractice(ws){POOLMODE='all';begin('review',seq(ws,Math.min(12,Math.max(6,ws.length*2))).map(function(w,k){return mk(['mc','write','listen'][k%3],w)}))}
 
 function credit(ok,w,scored){
+  snd(ok?'ok':'bad');
   if(w&&scored!==false)bump(w,ok);
   if(ok){S.score++;S.xp+=10;P().xp+=10;var d=dstr(new Date()),days=P().days;days[d]=(days[d]||0)+1}
   save()}
@@ -1220,6 +1284,11 @@ function next(){S.i++;S.phase='ask';S.tries=0;S.heard='';S.err='';S.typed='';
   if(S.i>=S.qs.length)return finish();render();autoSay()}
 function stars(r){return r>=.95?3:r>=.8?2:r>=.6?1:0}
 function finish(){var n=scoredN(),r=n?S.score/n:0;S.n=n;S.r=r;
+  if(S.kind==='skip'){var sk=sst(S.s),pass=r>=0.9;S.pass=pass;S.st=pass?(r===1?3:2):0;
+    if(pass){for(var z=0;z<S.s.n;z++)sk[z]=Math.max(sk[z]||0,r===1?3:2);save()}
+    if(pass){snd('win');confetti(40)}
+    view='result';render();return}
+  if(stars(r)>=2){snd('win');confetti(stars(r)===3?40:24)}
   if(S.kind==='level'){var l=sst(S.s),st=stars(r);S.st=st;S.wasDone=secDone(S.s);if(st>l[S.j])l[S.j]=st;S.nowDone=secDone(S.s);save()}
   view='result';render()}
 function afterLesson(){var s=S.s,j=S.j;if(j<s.n-1)return{s:s,j:j+1};var N=nSecs(s.subj),i=N.indexOf(s),n2=N[i+1];return n2&&secOpen(n2)?{s:n2,j:0}:null}
@@ -1256,8 +1325,11 @@ function secCard(s){
   var cur=-1;for(var j=0;j<s.n;j++)if(!st[j]){cur=j;break}
   var nodes='';for(var i=0;i<s.n;i++){var fin=i===s.n-1,can=i===0||st[i-1]>0,cls=st[i]?'done':i===cur?'cur':can?'open':'lock',inner=st[i]?'★'.repeat(st[i]):(fin?'🏆':(i+1));
     nodes+='<div class="pn" style="transform:translateX('+OFF[i%OFF.length]+'px)"><button class="node '+cls+(fin?' fin':'')+'" data-act="lesson" data-k="'+esc(s.key)+'" data-j="'+i+'"'+(can?'':' disabled')+' aria-label="'+(fin?'Test sekcji':'Lekcja '+(i+1))+(st[i]?', gwiazdki: '+st[i]:'')+'"><span class="nc">'+inner+'</span><span class="nl">'+(i===cur?'Start':fin?'Test sekcji':'Lekcja '+(i+1))+'</span></button></div>'}
-  return'<section class="unit" id="sec_'+esc(s.key)+'">'+head+'<div class="pathcol">'+nodes+'</div>'+(done?'<div class="fb ok" style="margin-top:10px">Sekcja ukończona! ✓</div>':'')+'</section>'}
-function hello(){var sk=streak();return header()+'<div class="subjbar"><button class="link" data-act="subjects">‹ Przedmioty</button> · <b>'+subjName(D.subject)+'</b> · <span class="agebadge">wersja dla '+(P().kid?'6':'8')+' lat</span> <button class="link" data-act="'+(P().kid?'kidoff':'kidon')+'">zmień</button></div>'+(isKidSubj(D.subject)||isCode(D.subject)||D.subject==='3d'?'':tabs())+'<div class="hello"><div><div class="lab">Cześć,</div><h2>'+esc(P().name)+'!</h2></div><div class="stats"><div class="streak" title="Seria dni">'+(sk?'🔥 '+sk+(sk===1?' dzień':' dni'):'Zacznij serię!')+'</div>'+ring()+'</div></div>'+tokChip()}
+  var skipb=(!done&&s.n>1&&!isCode(s.subj))?'<div class="row" style="justify-content:center;margin-top:6px"><button class="link" data-act="skiptest" data-k="'+esc(s.key)+'">Już to umiem — sprawdź mnie</button></div>':'';
+  return'<section class="unit" id="sec_'+esc(s.key)+'">'+head+'<div class="pathcol">'+nodes+'</div>'+skipb+(done?'<div class="fb ok" style="margin-top:10px">Sekcja ukończona! ✓</div>':'')+'</section>'}
+function hello(){var sk=streak();return header()+'<div class="subjbar"><button class="link" data-act="subjects">‹ Przedmioty</button> · <b>'+subjName(D.subject)+'</b> · <span class="agebadge">wersja dla '+(P().kid?'6':'8')+' lat</span> <button class="link" data-act="'+(P().kid?'kidoff':'kidon')+'">zmień</button></div>'+(isKidSubj(D.subject)||isCode(D.subject)||D.subject==='3d'?'':tabs())+'<div class="hello"><div><div class="lab">Cześć,</div><h2>'+esc(P().name)+'!</h2></div><div class="stats"><div class="streak" title="Seria dni">'+(sk?'🔥 '+sk+(sk===1?' dzień':' dni'):'Zacznij serię!')+'</div>'+ring()+'</div></div>'+tokChip()+badgeChip()}
+function badgeChip(){if(isCode(D.subject)||D.subject==='3d')return'';var L=badgeList(),n=L.filter(function(b){return b.on}).length;
+  return'<div class="frz"><button class="link" data-act="badges">🏅 Odznaki '+n+'/'+L.length+'</button></div>'}
 function tabs(){return'<div class="tabs" role="tablist"><button role="tab" aria-selected="'+(D.tab!=='ex')+'" data-act="tab" data-t="path">Ścieżka</button><button role="tab" aria-selected="'+(D.tab==='ex')+'" data-act="tab" data-t="ex">Ćwiczenia</button></div>'}
 function home(){
   if(AUTH.on&&D.subject&&!hasModule(modOf(D.subject)))D.subject=null;
@@ -1295,7 +1367,7 @@ function testView(){
 function fb(ok,ans,say,extra,lang){return'<div class="fb '+(ok?'ok':'bad')+'">'+(ok?'Super! ✓':'Prawie. Poprawna odpowiedź:')+(ok&&!extra?'':'<span>'+esc(ans)+(say?sp(say,'sm',lang):'')+'</span>')+'</div><div class="row"><button class="btn" data-act="next" id="nx">Dalej</button></div>'}
 function play(){
   var q=S.qs[S.i],fbk=S.phase==='fb',body='',cnt=S.qs.filter(function(x){return x.t!=='intro'&&x.t!=='mintro'&&x.t!=='rintro'}).length,cur=S.qs.slice(0,S.i+1).filter(function(x){return x.t!=='intro'&&x.t!=='mintro'&&x.t!=='rintro'}).length;
-  var top='<div class="sess-top"><button class="x" data-act="home" aria-label="Zakończ">×</button><div class="bar"><i style="width:'+(S.i/S.qs.length*100)+'%"></i></div><span class="lab">'+((q.t==='intro'||q.t==='mintro'||q.t==='rintro')?'Nowe':cur+'/'+cnt)+'</span></div>';
+  var top='<div class="sess-top"><button class="x" data-act="home" aria-label="Zakończ">×</button><div class="bar"><i style="width:'+(S.i/S.qs.length*100)+'%"></i></div><span class="lab">'+((q.t==='intro'||q.t==='mintro'||q.t==='rintro')?'Nowe':cur+'/'+cnt)+'</span>'+(readAloudOn()?'<button class="relab" data-act="relab" aria-label="Przeczytaj polecenie">🔊</button>':'')+'</div>';
   var w=q.w;
   if(q.t.charAt(0)==='n'||q.t==='mintro'){body=mathPlay(q)}
   else if(q.t.charAt(0)==='r'){body=kidPlay(q)}
@@ -1346,6 +1418,9 @@ function result(){
     return header()+'<div class="card res"><div class="lab">Wynik testu</div><div class="big">'+S.score+' / '+n+' · '+pc+'%</div><div class="hint">'+(pc>=90?'Świetnie!':pc>=70?'Dobry wynik!':pc>=50?'Nieźle, jeszcze trochę ćwiczeń.':'Poćwicz te słówka i spróbuj jeszcze raz.')+' +'+S.xp+' XP</div>'+
     (wrong.length?'<div class="wrongs"><div class="lab">Do powtórki</div>'+wrong.map(function(x){return'<div class="nw"><div class="nwt"><b>'+esc(x.en)+'</b>'+(x.pl?'<br><small>'+esc(x.pl)+'</small>':'')+'</div>'+(x.math?'':sp(x.en))+'</div>'}).join('')+'</div>':'<div class="hint">Bez błędów!</div>')+
     '<div class="row" style="justify-content:center">'+(wordsWrong.length?'<button class="btn" data-act="pracwrong">Ćwicz błędne</button>':'')+(S.subj==='math'?'<button class="btn alt" data-act="mtest">Jeszcze raz</button>':'<button class="btn alt" data-act="testsetup">Nowy test</button>')+'<button class="btn alt" data-act="home">Menu</button></div></div>'}
+  if(S.kind==='skip'){return header()+'<div class="card res"><div class="lab">Sprawdzian: '+esc(secTitle(S.s))+'</div><div class="stars" aria-label="'+S.st+' z 3 gwiazdek">'+'★'.repeat(S.st)+'<span style="opacity:.25">'+'★'.repeat(3-S.st)+'</span></div><div class="big">'+S.score+' / '+S.n+'</div>'+
+    (S.pass?'<div class="fb ok">Umiesz to! Cała sekcja zaliczona, możesz iść dalej.</div>':'<div class="fb">Jeszcze nie tym razem. Trzeba 90%. Przejdź sekcję lekcja po lekcji — nic nie tracisz.</div>')+
+    '<div class="row" style="justify-content:center"><button class="btn" data-act="home">Wróć do ścieżki</button></div></div>'}
   var st=S.kind==='level'?S.st:stars(S.r),ok=S.kind!=='level'||st>0,nx=S.kind==='level'&&ok?afterLesson():null,fin=S.kind==='level'&&S.j===S.s.n-1;
   var lab=S.kind==='level'?'Sekcja '+secNo(S.s)+' · '+(fin?'Test sekcji':'Lekcja '+(S.j+1)):'Koniec rundy';
   var extra=S.kind==='level'&&S.nowDone&&!S.wasDone?'<div class="fb ok" style="text-align:left">Sekcja ukończona! Zwroty z tej sekcji wrócą w kolejnych, żeby je utrwalić.</div>':'';
@@ -1362,6 +1437,7 @@ function settings(){
   '<div class="sec"><h3>Imiona</h3>'+D.profiles.map(function(p,i){return'<div style="margin-bottom:8px"><input type="text" id="nm'+i+'" data-name="'+i+'" value="'+esc(p.name)+'" aria-label="Imię '+(i+1)+'" maxlength="16"><div class="chk"><input type="checkbox" id="kid'+i+'" data-act="kid" data-i="'+i+'"'+(p.kid?' checked':'')+'><label for="kid'+i+'">Wersja dla młodszego dziecka (6 lat)</label></div></div>'}).join('')+'</div>'+
   '<div class="sec"><h3>Dzienny cel</h3><div class="seg">'+[10,20,30,50].map(function(n){return'<label><input type="radio" name="goal" data-act="goal" data-n="'+n+'"'+((D.goal||20)===n?' checked':'')+'> '+n+' zadań</label>'}).join('')+'</div></div>'+
   '<div class="sec"><h3>Mikrofon</h3><div class="chk"><input type="checkbox" id="micck" data-act="micon"'+(D.micOff?'':' checked')+'><label for="micck">Próbuj rozpoznawania mowy w aplikacji</label></div><div class="hint">Gdy przeglądarka blokuje mikrofon, zadania „Mów” działają przez dyktowanie z klawiatury.</div></div>'+
+  '<div class="sec"><h3>Dźwięk i efekty</h3><div class="chk"><input type="checkbox" id="sndck" data-act="sound"'+(D.sound!==false?' checked':'')+'><label for="sndck">Dźwięki przy odpowiedziach</label></div><div class="chk"><input type="checkbox" id="fxck" data-act="fx"'+(D.fx!==false?' checked':'')+'><label for="fxck">Konfetti po udanej lekcji</label></div><div class="chk"><input type="checkbox" id="rdck" data-act="read"'+(D.read!==false?' checked':'')+'><label for="rdck">Czytaj polecenia na głos (wersja dla 6 lat)</label></div></div>'+
   '<div class="sec"><h3>Ścieżka</h3><div class="chk"><input type="checkbox" id="exck" data-act="extras"'+(D.extras!==false?' checked':'')+'><label for="exck">Pokazuj dodatkowe sekcje spoza zeszytu (dom, jedzenie, liczby do 100...)</label></div><div class="row"><button class="btn alt" data-act="openall">Odblokuj wszystkie sekcje</button></div></div>'+
   '<div class="sec"><h3>Dodaj słówka</h3><div class="hint">Jedno w linii: <b>apple - jabłko</b>. Wiersz <b>Lekcja 7</b> albo <b>Zeszły rok - Lekcja 3</b> przypisuje kolejne słówka do tej lekcji. Ścieżka sama podzieli słówka na sekcje.</div>'+
   '<textarea id="imp" placeholder="Lekcja 7&#10;apple - jabłko&#10;dog - pies" aria-label="Lista słówek"></textarea>'+
@@ -1373,7 +1449,8 @@ function settings(){
   '<div class="sec"><h3>Postępy</h3><button class="btn alt" data-act="reset">'+(confirmReset?'Na pewno? Kliknij jeszcze raz':'Wyzeruj postępy: '+esc(P().name))+'</button></div>'+
   '<div class="row"><button class="btn" data-act="home">Gotowe</button></div><div class="note">Postępy zapisują się w przeglądarce, na tym urządzeniu. Na telefonie i komputerze są osobne.</div>'}
 function render(){var app=document.getElementById('app');
-  app.innerHTML=view==='auth'?authView():view==='admin'?adminView():view==='unlock'?unlockView():view==='orders'?ordersView():view==='play'?play():view==='result'?result():view==='settings'?settings():view==='test'?testView():view==='build'?buildView():home();
+  app.innerHTML=view==='auth'?authView():view==='admin'?adminView():view==='unlock'?unlockView():view==='orders'?ordersView():view==='play'?play():view==='result'?result():view==='settings'?settings():view==='badges'?badgesView():view==='test'?testView():view==='build'?buildView():home();
+  if(view==='play'&&S&&S.phase==='ask')sayLab();
   var a=document.getElementById('ans');if(a&&!a.disabled)a.focus();else{var n=document.getElementById('nx');if(n&&view==='play')n.focus()}
   window.scrollTo(0,0)}
 
@@ -1394,6 +1471,15 @@ document.addEventListener('click',function(e){var b=e.target.closest('[data-act]
   else if(a==='mtest'){startMathTest()}
   else if(a==='jump'){var js=SEC.filter(function(z){return z.subj==='en'&&z.g===b.dataset.k})[0],el=js&&document.getElementById('sec_'+js.key);if(el&&el.scrollIntoView)el.scrollIntoView({behavior:'smooth',block:'start'})}
   else if(a==='say'){speak(b.dataset.t,b.dataset.l)}
+  else if(a==='relab'){sayLab(true)}
+  else if(a==='badges'){view='badges';msg='';render()}
+  else if(a==='skiptest'){startSkip(b.dataset.k)}
+  else if(a==='freeze'){var fd=dstr(new Date());
+    if(todayN()>0){msg='Dziś już ćwiczysz — ten dzień liczy się do serii.'}
+    else if(frz()[fd]){msg='Ten dzień jest już zamrożony.'}
+    else if(tokensInfo().avail<1){msg='Potrzebujesz 1 wolnego żetonu.'}
+    else{frz()[fd]=1;save();snd('win');msg='Dzień zamrożony ❄️ Seria nie przepadnie.'}
+    render()}
   else if(a==='ro'){q.chosen=+b.dataset.k;var rok=(q.t==='rwpick'||q.t==='rlpick'||q.t==='rppick')?q.opts[q.chosen].k===q.w.k:q.opts[q.chosen]===q.ans;done(rok,{en:q.w.k},{say:q.w.txt,lang:q.w.lang})}
   else if(a==='checks'){checkSpell()}
   else if(a==='rpair'){var w2=q.ws.filter(function(x){return x.k===b.dataset.w})[0],sd=b.dataset.s;q.bad={};
@@ -1462,6 +1548,9 @@ document.addEventListener('click',function(e){var b=e.target.closest('[data-act]
     if(f.w.en===w.en){q.done[w.en]=1;if(Object.keys(q.done).length===q.ws.length){q.ws.forEach(function(x){bump(x,!q.first[x.en])});var ok=q.mist<=1;credit(ok,null,false);S.ok=ok;if(S.kind==='test'){S.log.push({ok:ok,w:q.ws[0],q:q});return next()}S.phase='fb'}render()}
     else{q.first[f.w.en]=1;q.first[w.en]=1;q.mist++;q.bad[f.w.en+f.side]=1;q.bad[w.en+side]=1;render()}}
   else if(a==='micon'){D.micOff=!b.checked;save()}
+  else if(a==='sound'){D.sound=b.checked;save();if(b.checked)snd('ok')}
+  else if(a==='fx'){D.fx=b.checked;save();if(b.checked)confetti(16)}
+  else if(a==='read'){D.read=b.checked;save()}
   else if(a==='goal'){D.goal=+b.dataset.n;save()}
   else if(a==='extras'){D.extras=b.checked;save();buildUnits()}
   else if(a==='add'){var r=parseImport(document.getElementById('imp').value,document.getElementById('swap').checked,(document.getElementById('impl').value||'M').trim().toUpperCase());
@@ -1471,6 +1560,7 @@ document.addEventListener('click',function(e){var b=e.target.closest('[data-act]
   else if(a==='del'){D.custom.splice(+b.dataset.i,1);save();buildUnits();render()}
   else if(a==='reset'){if(!confirmReset){confirmReset=true;render();return}var p=P();p.stats={};p.xp=0;p.sec={};p.open={};p.last=null;p.days={};confirmReset=false;save();msg='Postępy wyzerowane.';render()}});
 if(SPK)try{speechSynthesis.getVoices()}catch(e){}
+try{if('serviceWorker' in navigator&&location.protocol==='https:'&&location.hostname.indexOf('claude')<0)navigator.serviceWorker.register('sw.js').catch(function(){})}catch(e){}
 initAuth();
 })();
 </script>

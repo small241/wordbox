@@ -1,0 +1,17 @@
+{
+  "name": "Wordbox",
+  "short_name": "Wordbox",
+  "description": "Nauka angielskiego, matematyki, czytania i modelowania 3D dla dzieci.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#EAF1FF",
+  "theme_color": "#EAF1FF",
+  "lang": "pl",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
