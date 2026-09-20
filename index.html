@@ -971,6 +971,7 @@ function zipStore(fname,text){var enc=new TextEncoder(),nm=enc.encode(fname),d=e
 function dlFile(name,text){
   if(window.claude&&window.claude.use){window.claude.use('downloads').then(function(d){if(d){d.save({filename:name+'.zip',data:zipStore(name+'.stl',text)}).then(function(){msg='Zapisano '+name+'.zip. Rozpakuj go: w środku jest '+name+'.stl.';render()},function(){})}else plainDl(name,text)}).catch(function(){plainDl(name,text)});return}
   plainDl(name,text)}
+var PRESETS=[[4,3,'Mały 4×4×3'],[6,5,'Średni 6×6×5'],[6,8,'Wysoki 6×6×8'],[8,8,'Duży 8×8×8']];
 function buildView(){var g=BLD,st=bstats(g),cells='',mm=function(v){return v*g.s},sg=g.stage?stageOf(g.stage):null;
   for(var y=0;y<g.n;y++)for(var x=0;x<g.n;x++){var on=bget(g,x,y,g.z),under=g.z>0&&bget(g,x,y,g.z-1);cells+='<button class="bc'+(on?' on':under?' under':'')+'" data-act="wcell" data-x="'+x+'" data-y="'+y+'" aria-label="Pole '+(x+1)+','+(y+1)+(on?', blok':'')+'"></button>'}
   var warns='';if(st.cnt&&st.floating)warns+='<div class="fb bad">Uwaga: '+st.floating+' '+pl3(st.floating,['blok wisi','bloki wiszą','bloków wisi'])+' w powietrzu. Drukarka postawi je tylko z podporami. Włącz podpory w Bambu Studio albo dodaj bloki pod spodem.</div>';
