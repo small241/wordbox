@@ -156,6 +156,7 @@ label{font-weight:800;font-size:15px}
 .prog{display:flex;flex-wrap:wrap;gap:6px;min-height:52px;padding:8px;border:2px dashed var(--line);border-radius:12px;margin:12px 0;align-items:center}.chipb{background:var(--sky);color:#fff;border:0;border-radius:10px;padding:8px 12px;font-weight:800}.chipb.op,.chipb.cl{background:var(--plum)}.palette{display:flex;flex-wrap:wrap;gap:8px}.pal{background:var(--surface);border:2px solid var(--line);border-radius:12px;padding:10px 14px;font-weight:800;font-size:18px;box-shadow:var(--shadow)}.pal.op,.pal.cl{border-color:var(--plum);color:var(--plum)}.pal[disabled],.chipb[disabled]{opacity:.5}
 pre.code{background:#111a33;color:#e8eeff;border-radius:12px;padding:14px;font-family:Consolas,Menlo,monospace;font-size:16px;line-height:1.5;overflow-x:auto;margin:10px 0;white-space:pre}
 .tokbar{display:flex;align-items:center;gap:8px;background:var(--surface);border:2px solid var(--line);border-radius:14px;padding:10px 14px;margin-bottom:12px;font-size:18px}.tokbar small{margin-left:auto;color:var(--muted);font-weight:700;font-size:13px}.coin{width:22px;height:22px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#ffe27a,#f2a900);border:2px solid #c88400;display:inline-block}
+.tokchip{display:flex;align-items:center;gap:8px;background:var(--surface);border:2px solid var(--line);border-radius:999px;padding:6px 14px;margin:0 0 12px;font-weight:800;width:fit-content}.tokchip small{color:var(--muted);font-weight:700}.reqline{font-weight:700;color:var(--muted);margin-top:6px}.reqline.ok{color:var(--ok)}
 .bgrid{display:grid;gap:4px;max-width:320px;margin:12px auto}.bc{aspect-ratio:1;border:2px solid var(--line);border-radius:8px;background:var(--bg)}.bc.under{background:repeating-linear-gradient(45deg,var(--line),var(--line) 4px,var(--bg) 4px,var(--bg) 8px)}.bc.on{background:var(--sky);border-color:var(--sky)}
 .iso-wrap{background:var(--bg);border-radius:14px;padding:8px;margin:12px 0;min-height:120px}.iso{display:block;max-width:100%;max-height:260px;margin:0 auto}
 .swatch{display:inline-block;width:110px;height:110px;border-radius:50%;border:4px solid var(--line);vertical-align:middle}.nwp .swatch{width:44px;height:44px;border-width:3px}
@@ -694,7 +695,9 @@ function kidHome(h){var nl=nextLesson(D.subject);
 /* ---------- programowanie ---------- */
 function isCode(s){return s==='code'||s==='kcode'}
 function starsTotal(){var t=0,p=P().sec;Object.keys(p).forEach(function(k){if(k.indexOf('c:')===0)return;(p[k]||[]).forEach(function(x){t+=x||0})});return t}
-function tokensInfo(){var st=starsTotal(),earned=Math.floor(st/3),used=Object.keys(P().cunlock||{}).length;return{earned:earned,used:used,avail:Math.max(0,earned-used),next:3-st%3}}
+function secBonusCount(){return SEC.filter(function(s){return s.subj!=='code'&&s.subj!=='kcode'&&secDone(s)}).length}
+function shopSpent(){var t=0,sh=P().shop||{};Object.keys(sh).forEach(function(k){t+=sh[k]||0});return t}
+function tokensInfo(){var st=starsTotal(),earned=Math.floor(st/2)+2*secBonusCount(),used=Object.keys(P().cunlock||{}).length+shopSpent();return{earned:earned,used:used,avail:Math.max(0,earned-used),next:2-st%2,sections:secBonusCount()}}
 function codeGate(s,j){var p=P();p.cunlock=p.cunlock||{};var key=s.key+'#'+j;if(p.cunlock[key])return true;
   var t=tokensInfo();if(t.avail<1){msg='Potrzebujesz żetonu. Zdobądź jeszcze '+t.next+' '+pl3(t.next,['gwiazdkę','gwiazdki','gwiazdek'])+' w lekcjach angielskiego, matematyki lub czytania.';return false}
   var d=dstr(new Date()),cd=(p.cday&&p.cday.d===d)?p.cday:{d:d,n:0};if(cd.n>=3){msg='Na dziś wystarczy programowania: 3 nowe poziomy dziennie. Wróć jutro!';return false}
@@ -906,25 +909,30 @@ var COLL=[
  {id:'ender',t:'Enderman',n:6,h:12,s:6,tpl:null,d:'Bardzo wysoki i chudy. Ile bloków wysokości potrzebujesz?'}];
 function bsetDefault(){return P().kid?{n:4,h:3,s:12}:{n:6,h:5,s:10}}
 function d3(){var p=P();if(!p.designs)p.designs=[];if(!p.printq)p.printq=[];if(!p.proj)p.proj={};return p}
-function printCredits(){var done=SEC.filter(function(s){return s.subj!=='code'&&s.subj!=='kcode'&&secDone(s)}).length;var earned=Math.floor(done/3);return{done:done,earned:earned,next:3-done%3}}
 function stageOf(id){for(var i=0;i<COLL.length;i++)if(COLL[i].id===id)return COLL[i];return null}
 function designFor(id){var p=d3(),r=null;p.designs.forEach(function(d,i){if(d.stage===id&&d.c.indexOf('1')>-1)r={d:d,i:i}});return r}
 function printItem(idx){var r=null;d3().printq.forEach(function(x){if(x.di===idx)r=x});return r}
-function threeDHome(h){var p=d3(),c=printCredits(),unl=Math.min(COLL.length,c.earned);
-  h+='<div class="tokbar"><span class="coin"></span><b>'+unl+'</b> z '+COLL.length+' '+pl3(unl,['odblokowany etap','odblokowane etapy','odblokowanych etapów'])+'<small>Następny za '+c.next+' '+pl3(c.next,['ukończoną sekcję','ukończone sekcje','ukończonych sekcji'])+'</small></div>';
+var SHOP={steve:{price:8,kid:'c:k1',adult:'c:o1'},sword:{price:6,kid:'c:k1',adult:'c:o1'},pick:{price:6,kid:'c:k2',adult:'c:o2'},shield:{price:6,kid:'c:k2',adult:'c:o3'},armor:{price:10,kid:'c:k3',adult:'c:o3'},creeper:{price:10,kid:'c:k3',adult:'c:o4'},skeleton:{price:12,kid:'c:k4',adult:'c:o5'},zombie:{price:12,kid:'c:k4',adult:'c:o5'},spider:{price:15,kid:'c:k5',adult:'c:o6'},ender:{price:18,kid:'c:k5',adult:'c:o6'}};
+function shopReq(id){var k=P().kid?SHOP[id].kid:SHOP[id].adult;return SK[k]||null}
+function owned(id){var sh=P().shop||{};return sh[id]!=null||!!designFor(id)}
+function tokChip(){if(isCode(D.subject)||D.subject==='3d')return'';var t=tokensInfo();return'<div class="tokchip"><span class="coin"></span><b>'+t.avail+'</b> '+pl3(t.avail,['żeton','żetony','żetonów'])+' <small>· następny za '+t.next+' '+pl3(t.next,['gwiazdkę','gwiazdki','gwiazdek'])+'</small></div>'}
+function threeDHome(h){var p=d3(),t=tokensInfo();
+  h+=tokenBar();
   if(msg)h+='<div class="fb ok">'+esc(msg)+'</div>';
-  h+='<h2 class="sect">Kolekcja Minecraft</h2><div class="hint">Co 3 ukończone sekcje w angielskim, matematyce lub czytaniu odblokowują kolejny etap. Projektujesz go sam i drukujesz.</div>';
-  COLL.forEach(function(st,i){var open=i<unl,ds=designFor(st.id),pi=ds?printItem(ds.i):null,tag=pi?(pi.done?'wydrukowane':'czeka na wydruk'):(ds?'zaprojektowane':'');
-    h+='<section class="unit'+(open?'':' locked')+'"><div class="uh"><div><div class="lab">Etap '+(i+1)+'</div><h3>'+esc(st.t)+'</h3><div class="hintline">'+esc(st.d)+'</div></div><small>'+esc(tag)+'</small></div>';
-    if(!open)h+='<div class="hint">Odblokuje się po '+(3*(i+1))+' ukończonych sekcjach (masz '+c.done+').</div>';
-    else{h+='<div class="row" style="margin-top:0"><button class="btn" data-act="wstage" data-id="'+st.id+'">'+(ds?'Edytuj':'Projektuj')+'</button>';
+  h+='<div class="note" style="margin-top:0"><b>Jak zdobywać żetony:</b> 2 gwiazdki w lekcjach = 1 żeton. Ukończona sekcja w angielskim, matematyce lub czytaniu = +2 żetony. Start nowego poziomu programowania kosztuje 1 żeton. Modele w sklepie kosztują od 6 do 18 żetonów, a żeby je kupić, trzeba najpierw ukończyć wskazaną sekcję programowania.</div>';
+  h+='<h2 class="sect">Sklep z modelami do wydruku</h2>';
+  COLL.forEach(function(st){var sh=SHOP[st.id],req=shopReq(st.id),reqDone=!req||secDone(req),own=owned(st.id),ds=designFor(st.id),pi=ds?printItem(ds.i):null,can=t.avail>=sh.price,tag=pi?(pi.done?'wydrukowane':'czeka na wydruk'):(ds?'zaprojektowane':(own?'kupione':''));
+    h+='<section class="unit'+(own||reqDone?'':' locked')+'"><div class="uh"><div><h3>'+esc(st.t)+'</h3><div class="hintline">'+esc(st.d)+'</div></div><small>'+(own?esc(tag):'<span class="coin"></span> '+sh.price)+'</small></div>';
+    if(own){h+='<div class="row" style="margin-top:0"><button class="btn" data-act="wstage" data-id="'+st.id+'">'+(ds?'Edytuj':'Projektuj')+'</button>';
       if(ds&&!pi)h+='<button class="btn alt" data-act="wreq" data-i="'+ds.i+'">Poproś o wydruk</button>';
       if(pi)h+='<button class="btn alt" data-act="wdone" data-i="'+ds.i+'">'+(pi.done?'Cofnij: wydrukowane':'Rodzic: wydrukowane ✓')+'</button>';
       h+='</div>'}
+    else{h+='<div class="reqline'+(reqDone?' ok':'')+'">'+(reqDone?'✓ ':'○ ')+'Ukończ w programowaniu: '+(req?esc(secTitle(req)):'—')+'</div>';
+      if(reqDone)h+='<div class="row" style="margin-top:8px"><button class="btn" data-act="wbuy" data-id="'+st.id+'"'+(can?'':' disabled')+'>Kup za '+sh.price+'</button>'+(can?'':'<span class="hintline">Brakuje '+(sh.price-t.avail)+' '+pl3(sh.price-t.avail,['żetonu','żetonów','żetonów'])+'</span>')+'</div>'}
     h+='</section>'});
-  h+='<h2 class="sect">Mój warsztat</h2><div class="hint">Dowolny własny projekt z klocków.</div><div class="row" style="margin-top:0"><button class="btn" data-act="wnew">Nowy projekt z klocków</button></div>';
-  var own=p.designs.map(function(g,i){return{g:g,i:i}}).filter(function(x){return !x.g.stage});
-  if(own.length)h+='<div class="wl" style="margin-top:12px">'+own.map(function(x){var pi=printItem(x.i);return'<div><span>'+esc(x.g.name)+' <small>'+x.g.n+'×'+x.g.n+'×'+x.g.h+(pi?' · '+(pi.done?'wydrukowane':'czeka na wydruk'):'')+'</small></span><span style="display:flex;gap:6px"><button class="btn alt" data-act="wopen" data-i="'+x.i+'" style="padding:6px 12px;font-size:14px">Otwórz</button>'+(pi?'':'<button class="btn alt" data-act="wreq" data-i="'+x.i+'" style="padding:6px 12px;font-size:14px">Do wydruku</button>')+'<button data-act="wdel" data-i="'+x.i+'" style="border:0;background:none;color:var(--bad);font-size:18px;font-weight:800" aria-label="Usuń">×</button></span></div>'}).join('')+'</div>';
+  h+='<h2 class="sect">Mój warsztat</h2><div class="hint">Dowolny własny projekt z klocków, bez kupowania.</div><div class="row" style="margin-top:0"><button class="btn" data-act="wnew">Nowy projekt z klocków</button></div>';
+  var own2=p.designs.map(function(g,i){return{g:g,i:i}}).filter(function(x){return !x.g.stage});
+  if(own2.length)h+='<div class="wl" style="margin-top:12px">'+own2.map(function(x){var pi=printItem(x.i);return'<div><span>'+esc(x.g.name)+' <small>'+x.g.n+'×'+x.g.n+'×'+x.g.h+(pi?' · '+(pi.done?'wydrukowane':'czeka na wydruk'):'')+'</small></span><span style="display:flex;gap:6px"><button class="btn alt" data-act="wopen" data-i="'+x.i+'" style="padding:6px 12px;font-size:14px">Otwórz</button>'+(pi?'':'<button class="btn alt" data-act="wreq" data-i="'+x.i+'" style="padding:6px 12px;font-size:14px">Do wydruku</button>')+'<button data-act="wdel" data-i="'+x.i+'" style="border:0;background:none;color:var(--bad);font-size:18px;font-weight:800" aria-label="Usuń">×</button></span></div>'}).join('')+'</div>';
   h+='<div class="note"><b>Bezpieczeństwo:</b> drukarka jest gorąca (dysza i stół). Drukujemy tylko z dorosłym, w wietrzonym pomieszczeniu. Nie dotykamy, dopóki wydruk nie ostygnie.</div>';
   msg='';return h+'<button class="link" data-act="settings">Ustawienia</button>'}
 /* ---- edytor bloków ---- */
@@ -1069,7 +1077,7 @@ function secCard(s){
   var nodes='';for(var i=0;i<s.n;i++){var fin=i===s.n-1,can=i===0||st[i-1]>0,cls=st[i]?'done':i===cur?'cur':can?'open':'lock',inner=st[i]?'★'.repeat(st[i]):(fin?'🏆':(i+1));
     nodes+='<div class="pn" style="transform:translateX('+OFF[i%OFF.length]+'px)"><button class="node '+cls+(fin?' fin':'')+'" data-act="lesson" data-k="'+esc(s.key)+'" data-j="'+i+'"'+(can?'':' disabled')+' aria-label="'+(fin?'Test sekcji':'Lekcja '+(i+1))+(st[i]?', gwiazdki: '+st[i]:'')+'"><span class="nc">'+inner+'</span><span class="nl">'+(i===cur?'Start':fin?'Test sekcji':'Lekcja '+(i+1))+'</span></button></div>'}
   return'<section class="unit" id="sec_'+esc(s.key)+'">'+head+'<div class="pathcol">'+nodes+'</div>'+(done?'<div class="fb ok" style="margin-top:10px">Sekcja ukończona! ✓</div>':'')+'</section>'}
-function hello(){var sk=streak();return header()+'<div class="subjbar"><button class="link" data-act="subjects">‹ Przedmioty</button> · <b>'+subjName(D.subject)+'</b></div>'+(isKidSubj(D.subject)||isCode(D.subject)||D.subject==='3d'?'':tabs())+'<div class="hello"><div><div class="lab">Cześć,</div><h2>'+esc(P().name)+'!</h2></div><div class="stats"><div class="streak" title="Seria dni">'+(sk?'🔥 '+sk+(sk===1?' dzień':' dni'):'Zacznij serię!')+'</div>'+ring()+'</div></div>'}
+function hello(){var sk=streak();return header()+'<div class="subjbar"><button class="link" data-act="subjects">‹ Przedmioty</button> · <b>'+subjName(D.subject)+'</b></div>'+(isKidSubj(D.subject)||isCode(D.subject)||D.subject==='3d'?'':tabs())+'<div class="hello"><div><div class="lab">Cześć,</div><h2>'+esc(P().name)+'!</h2></div><div class="stats"><div class="streak" title="Seria dni">'+(sk?'🔥 '+sk+(sk===1?' dzień':' dni'):'Zacznij serię!')+'</div>'+ring()+'</div></div>'+tokChip()}
 function tabs(){return'<div class="tabs" role="tablist"><button role="tab" aria-selected="'+(D.tab!=='ex')+'" data-act="tab" data-t="path">Ścieżka</button><button role="tab" aria-selected="'+(D.tab==='ex')+'" data-act="tab" data-t="ex">Ćwiczenia</button></div>'}
 function home(){
   if(!D.subject||!subjAllowed(D.subject))return subjectsView();
@@ -1219,7 +1227,8 @@ document.addEventListener('click',function(e){var b=e.target.closest('[data-act]
   else if(a==='checkc'){checkCseq()}
   else if(a==='wnew'){bopen(null)}
   else if(a==='wopen'){bopen(+b.dataset.i)}
-  else if(a==='wstage'){bstage(b.dataset.id)}
+  else if(a==='wstage'){if(owned(b.dataset.id))bstage(b.dataset.id)}
+  else if(a==='wbuy'){var bid=b.dataset.id,bsh=SHOP[bid],breq=shopReq(bid),bt=tokensInfo(),bpp=d3();if(!owned(bid)&&(!breq||secDone(breq))&&bt.avail>=bsh.price){bpp.shop=bpp.shop||{};bpp.shop[bid]=bsh.price;save();msg='Kupiono: '+stageOf(bid).t+'. Możesz go teraz zaprojektować.'}render()}
   else if(a==='wdel'){var di=+b.dataset.i,pp0=d3();pp0.designs.splice(di,1);pp0.printq=pp0.printq.filter(function(x){return x.di!==di}).map(function(x){if(x.di>di)x.di--;return x});save();render()}
   else if(a==='wback'){view='home';BLD=null;render()}
   else if(a==='wcell'){var gx=+b.dataset.x,gy=+b.dataset.y,ix=bidx(BLD,gx,gy,BLD.z);BLD.c[ix]=BLD.c[ix]?0:1;render()}
