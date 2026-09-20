@@ -156,6 +156,8 @@ label{font-weight:800;font-size:15px}
 .prog{display:flex;flex-wrap:wrap;gap:6px;min-height:52px;padding:8px;border:2px dashed var(--line);border-radius:12px;margin:12px 0;align-items:center}.chipb{background:var(--sky);color:#fff;border:0;border-radius:10px;padding:8px 12px;font-weight:800}.chipb.op,.chipb.cl{background:var(--plum)}.palette{display:flex;flex-wrap:wrap;gap:8px}.pal{background:var(--surface);border:2px solid var(--line);border-radius:12px;padding:10px 14px;font-weight:800;font-size:18px;box-shadow:var(--shadow)}.pal.op,.pal.cl{border-color:var(--plum);color:var(--plum)}.pal[disabled],.chipb[disabled]{opacity:.5}
 pre.code{background:#111a33;color:#e8eeff;border-radius:12px;padding:14px;font-family:Consolas,Menlo,monospace;font-size:16px;line-height:1.5;overflow-x:auto;margin:10px 0;white-space:pre}
 .tokbar{display:flex;align-items:center;gap:8px;background:var(--surface);border:2px solid var(--line);border-radius:14px;padding:10px 14px;margin-bottom:12px;font-size:18px}.tokbar small{margin-left:auto;color:var(--muted);font-weight:700;font-size:13px}.coin{width:22px;height:22px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#ffe27a,#f2a900);border:2px solid #c88400;display:inline-block}
+.bgrid{display:grid;gap:4px;max-width:320px;margin:12px auto}.bc{aspect-ratio:1;border:2px solid var(--line);border-radius:8px;background:var(--bg)}.bc.under{background:repeating-linear-gradient(45deg,var(--line),var(--line) 4px,var(--bg) 4px,var(--bg) 8px)}.bc.on{background:var(--sky);border-color:var(--sky)}
+.iso-wrap{background:var(--bg);border-radius:14px;padding:8px;margin:12px 0;min-height:120px}.iso{display:block;max-width:100%;max-height:260px;margin:0 auto}
 .swatch{display:inline-block;width:110px;height:110px;border-radius:50%;border:4px solid var(--line);vertical-align:middle}.nwp .swatch{width:44px;height:44px;border-width:3px}
 </style>
 <div class="wrap"><div id="app"></div></div>
@@ -582,7 +584,7 @@ function examBanner(subj){var es=exams().filter(function(e){return !subj||e.x.su
 function subjectsView(){if(P().kid)return kidSubjects();var es=exams(),mb=es.filter(function(e){return e.x.subj==='math'})[0],eb=es.filter(function(e){return e.x.subj==='en'})[0];
   var badge=function(e){return e?'<span class="badge">'+(e.days===0?'Dziś':e.days===1?'Jutro':'Za '+e.days+' dni')+': '+esc(e.x.short)+'</span>':''};
   return header()+'<div class="lab" style="margin-top:6px">Cześć, '+esc(P().name)+'!</div><h2 style="font-size:32px;margin-bottom:14px">Czego się dziś uczysz?</h2><div class="subjects"><button class="subj-card" data-act="subject" data-s="en"><span class="si" style="background:var(--sky)">Aa</span><span><b>Angielski</b><small>Lekcje z zeszytu, słówka, zdania, mówienie</small>'+badge(eb)+'</span></button>'+
-  '<button class="subj-card" data-act="subject" data-s="math"><span class="si" style="background:var(--accent)">+−</span><span><b>Matematyka</b><small>Klasa 2 · dodawanie i odejmowanie do 10, znaki, niewiadome</small>'+badge(mb)+'</span></button>'+CODECARD.replace('CODESUBJ','code')+'</div>'}
+  '<button class="subj-card" data-act="subject" data-s="math"><span class="si" style="background:var(--accent)">+−</span><span><b>Matematyka</b><small>Klasa 2 · dodawanie i odejmowanie do 10, znaki, niewiadome</small>'+badge(mb)+'</span></button>'+CODECARD.replace('CODESUBJ','code')+CARD3D+'</div>'}
 function mathHome(h){
   h+=examBanner('math');
   if(D.tab==='ex'){
@@ -679,12 +681,12 @@ function speak(t,lang){if(!SPK)return;try{var lg=SPKLANG[lang]||lang||'en-US',pr
   var vs=speechSynthesis.getVoices();if(!vcache[lg])vcache[lg]=vs.filter(function(v){return v.lang.replace('_','-').toLowerCase()===lg.toLowerCase()})[0]||vs.filter(function(v){return v.lang.toLowerCase().indexOf(pre)===0})[0]||null;
   if(vcache[lg])u.voice=vcache[lg];speechSynthesis.speak(u)}catch(e){}}
 function sp(t,c,l){return SPK?'<button class="sp'+(c?' '+c:'')+'" data-act="say" data-t="'+esc(t)+'"'+(l?' data-l="'+l+'"':'')+' aria-label="Posłuchaj">'+ICON.spk+'</button>':''}
-function subjAllowed(s){return P().kid?(isKidSubj(s)||s==='kcode'):(s==='en'||s==='math'||s==='code')}
-function subjName(s){return {en:'Angielski',math:'Matematyka',ken:'Angielski',kmath:'Matematyka',kread:'Czytanie i pisanie',code:'Programowanie',kcode:'Programowanie'}[s]||''}
+function subjAllowed(s){return P().kid?(isKidSubj(s)||s==='kcode'||s==='3d'):(s==='en'||s==='math'||s==='code'||s==='3d')}
+function subjName(s){return {en:'Angielski',math:'Matematyka',ken:'Angielski',kmath:'Matematyka',kread:'Czytanie i pisanie',code:'Programowanie',kcode:'Programowanie','3d':'Projekty 3D'}[s]||''}
 function kidSubjects(){return header()+'<div class="lab" style="margin-top:6px">Cześć, '+esc(P().name)+'!</div><h2 style="font-size:32px;margin-bottom:14px">Czego się dziś uczysz?</h2><div class="subjects">'+
   '<button class="subj-card" data-act="subject" data-s="kread"><span class="si" style="background:var(--teal)">Aa</span><span><b>Czytanie i pisanie</b><small>Litery, sylaby, słowa po polsku i angielsku</small></span></button>'+
   '<button class="subj-card" data-act="subject" data-s="kmath"><span class="si" style="background:var(--accent)">1 2</span><span><b>Matematyka</b><small>Liczenie, cyfry, dodawanie i odejmowanie do 10</small></span></button>'+
-  '<button class="subj-card" data-act="subject" data-s="ken"><span class="si" style="background:var(--sky)">Hi</span><span><b>Angielski</b><small>Kolory, liczby, zwierzęta, rodzina</small></span></button>'+CODECARD.replace('CODESUBJ','kcode')+'</div>'}
+  '<button class="subj-card" data-act="subject" data-s="ken"><span class="si" style="background:var(--sky)">Hi</span><span><b>Angielski</b><small>Kolory, liczby, zwierzęta, rodzina</small></span></button>'+CODECARD.replace('CODESUBJ','kcode')+CARD3D+'</div>'}
 function kidHome(h){var nl=nextLesson(D.subject);
   h+=nl?'<div class="cont"><div><div class="lab">Dalej</div><h3>'+esc(secTitle(nl.s))+' · '+(nl.j===nl.s.n-1?'Test sekcji':'Lekcja '+(nl.j+1))+'</h3></div><button class="btn" data-act="lesson" data-k="'+esc(nl.s.key)+'" data-j="'+nl.j+'">Start</button></div>':'<div class="cont"><div><div class="lab">Wszystko zaliczone</div><h3>Brawo!</h3></div></div>';
   h+=nSecs(D.subject).map(secCard).join('');msg='';return h+'<button class="link" data-act="settings">Ustawienia</button>'}
@@ -880,6 +882,102 @@ function codeHome(h){var nl=nextLesson(D.subject);
   h+=nSecs(D.subject).map(secCard).join('');msg='';return h+'<button class="link" data-act="settings">Ustawienia</button>'}
 var CODECARD='<button class="subj-card" data-act="subject" data-s="'+'CODESUBJ'+'"><span class="si" style="background:var(--plum)">{ }</span><span><b>Programowanie</b><small>Nagroda za gwiazdki: łamigłówki z robotem, klockami i kodem</small></span></button>';
 
+/* ---------- projekty 3D ---------- */
+var CARD3D='<button class="subj-card" data-act="subject" data-s="3d"><span class="si" style="background:var(--teal)">3D</span><span><b>Projekty 3D</b><small>Kolekcja Minecraft: zaprojektuj, wydrukuj, zbieraj</small></span></button>';
+var PROJ_STEPS=['Wymyśl','Narysuj','Zmierz','Zaprojektuj','Wydrukuj','Sprawdź'];
+function cellsBox(x0,x1,y0,y1,z0,z1){var r=[];for(var z=z0;z<=z1;z++)for(var y=y0;y<=y1;y++)for(var x=x0;x<=x1;x++)r.push([x,y,z]);return r}
+var TPL={
+ steve:function(){return cellsBox(2,3,3,3,0,2).concat(cellsBox(2,3,3,3,3,5),cellsBox(1,1,3,3,3,5),cellsBox(4,4,3,3,3,5),cellsBox(2,3,2,3,6,7))},
+ creeper:function(){return cellsBox(2,3,2,3,0,0).concat(cellsBox(2,3,2,3,1,3),cellsBox(2,3,2,3,4,5))},
+ sword:function(){return[[1,1,0]].concat(cellsBox(0,2,1,1,1,1),cellsBox(1,1,1,1,2,6))},
+ pickaxe:function(){return cellsBox(2,2,1,1,0,4).concat(cellsBox(0,4,1,1,5,5),[[0,1,4],[4,1,4]])},
+ shield:function(){var r=cellsBox(1,4,0,4,0,0).filter(function(c){return !(c[1]===4&&(c[0]===1||c[0]===4))});return r.concat(cellsBox(2,3,1,3,1,1))}
+};
+var COLL=[
+ {id:'steve',t:'Steve — ludzik z Minecrafta',n:6,h:8,s:8,tpl:'steve',d:'Głowa, tułów, ręce i nogi. Zacznij od wzoru i zmień go po swojemu.'},
+ {id:'sword',t:'Miecz',n:4,h:7,s:8,tpl:'sword',d:'Rękojeść, gałka i ostrze. Ile bloków ma mieć ostrze?'},
+ {id:'pick',t:'Kilof',n:5,h:6,s:8,tpl:'pickaxe',d:'Trzonek i głowica. Czy trzonek utrzyma głowicę?'},
+ {id:'shield',t:'Tarcza',n:6,h:2,s:8,tpl:'shield',d:'Płaska tarcza z godłem. Dodaj własny wzór z bloków.'},
+ {id:'armor',t:'Zbroja dla Steve\'a',n:6,h:8,s:8,tpl:'steve',d:'Dodaj do Steve\'a hełm, napierśnik i buty z dodatkowych bloków.'},
+ {id:'creeper',t:'Creeper',n:6,h:6,s:8,tpl:'creeper',d:'Zielony potwór na czterech nogach. Popraw mu twarz i nogi.'},
+ {id:'skeleton',t:'Szkielet',n:6,h:8,s:8,tpl:'steve',d:'Zacznij od Steve\'a i zrób go chudszym: usuń bloki z tułowia i nóg.'},
+ {id:'zombie',t:'Zombie',n:6,h:8,s:8,tpl:'steve',d:'Zombie chodzi z rękami do przodu. Przesuń ręce Steve\'a do przodu.'},
+ {id:'spider',t:'Pająk',n:8,h:3,s:6,tpl:null,d:'Szeroki korpus i osiem nóg. Pamiętaj, żeby nogi były połączone z ciałem.'},
+ {id:'ender',t:'Enderman',n:6,h:12,s:6,tpl:null,d:'Bardzo wysoki i chudy. Ile bloków wysokości potrzebujesz?'}];
+function bsetDefault(){return P().kid?{n:4,h:3,s:12}:{n:6,h:5,s:10}}
+function d3(){var p=P();if(!p.designs)p.designs=[];if(!p.printq)p.printq=[];if(!p.proj)p.proj={};return p}
+function printCredits(){var done=SEC.filter(function(s){return s.subj!=='code'&&s.subj!=='kcode'&&secDone(s)}).length;var earned=Math.floor(done/3);return{done:done,earned:earned,next:3-done%3}}
+function stageOf(id){for(var i=0;i<COLL.length;i++)if(COLL[i].id===id)return COLL[i];return null}
+function designFor(id){var p=d3(),r=null;p.designs.forEach(function(d,i){if(d.stage===id&&d.c.indexOf('1')>-1)r={d:d,i:i}});return r}
+function printItem(idx){var r=null;d3().printq.forEach(function(x){if(x.di===idx)r=x});return r}
+function threeDHome(h){var p=d3(),c=printCredits(),unl=Math.min(COLL.length,c.earned);
+  h+='<div class="tokbar"><span class="coin"></span><b>'+unl+'</b> z '+COLL.length+' '+pl3(unl,['odblokowany etap','odblokowane etapy','odblokowanych etapów'])+'<small>Następny za '+c.next+' '+pl3(c.next,['ukończoną sekcję','ukończone sekcje','ukończonych sekcji'])+'</small></div>';
+  if(msg)h+='<div class="fb ok">'+esc(msg)+'</div>';
+  h+='<h2 class="sect">Kolekcja Minecraft</h2><div class="hint">Co 3 ukończone sekcje w angielskim, matematyce lub czytaniu odblokowują kolejny etap. Projektujesz go sam i drukujesz.</div>';
+  COLL.forEach(function(st,i){var open=i<unl,ds=designFor(st.id),pi=ds?printItem(ds.i):null,tag=pi?(pi.done?'wydrukowane':'czeka na wydruk'):(ds?'zaprojektowane':'');
+    h+='<section class="unit'+(open?'':' locked')+'"><div class="uh"><div><div class="lab">Etap '+(i+1)+'</div><h3>'+esc(st.t)+'</h3><div class="hintline">'+esc(st.d)+'</div></div><small>'+esc(tag)+'</small></div>';
+    if(!open)h+='<div class="hint">Odblokuje się po '+(3*(i+1))+' ukończonych sekcjach (masz '+c.done+').</div>';
+    else{h+='<div class="row" style="margin-top:0"><button class="btn" data-act="wstage" data-id="'+st.id+'">'+(ds?'Edytuj':'Projektuj')+'</button>';
+      if(ds&&!pi)h+='<button class="btn alt" data-act="wreq" data-i="'+ds.i+'">Poproś o wydruk</button>';
+      if(pi)h+='<button class="btn alt" data-act="wdone" data-i="'+ds.i+'">'+(pi.done?'Cofnij: wydrukowane':'Rodzic: wydrukowane ✓')+'</button>';
+      h+='</div>'}
+    h+='</section>'});
+  h+='<h2 class="sect">Mój warsztat</h2><div class="hint">Dowolny własny projekt z klocków.</div><div class="row" style="margin-top:0"><button class="btn" data-act="wnew">Nowy projekt z klocków</button></div>';
+  var own=p.designs.map(function(g,i){return{g:g,i:i}}).filter(function(x){return !x.g.stage});
+  if(own.length)h+='<div class="wl" style="margin-top:12px">'+own.map(function(x){var pi=printItem(x.i);return'<div><span>'+esc(x.g.name)+' <small>'+x.g.n+'×'+x.g.n+'×'+x.g.h+(pi?' · '+(pi.done?'wydrukowane':'czeka na wydruk'):'')+'</small></span><span style="display:flex;gap:6px"><button class="btn alt" data-act="wopen" data-i="'+x.i+'" style="padding:6px 12px;font-size:14px">Otwórz</button>'+(pi?'':'<button class="btn alt" data-act="wreq" data-i="'+x.i+'" style="padding:6px 12px;font-size:14px">Do wydruku</button>')+'<button data-act="wdel" data-i="'+x.i+'" style="border:0;background:none;color:var(--bad);font-size:18px;font-weight:800" aria-label="Usuń">×</button></span></div>'}).join('')+'</div>';
+  h+='<div class="note"><b>Bezpieczeństwo:</b> drukarka jest gorąca (dysza i stół). Drukujemy tylko z dorosłym, w wietrzonym pomieszczeniu. Nie dotykamy, dopóki wydruk nie ostygnie.</div>';
+  msg='';return h+'<button class="link" data-act="settings">Ustawienia</button>'}
+/* ---- edytor bloków ---- */
+var BLD=null;
+function bidx(g,x,y,z){return (z*g.n+y)*g.n+x}
+function bget(g,x,y,z){return x>=0&&y>=0&&z>=0&&x<g.n&&y<g.n&&z<g.h&&g.c[bidx(g,x,y,z)]===1}
+function bmake(o){var g={i:-1,name:o.name,n:o.n,h:o.h,s:o.s,c:new Array(o.n*o.n*o.h).fill(0),z:0,show:false,stage:o.stage||null};(o.tpl?o.tpl():[]).forEach(function(c){if(c[0]<g.n&&c[1]<g.n&&c[2]<g.h)g.c[bidx(g,c[0],c[1],c[2])]=1});return g}
+function bopen(i){var p=d3(),bs=bsetDefault();
+  if(i==null||!p.designs[i])BLD=bmake({name:'Mój projekt '+(p.designs.length+1),n:bs.n,h:bs.h,s:bs.s});
+  else{var d=p.designs[i];BLD={i:i,name:d.name,n:d.n,h:d.h,s:d.s||bs.s,c:d.c.split('').map(Number),z:0,show:false,stage:d.stage||null}}
+  view='build';render()}
+function bstage(id){var st=stageOf(id),ex=designFor(id);if(ex)return bopen(ex.i);
+  BLD=bmake({name:st.t,n:st.n,h:st.h,s:st.s,tpl:st.tpl?TPL[st.tpl]:null,stage:st.id});view='build';render()}
+function bstats(g){var cnt=0,minx=99,miny=99,maxx=-1,maxy=-1,maxz=-1,floating=0;
+  for(var z=0;z<g.h;z++)for(var y=0;y<g.n;y++)for(var x=0;x<g.n;x++)if(bget(g,x,y,z)){cnt++;minx=Math.min(minx,x);maxx=Math.max(maxx,x);miny=Math.min(miny,y);maxy=Math.max(maxy,y);maxz=Math.max(maxz,z);if(z>0&&!bget(g,x,y,z-1))floating++}
+  var conn=true;if(cnt){var seen={},q=[],start=null;for(var z2=0;z2<g.h&&!start;z2++)for(var y2=0;y2<g.n&&!start;y2++)for(var x2=0;x2<g.n&&!start;x2++)if(bget(g,x2,y2,z2))start=[x2,y2,z2];
+    seen[start.join()]=1;q.push(start);var got=0;while(q.length){var c=q.pop();got++;[[1,0,0],[-1,0,0],[0,1,0],[0,-1,0],[0,0,1],[0,0,-1]].forEach(function(d){var nx=c[0]+d[0],ny=c[1]+d[1],nz=c[2]+d[2],k=nx+','+ny+','+nz;if(bget(g,nx,ny,nz)&&!seen[k]){seen[k]=1;q.push([nx,ny,nz])}})}conn=got===cnt}
+  return{cnt:cnt,w:cnt?(maxx-minx+1):0,d:cnt?(maxy-miny+1):0,hh:cnt?(maxz+1):0,floating:floating,conn:conn}}
+function isoSvg(g){var C=16,pts=[],minx=1e9,maxx=-1e9,miny=1e9,maxy=-1e9;
+  for(var z=0;z<g.h;z++)for(var y=0;y<g.n;y++)for(var x=0;x<g.n;x++)if(bget(g,x,y,z))pts.push([x,y,z]);
+  if(!pts.length)return'<div class="hintline" style="text-align:center;padding:24px 0">Dotknij pól, żeby postawić bloki.</div>';
+  pts.sort(function(a,b){return (a[0]+a[1])-(b[0]+b[1])||a[2]-b[2]});
+  function P2(x,y,z){return[(x-y)*C*.87,(x+y)*C*.5-z*C]}
+  var out='';pts.forEach(function(p){var x=p[0],y=p[1],z=p[2],a=P2(x,y,z+1),b=P2(x+1,y,z+1),c=P2(x+1,y+1,z+1),d=P2(x,y+1,z+1),e=P2(x,y+1,z),f=P2(x+1,y+1,z),h=P2(x+1,y,z);
+    function poly(pp,col){pp.forEach(function(q){minx=Math.min(minx,q[0]);maxx=Math.max(maxx,q[0]);miny=Math.min(miny,q[1]);maxy=Math.max(maxy,q[1])});return'<polygon points="'+pp.map(function(q){return q[0].toFixed(1)+','+q[1].toFixed(1)}).join(' ')+'" fill="'+col+'" stroke="#0d2a55" stroke-opacity=".5" stroke-width="1"/>'}
+    out+=poly([d,e,f,c],'#3f7fd6')+poly([b,h,f,c],'#2a5fa8')+poly([a,b,c,d],'#8cc0ff')});
+  return'<svg class="iso" viewBox="'+(minx-6).toFixed(0)+' '+(miny-6).toFixed(0)+' '+(maxx-minx+12).toFixed(0)+' '+(maxy-miny+12).toFixed(0)+'" role="img" aria-label="Podgląd 3D">'+out+'</svg>'}
+function stlText(g,name){var s=g.s,tris=[];
+  var F=[[1,0,0,[[1,0,0],[1,1,0],[1,1,1],[1,0,1]]],[-1,0,0,[[0,0,0],[0,0,1],[0,1,1],[0,1,0]]],[0,1,0,[[0,1,0],[0,1,1],[1,1,1],[1,1,0]]],[0,-1,0,[[0,0,0],[1,0,0],[1,0,1],[0,0,1]]],[0,0,1,[[0,0,1],[1,0,1],[1,1,1],[0,1,1]]],[0,0,-1,[[0,0,0],[0,1,0],[1,1,0],[1,0,0]]]];
+  for(var z=0;z<g.h;z++)for(var y=0;y<g.n;y++)for(var x=0;x<g.n;x++)if(bget(g,x,y,z))F.forEach(function(f){if(!bget(g,x+f[0],y+f[1],z+f[2])){var v=f[3].map(function(o){return[(x+o[0])*s,(y+o[1])*s,(z+o[2])*s]});
+    [[0,1,2],[0,2,3]].forEach(function(t){var a=v[t[0]],b=v[t[1]],c=v[t[2]],u=[b[0]-a[0],b[1]-a[1],b[2]-a[2]],w=[c[0]-a[0],c[1]-a[1],c[2]-a[2]],nx=u[1]*w[2]-u[2]*w[1],ny=u[2]*w[0]-u[0]*w[2],nz=u[0]*w[1]-u[1]*w[0];
+      if(nx*f[0]+ny*f[1]+nz*f[2]<0)tris.push([f,a,c,b]);else tris.push([f,a,b,c])})}});
+  var nm=name.replace(/[^A-Za-z0-9_]/g,'_')||'model',t='solid '+nm+'\n';
+  tris.forEach(function(q){t+='facet normal '+q[0][0]+' '+q[0][1]+' '+q[0][2]+'\n outer loop\n';for(var i=1;i<4;i++)t+='  vertex '+q[i][0]+' '+q[i][1]+' '+q[i][2]+'\n';t+=' endloop\nendfacet\n'});
+  return t+'endsolid '+nm+'\n'}
+function dlFile(name,text){try{var b=new Blob([text],{type:'model/stl'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=name+'.stl';document.body.appendChild(a);a.click();document.body.removeChild(a);setTimeout(function(){URL.revokeObjectURL(a.href)},3000)}catch(e){}}
+var PRESETS=[[4,3,'Mały 4×4×3'],[6,5,'Średni 6×6×5'],[6,8,'Wysoki 6×6×8'],[8,8,'Duży 8×8×8']];
+function buildView(){var g=BLD,st=bstats(g),cells='',mm=function(v){return v*g.s},sg=g.stage?stageOf(g.stage):null;
+  for(var y=0;y<g.n;y++)for(var x=0;x<g.n;x++){var on=bget(g,x,y,g.z),under=g.z>0&&bget(g,x,y,g.z-1);cells+='<button class="bc'+(on?' on':under?' under':'')+'" data-act="wcell" data-x="'+x+'" data-y="'+y+'" aria-label="Pole '+(x+1)+','+(y+1)+(on?', blok':'')+'"></button>'}
+  var warns='';if(st.cnt&&st.floating)warns+='<div class="fb bad">Uwaga: '+st.floating+' '+pl3(st.floating,['blok wisi','bloki wiszą','bloków wisi'])+' w powietrzu. Drukarka postawi je tylko z podporami. Włącz podpory w Bambu Studio albo dodaj bloki pod spodem.</div>';
+  if(st.cnt&&!st.conn)warns+='<div class="fb bad">Projekt składa się z kilku osobnych kawałków. Połącz je klockami.</div>';
+  var canPreset=g.i<0&&!st.cnt&&!g.stage;
+  return header()+'<div class="sess-top"><button class="x" data-act="wback" aria-label="Wróć">×</button><h2 style="font-size:24px;flex:1">'+(sg?'Etap: '+esc(sg.t):'Edytor klocków')+'</h2></div><div class="card">'+(sg?'<div class="hint">'+esc(sg.d)+'</div>':'')+'<input type="text" id="dname" data-dname="1" value="'+esc(g.name)+'" maxlength="24" aria-label="Nazwa projektu" style="font-size:18px">'+
+    '<div class="iso-wrap">'+isoSvg(g)+'</div>'+(canPreset?'<div class="lab">Rozmiar planszy</div><div class="seg" style="margin:6px 0 10px">'+PRESETS.map(function(p){return'<label><input type="radio" name="pr" data-act="wpreset" data-n="'+p[0]+'" data-h="'+p[1]+'"'+(g.n===p[0]&&g.h===p[1]?' checked':'')+'> '+p[2]+'</label>'}).join('')+'</div>':'')+
+    '<div class="lab">Warstwa (od dołu)</div><div class="row" style="margin-top:6px">'+Array.apply(null,Array(g.h)).map(function(_,z){return'<button class="chip" aria-pressed="'+(z===g.z)+'" data-act="wlayer" data-z="'+z+'">'+(z+1)+'</button>'}).join('')+'</div>'+
+    '<div class="bgrid" style="grid-template-columns:repeat('+g.n+',1fr)">'+cells+'</div>'+warns+
+    '<div class="hint" style="margin-top:10px">Bloków: <b>'+st.cnt+'</b>'+(st.cnt?' · rozmiar: <b>'+mm(st.w)+' × '+mm(st.d)+' × '+mm(st.hh)+' mm</b>':'')+'</div>'+
+    '<div class="lab">Wielkość jednego bloku</div><div class="seg" style="margin-top:6px">'+[5,6,8,10,12,15].map(function(s){return'<label><input type="radio" name="bs" data-act="wsize" data-s="'+s+'"'+(g.s===s?' checked':'')+'> '+s+' mm</label>'}).join('')+'</div>'+
+    '<div class="row"><button class="btn" data-act="wsave">Zapisz</button><button class="btn alt" data-act="wexp"'+(st.cnt?'':' disabled')+'>Pobierz STL</button><button class="btn alt" data-act="wshow"'+(st.cnt?'':' disabled')+'>Pokaż kod STL</button><button class="btn alt" data-act="wclear">Wyczyść</button></div>'+
+    (g.show&&st.cnt?'<div class="hint">Skopiuj cały tekst do pliku o nazwie <b>model.stl</b> i otwórz go w Bambu Studio.</div><textarea readonly id="stl" aria-label="Kod STL" style="min-height:160px;font-family:monospace;font-size:12px">'+esc(stlText(g,g.name))+'</textarea>':'')+
+    '<div class="note">Przed wydrukiem w Bambu Studio sprawdź rozmiar, ustaw model płasko na stole i pokaż go dorosłemu.</div></div>'}
+function bsave(){var p=d3(),g=BLD,rec={name:g.name,n:g.n,h:g.h,s:g.s,c:g.c.join(''),stage:g.stage||null};if(g.i>=0)p.designs[g.i]=rec;else{p.designs.push(rec);g.i=p.designs.length-1}save();msg='Zapisano projekt „'+g.name+'”.'}
+
 /* ---------- sessions ---------- */
 var S=null,view='home',msg='',confirmReset=false,setup=null;
 function begin(kind,qs,extra){S={kind:kind,qs:qs,i:0,score:0,xp:0,phase:'ask',log:[],tries:0,heard:'',err:''};for(var k in extra||{})S[k]=extra[k];view='play';render();autoSay()}
@@ -961,11 +1059,12 @@ function secCard(s){
   var nodes='';for(var i=0;i<s.n;i++){var fin=i===s.n-1,can=i===0||st[i-1]>0,cls=st[i]?'done':i===cur?'cur':can?'open':'lock',inner=st[i]?'★'.repeat(st[i]):(fin?'🏆':(i+1));
     nodes+='<div class="pn" style="transform:translateX('+OFF[i%OFF.length]+'px)"><button class="node '+cls+(fin?' fin':'')+'" data-act="lesson" data-k="'+esc(s.key)+'" data-j="'+i+'"'+(can?'':' disabled')+' aria-label="'+(fin?'Test sekcji':'Lekcja '+(i+1))+(st[i]?', gwiazdki: '+st[i]:'')+'"><span class="nc">'+inner+'</span><span class="nl">'+(i===cur?'Start':fin?'Test sekcji':'Lekcja '+(i+1))+'</span></button></div>'}
   return'<section class="unit" id="sec_'+esc(s.key)+'">'+head+'<div class="pathcol">'+nodes+'</div>'+(done?'<div class="fb ok" style="margin-top:10px">Sekcja ukończona! ✓</div>':'')+'</section>'}
-function hello(){var sk=streak();return header()+'<div class="subjbar"><button class="link" data-act="subjects">‹ Przedmioty</button> · <b>'+subjName(D.subject)+'</b></div>'+(isKidSubj(D.subject)||isCode(D.subject)?'':tabs())+'<div class="hello"><div><div class="lab">Cześć,</div><h2>'+esc(P().name)+'!</h2></div><div class="stats"><div class="streak" title="Seria dni">'+(sk?'🔥 '+sk+(sk===1?' dzień':' dni'):'Zacznij serię!')+'</div>'+ring()+'</div></div>'}
+function hello(){var sk=streak();return header()+'<div class="subjbar"><button class="link" data-act="subjects">‹ Przedmioty</button> · <b>'+subjName(D.subject)+'</b></div>'+(isKidSubj(D.subject)||isCode(D.subject)||D.subject==='3d'?'':tabs())+'<div class="hello"><div><div class="lab">Cześć,</div><h2>'+esc(P().name)+'!</h2></div><div class="stats"><div class="streak" title="Seria dni">'+(sk?'🔥 '+sk+(sk===1?' dzień':' dni'):'Zacznij serię!')+'</div>'+ring()+'</div></div>'}
 function tabs(){return'<div class="tabs" role="tablist"><button role="tab" aria-selected="'+(D.tab!=='ex')+'" data-act="tab" data-t="path">Ścieżka</button><button role="tab" aria-selected="'+(D.tab==='ex')+'" data-act="tab" data-t="ex">Ćwiczenia</button></div>'}
 function home(){
   if(!D.subject||!subjAllowed(D.subject))return subjectsView();
   var h=hello();
+  if(D.subject==='3d')return threeDHome(h);
   if(isCode(D.subject))return codeHome(h);
   if(isKidSubj(D.subject))return kidHome(h);
   if(D.subject==='math')return mathHome(h);
@@ -1074,12 +1173,12 @@ function settings(){
   '<div class="sec"><h3>Postępy</h3><button class="btn alt" data-act="reset">'+(confirmReset?'Na pewno? Kliknij jeszcze raz':'Wyzeruj postępy: '+esc(P().name))+'</button></div>'+
   '<div class="row"><button class="btn" data-act="home">Gotowe</button></div><div class="note">Postępy zapisują się w przeglądarce, na tym urządzeniu. Na telefonie i komputerze są osobne.</div>'}
 function render(){var app=document.getElementById('app');
-  app.innerHTML=view==='play'?play():view==='result'?result():view==='settings'?settings():view==='test'?testView():home();
+  app.innerHTML=view==='play'?play():view==='result'?result():view==='settings'?settings():view==='test'?testView():view==='build'?buildView():home();
   var a=document.getElementById('ans');if(a&&!a.disabled)a.focus();else{var n=document.getElementById('nx');if(n&&view==='play')n.focus()}
   window.scrollTo(0,0)}
 
 /* ---------- events ---------- */
-document.addEventListener('input',function(e){var i=e.target.getAttribute&&e.target.getAttribute('data-name');if(i!==null&&i!==undefined){D.profiles[+i].name=e.target.value||'Syn '+(+i+1);save()}});
+document.addEventListener('input',function(e){if(e.target.getAttribute&&e.target.getAttribute('data-dname')&&BLD){BLD.name=e.target.value||'Mój projekt';return}var i=e.target.getAttribute&&e.target.getAttribute('data-name');if(i!==null&&i!==undefined){D.profiles[+i].name=e.target.value||'Syn '+(+i+1);save()}});
 document.addEventListener('keydown',function(e){if(e.key!=='Enter'||view!=='play'||!S)return;
   if(e.target.id==='ans'&&S.phase==='ask'){e.preventDefault();checkWrite()}else if(S.phase==='fb'&&e.target.tagName!=='BUTTON')next()});
 document.addEventListener('click',function(e){var b=e.target.closest('[data-act]');if(!b)return;var a=b.dataset.act,q=S&&S.qs?S.qs[S.i]:null;
@@ -1108,7 +1207,22 @@ document.addEventListener('click',function(e){var b=e.target.closest('[data-act]
   else if(a==='crun'){runProg(q)}
   else if(a==='csol'){cEdit(q);q.prog=q.sol.slice();q.hint=true;render()}
   else if(a==='checkc'){checkCseq()}
-  else if(a==='home'){clearTimeout(codeTimer);view='home';msg='';S=null;render()}
+  else if(a==='wnew'){bopen(null)}
+  else if(a==='wopen'){bopen(+b.dataset.i)}
+  else if(a==='wstage'){bstage(b.dataset.id)}
+  else if(a==='wdel'){var di=+b.dataset.i,pp0=d3();pp0.designs.splice(di,1);pp0.printq=pp0.printq.filter(function(x){return x.di!==di}).map(function(x){if(x.di>di)x.di--;return x});save();render()}
+  else if(a==='wback'){view='home';BLD=null;render()}
+  else if(a==='wcell'){var gx=+b.dataset.x,gy=+b.dataset.y,ix=bidx(BLD,gx,gy,BLD.z);BLD.c[ix]=BLD.c[ix]?0:1;render()}
+  else if(a==='wlayer'){BLD.z=+b.dataset.z;render()}
+  else if(a==='wclear'){BLD.c=BLD.c.map(function(){return 0});render()}
+  else if(a==='wsize'){BLD.s=+b.dataset.s;render()}
+  else if(a==='wpreset'){var pn=+b.dataset.n,ph=+b.dataset.h;BLD.n=pn;BLD.h=ph;BLD.c=new Array(pn*pn*ph).fill(0);BLD.z=0;render()}
+  else if(a==='wsave'){bsave();render()}
+  else if(a==='wshow'){BLD.show=!BLD.show;render()}
+  else if(a==='wexp'){bsave();dlFile(BLD.name.replace(/[^A-Za-z0-9_-]/g,'_')||'model',stlText(BLD,BLD.name));BLD.show=true;render()}
+  else if(a==='wreq'){var pq=d3(),ri2=+b.dataset.i;if(!printItem(ri2)){pq.printq.push({di:ri2,done:false,d:dstr(new Date())});save();msg='Dodano do wydruku. Poproś rodzica.'}render()}
+  else if(a==='wdone'){var it=printItem(+b.dataset.i);if(it){it.done=!it.done;save()}render()}
+  else if(a==='home'){clearTimeout(codeTimer);view='home';BLD=null;msg='';S=null;render()}
   else if(a==='tab'){D.tab=b.dataset.t;save();view='home';render()}
   else if(a==='settings'){view='settings';msg='';confirmReset=false;render()}
   else if(a==='say'){speak(b.dataset.t,b.dataset.l)}
