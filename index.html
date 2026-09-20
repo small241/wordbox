@@ -137,14 +137,31 @@ label{font-weight:800;font-size:15px}
 .pn{display:flex;justify-content:center}
 .node.fin .nc{width:64px;height:64px;font-size:26px}
 .node.fin{padding:0}
+.subjbar{margin-bottom:8px;font-size:15px;color:var(--muted)}.subjbar .link{margin:0;padding:0}.subjbar b{color:var(--ink)}
+.eq{font-family:var(--display);font-size:clamp(34px,10vw,54px);text-align:center;margin:14px 0;line-height:1.2;overflow-wrap:anywhere}
+.qb{display:inline-block;min-width:1.2em;border-bottom:4px solid var(--sky);color:var(--sky);padding:0 4px}
+.hl{color:var(--accent);border-bottom:4px solid var(--accent)}
+.eq .nb{font-family:var(--display);font-size:inherit;background:var(--bg);border:3px solid var(--line);border-radius:14px;padding:2px 14px;margin:0 2px;color:var(--ink)}
+.eq .nb.ok{border-color:var(--ok);color:var(--ok);background:var(--ok-bg)}.eq .nb.bad{border-color:var(--bad);color:var(--bad);background:var(--bad-bg)}
+.numin{font-size:34px;text-align:center;max-width:220px;margin:0 auto;display:block}
+.signs{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:16px}.signs .opt{font-family:var(--display);font-size:40px}
+.mintro{font-size:18px;line-height:1.55}.mintro b{color:var(--accent)}
+.subjects{display:grid;gap:12px}.subj-card{display:flex;gap:14px;align-items:center;text-align:left;background:var(--surface);border:2px solid var(--line);border-radius:20px;padding:16px;box-shadow:var(--shadow)}
+.subj-card b{font-family:var(--display);font-size:24px;display:block}.subj-card small{display:block;color:var(--muted);font-weight:700;font-size:14px}
+.si{flex:none;width:64px;height:64px;border-radius:16px;display:grid;place-items:center;color:#fff;font-family:var(--display);font-weight:700;font-size:26px}
+.badge{display:inline-block;margin-top:6px;background:var(--accent);color:var(--accent-ink);border-radius:999px;padding:3px 10px;font-weight:800;font-size:13px}
+.exam{background:var(--surface);border:2px solid var(--accent);border-radius:18px;padding:14px 16px;margin-bottom:12px}.exam h3{font-size:21px}
+.swatch{display:inline-block;width:110px;height:110px;border-radius:50%;border:4px solid var(--line);vertical-align:middle}.nwp .swatch{width:44px;height:44px;border-width:3px}
 </style>
 <div class="wrap"><div id="app"></div></div>
 <script>
 (function(){
 'use strict';
 var KEY='wordbox-v2',OLD='wordbox-v1';
-var LT={"1":"Hello!","2":"What's your name?","3":"What number is on the kite?","4":"The days of the week","5":"Rooms in a house","6":"Where's Joy?"};
+var LT={"Z24":"Members of the family","Z25":"Relatives","Z29":"My family","Z30":"Jobs","Z31":"Food","Z32":"Dinner and pizza","Z38":"Food and tableware","Z39":"Wild animals","Z40":"The story: feelings","Z41":"Can you help me, please?","Z42":"Sounds and actions","Z43":"How animals move","Z46":"Easter","Z47":"Wild animals around the world","Z50":"My toys","Z51":"Where's my skateboard?","Z52":"Toys and colours","Z53":"Materials","Z54":"Materials are fantastic","Z1":"Hello, my name is Tiger","Z2":"Colours and numbers 1-10","Z4":"Welcome to School","Z6":"Can I have this pen, please?","Z9":"I draw at school","Z11":"School and friends","Z12":"The Gingerbread Man: body","Z13":"Parts of the body","Z15":"Gingerbread man","Z16":"The senses","Z17":"I listen with my ears","Z18":"Actions","Z19":"Ireland and the senses","Z21":"My family","Z22":"Have you got...?","1":"Hello!","2":"What's your name?","3":"What number is on the kite?","4":"The days of the week","5":"Rooms in a house","6":"Where's Joy?"};
 var CUR_RAW=[
+"Z24|mum|mama","Z24|dad|tata","Z24|granny|babcia","Z24|grandad|dziadek","Z25|aunt|ciocia","Z25|uncle|wujek","Z25|cousins|kuzyni","Z25|big|duży","Z25|small|mały","Z29|I live with my mother|mieszkam z mamą","Z29|my family is big|moja rodzina jest duża","Z29|my family is small|moja rodzina jest mała","Z30|doctor|lekarz","Z30|police officer|policjant","Z30|vet|weterynarz","Z30|bus driver|kierowca autobusu","Z30|cook|kucharz","Z31|carrots|marchewki","Z31|cheese|ser","Z31|eggs|jajka","Z31|ham|szynka","Z31|milk|mleko","Z31|peas|groszek","Z31|potatoes|ziemniaki","Z31|sausages|kiełbaski","Z32|food|jedzenie","Z32|dinner|obiad","Z32|hungry|głodny","Z32|omelette|omlet","Z32|pizza|pizza","Z32|catch|łapać","Z32|delicious|pyszny","Z38|fork|widelec","Z38|knife|nóż","Z38|plate|talerz","Z38|bowl|miska","Z38|cup|kubek","Z38|spoon|łyżka","Z38|fruit|owoce","Z38|meat|mięso","Z38|vegetables|warzywa","Z38|plants|rośliny","Z39|crocodile|krokodyl","Z39|elephant|słoń","Z39|frog|żaba","Z39|giraffe|żyrafa","Z39|parrot|papuga","Z39|snake|wąż","Z40|sleeping|śpi","Z40|dreaming|śni","Z40|hear|słyszeć","Z40|help|pomagać","Z40|sore|obolały","Z40|scared|przestraszony","Z40|go away|idź stąd","Z40|fast|szybki","Z40|surprised|zdziwiony","Z41|paw|łapa","Z41|can you help me please|czy możesz mi pomóc","Z42|snap|pstrykać","Z43|walk|chodzić","Z43|climb|wspinać się","Z43|swim|pływać","Z43|fly|latać","Z46|Easter egg|pisanka","Z46|Easter rabbit|zajączek wielkanocny","Z46|flower|kwiat","Z46|chick|kurczaczek","Z46|happy Easter|wesołych świąt wielkanocnych","Z47|what animal can you hear|jakie zwierzę słyszysz","Z47|what wild animals can you see|jakie dzikie zwierzęta widzisz","Z47|wild|dziki","Z50|bike|rower","Z50|board game|gra planszowa","Z50|car|samochód","Z50|computer game|gra komputerowa","Z50|doll|lalka","Z50|kite|latawiec","Z50|scooter|hulajnoga","Z50|skateboard|deskorolka","Z51|I can't find my doll|nie mogę znaleźć mojej lalki","Z51|where is my doll|gdzie jest moja lalka","Z52|toys|zabawki","Z52|what toys do you see|jakie zabawki widzisz","Z52|what colour are they|jakiego są koloru","Z53|wood|drewno","Z53|plastic|plastik","Z53|metal|metal","Z53|paper|papier","Z54|it's made of plastic|jest zrobiony z plastiku","Z54|is it made of plastic|czy jest zrobiony z plastiku",
+"Z1|hello|cześć","Z1|goodbye|do widzenia","Z1|my name is|mam na imię","Z1|tiger|tygrys","Z1|monkey|małpa","Z1|mouse|mysz","Z1|roar|ryczeć","Z1|jump|skakać","Z1|run|biegać","Z1|black|czarny","Z1|orange|pomarańczowy","Z2|one|1 / jeden","Z2|two|2 / dwa","Z2|three|3 / trzy","Z2|four|4 / cztery","Z2|five|5 / pięć","Z2|six|6 / sześć","Z2|seven|7 / siedem","Z2|eight|8 / osiem","Z2|nine|9 / dziewięć","Z2|red|czerwony","Z2|blue|niebieski","Z2|green|zielony","Z2|yellow|żółty","Z2|pink|różowy","Z2|brown|brązowy","Z2|white|biały","Z2|boy|chłopiec","Z2|girl|dziewczynka","Z2|brother|brat","Z2|sister|siostra","Z2|animals|zwierzęta","Z2|apple|jabłko","Z2|banana|banan","Z2|ball|piłka","Z2|book|książka","Z2|cat|kot","Z2|dog|pies","Z2|who's this|kto to jest","Z2|what animal is it|jakie to zwierzę","Z2|point|wskazywać","Z2|stand up|wstać","Z2|sit down|usiąść","Z2|colour|kolorować / kolor","Z2|remember|pamiętać","Z4|bag|torba / plecak","Z4|pencil|ołówek","Z4|pen|długopis","Z4|crayon|kredka","Z4|ruler|linijka","Z4|rubber|gumka","Z4|pencil case|piórnik","Z4|sharpener|temperówka","Z4|please|proszę","Z4|thank you|dziękuję","Z4|draw|rysować","Z4|play|grać / bawić się","Z4|sing|śpiewać","Z4|talk|rozmawiać","Z6|can I have this pen please|czy mogę dostać ten długopis","Z6|yes of course|tak oczywiście","Z6|no sorry|nie przepraszam","Z6|basket|koszyk","Z9|I draw at school|rysuję w szkole","Z9|do you sing at school|czy śpiewasz w szkole","Z9|yes I do|tak","Z9|no I don't|nie","Z11|school|szkoła","Z11|teacher|nauczyciel","Z11|friends|przyjaciele","Z11|I'm from|jestem z","Z12|arms|ramiona","Z12|ears|uszy","Z12|eyes|oczy","Z12|hands|dłonie","Z12|head|głowa","Z12|legs|nogi","Z12|mouth|usta","Z12|nose|nos","Z13|it's a nose|to jest nos","Z13|they're legs|to są nogi","Z13|this is a head|to jest głowa","Z13|these are the eyes|to są oczy","Z13|I've got|mam","Z15|what body parts have you got|jakie części ciała masz","Z16|listen|słuchać","Z16|smell|wąchać","Z16|see|widzieć","Z16|touch|dotykać","Z16|taste|smakować","Z17|I smell with my nose|wącham nosem","Z17|you see with your eyes|widzisz oczami","Z17|I listen with my ears|słucham uszami","Z17|what a surprise|co za niespodzianka","Z18|put your hands up|podnieś ręce do góry","Z18|put your hands down|opuść ręce","Z18|stamp|tupać","Z18|clap|klaskać","Z18|shake|potrząsać","Z18|wave|machać","Z18|nod|kiwać głową","Z18|cross|krzyżować","Z19|castles|zamki","Z19|music|muzyka","Z19|fish|ryba","Z19|sheep|owca","Z19|sea|morze","Z21|family|rodzina","Z21|baby|niemowlę","Z21|mother|mama / matka","Z21|father|tata / ojciec","Z21|grandmother|babcia","Z21|grandfather|dziadek","Z22|how are you|jak się masz","Z22|I'm fine thanks|dobrze dziękuję","Z22|have you got|czy masz","Z22|yes I have|tak mam","Z22|no I haven't|nie nie mam",
 "1|listen|słuchać","1|sing|śpiewać","1|count|liczyć","1|write|pisać","1|read|czytać","1|play|grać / bawić się","1|speak|mówić","1|have fun|dobrze się bawić",
 "1|hello|cześć","1|goodbye|do widzenia","1|see you soon|do zobaczenia wkrótce","1|how are you|jak się masz","1|I'm fine thank you|dobrze dziękuję",
 "1|eleven|11 / jedenaście","1|twelve|12 / dwanaście","1|thirteen|13 / trzynaście","1|fourteen|14 / czternaście","1|fifteen|15 / piętnaście",
@@ -152,26 +169,47 @@ var CUR_RAW=[
 "2|climb a tree|wspinać się na drzewo","2|eat ice cream|jeść lody","2|play on a swing|bawić się na huśtawce","2|ride a bike|jeździć na rowerze",
 "3|ten|10 / dziesięć","3|twenty|20 / dwadzieścia","3|thirty|30 / trzydzieści","3|forty|40 / czterdzieści","3|fifty|50 / pięćdziesiąt","3|sixty|60 / sześćdziesiąt","3|seventy|70 / siedemdziesiąt","3|eighty|80 / osiemdziesiąt","3|ninety|90 / dziewięćdziesiąt","3|one hundred|100 / sto",
 "4|Monday|poniedziałek","4|Tuesday|wtorek","4|Wednesday|środa","4|Thursday|czwartek","4|Friday|piątek","4|Saturday|sobota","4|Sunday|niedziela","4|week|tydzień","4|today|dzisiaj",
-"5|bathroom|łazienka","5|bedroom|sypialnia","5|dining room|jadalnia","5|garage|garaż","5|hall|przedpokój / korytarz","5|kitchen|kuchnia","5|living room|salon","5|toilet|toaleta","5|room|pokój","5|house|dom","5|classroom|klasa / sala lekcyjna","5|what is it|co to jest","5|is this our classroom|czy to nasza klasa",
+"5|bathroom|łazienka","5|bedroom|sypialnia","5|dining room|jadalnia","5|garage|garaż","5|hall|przedpokój / korytarz","5|kitchen|kuchnia","5|living room|salon","5|toilet|toaleta","5|room|pokój","5|house|dom","5|classroom|klasa / sala lekcyjna","5|what is it|co to jest","5|is this our classroom|czy to nasza klasa","5|yes it is|tak to jest","5|no it isn't|nie to nie jest",
 "6|in|w","6|on|na","6|next to|obok","6|behind|za","6|under|pod","6|where's Tiger|gdzie jest Tygrys"];
 var GR={verb:"listen,sing,count,write,read,play,speak,have fun,climb a tree,eat ice cream,play on a swing,ride a bike",
-phrase:"hello,goodbye,see you soon,how are you,I'm fine thank you,what's your name,how old are you,good idea,let's,what is it,is this our classroom,where's Tiger",
+phrase:"hello,goodbye,see you soon,how are you,I'm fine thank you,what's your name,how old are you,good idea,let's,what is it,is this our classroom,yes it is,no it isn't,where's Tiger",
 day:"Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday,week,today",
 room:"bathroom,bedroom,dining room,garage,hall,kitchen,living room,toilet,room,house,classroom",
 prep:"in,on,next to,behind,under"};
+GR.verb+=',roar,jump,run,point,stand up,sit down,colour,remember,smell,see,touch,taste,stamp,clap,shake,wave,nod,cross,draw,talk,put your hands up,put your hands down';
+GR.phrase+=',my name is,who\'s this,what animal is it,can I have this pen please,yes of course,no sorry,I draw at school,do you sing at school,yes I do,no I don\'t,I\'m from,it\'s a nose,they\'re legs,this is a head,these are the eyes,I\'ve got,what body parts have you got,I smell with my nose,you see with your eyes,I listen with my ears,what a surprise,I\'m fine thanks,have you got,yes I have,no I haven\'t,please,thank you';
+GR.verb+=',walk,climb,swim,fly,catch,snap,hear,help,go away';
+GR.phrase+=',I live with my mother,my family is big,my family is small,can you help me please,what animal can you hear,what wild animals can you see,I can\'t find my doll,where is my doll,what toys do you see,what colour are they,it\'s made of plastic,is it made of plastic,happy Easter';
+GR.job='doctor,police officer,vet,bus driver,cook,teacher';
+GR.ware='fork,knife,plate,bowl,cup,spoon';
+GR.toy='bike,board game,car,computer game,doll,kite,scooter,skateboard,toys';
+GR.material='wood,plastic,metal,paper';
+GR.adj='big,small,hungry,scared,fast,delicious,sore,surprised,sleeping,dreaming,wild';
+GR.animal+=',crocodile,elephant,frog,giraffe,parrot,snake,chick,Easter rabbit,paw';
+GR.family+=',mum,dad,granny,grandad,aunt,uncle,cousins';
+GR.food+=',carrots,cheese,eggs,ham,milk,peas,potatoes,sausages,omelette,pizza,fruit,meat,vegetables,food,dinner,plants';
+GR.body='arms,ears,eyes,hands,head,legs,mouth,nose';
+GR.school='bag,pencil,pen,crayon,ruler,rubber,pencil case,sharpener,basket,book,school,teacher';
+GR.family='family,brother,sister,baby,mother,father,grandmother,grandfather,boy,girl,friends';
+GR.animal='tiger,monkey,mouse,cat,dog,sheep,fish,animals';
+GR.color='black,orange,red,blue,green,yellow,pink,brown,white';
+GR.food='apple,banana,ball';
 var GROUPS={};Object.keys(GR).forEach(function(k){GR[k].split(',').forEach(function(w){GROUPS[w]=k})});
 var BONUS=[{"g":"room2","pg":"room","en":"door","pl":"drzwi","emo":"🚪"},{"g":"room2","pg":"room","en":"key","pl":"klucz","emo":"🔑"},{"g":"room2","pg":"room","en":"television","pl":"telewizor","emo":"📺"},{"g":"room2","pg":"room","en":"computer","pl":"komputer","emo":"💻"},{"g":"room2","pg":"room","en":"telephone","pl":"telefon","emo":"📱"},{"g":"room2","pg":"room","en":"clock","pl":"zegar","emo":"🕐"},{"g":"room2","pg":"room","en":"shower","pl":"prysznic","emo":"🚿"},{"g":"room2","pg":"room","en":"garden","pl":"ogród","emo":"🌻"},{"g":"room2","pg":"room","en":"window","pl":"okno","emo":""},{"g":"room2","pg":"room","en":"stairs","pl":"schody","emo":""},{"g":"room2","pg":"room","en":"table","pl":"stół","emo":""},{"g":"room2","pg":"room","en":"chair","pl":"krzesło","emo":""},{"g":"room2","pg":"room","en":"bed","pl":"łóżko","emo":""},{"g":"room2","pg":"room","en":"sofa","pl":"kanapa","emo":""},{"g":"room2","pg":"room","en":"wall","pl":"ściana","emo":""},{"g":"room2","pg":"room","en":"floor","pl":"podłoga","emo":""},{"g":"num2","pg":"num","en":"one","pl":"1 / jeden","emo":""},{"g":"num2","pg":"num","en":"two","pl":"2 / dwa","emo":""},{"g":"num2","pg":"num","en":"three","pl":"3 / trzy","emo":""},{"g":"num2","pg":"num","en":"four","pl":"4 / cztery","emo":""},{"g":"num2","pg":"num","en":"five","pl":"5 / pięć","emo":""},{"g":"num2","pg":"num","en":"six","pl":"6 / sześć","emo":""},{"g":"num2","pg":"num","en":"seven","pl":"7 / siedem","emo":""},{"g":"num2","pg":"num","en":"eight","pl":"8 / osiem","emo":""},{"g":"num2","pg":"num","en":"nine","pl":"9 / dziewięć","emo":""},{"g":"num2","pg":"num","en":"sixteen","pl":"16 / szesnaście","emo":""},{"g":"num2","pg":"num","en":"seventeen","pl":"17 / siedemnaście","emo":""},{"g":"num2","pg":"num","en":"eighteen","pl":"18 / osiemnaście","emo":""},{"g":"num2","pg":"num","en":"nineteen","pl":"19 / dziewiętnaście","emo":""},{"g":"num2","pg":"num","en":"twenty-one","pl":"21 / dwadzieścia jeden","emo":""},{"g":"num2","pg":"num","en":"twenty-two","pl":"22 / dwadzieścia dwa","emo":""},{"g":"num2","pg":"num","en":"twenty-three","pl":"23 / dwadzieścia trzy","emo":""},{"g":"num2","pg":"num","en":"twenty-four","pl":"24 / dwadzieścia cztery","emo":""},{"g":"num2","pg":"num","en":"twenty-five","pl":"25 / dwadzieścia pięć","emo":""},{"g":"num2","pg":"num","en":"twenty-six","pl":"26 / dwadzieścia sześć","emo":""},{"g":"num2","pg":"num","en":"twenty-seven","pl":"27 / dwadzieścia siedem","emo":""},{"g":"num2","pg":"num","en":"twenty-eight","pl":"28 / dwadzieścia osiem","emo":""},{"g":"num2","pg":"num","en":"twenty-nine","pl":"29 / dwadzieścia dziewięć","emo":""},{"g":"num2","pg":"num","en":"thirty-one","pl":"31 / trzydzieści jeden","emo":""},{"g":"num2","pg":"num","en":"thirty-two","pl":"32 / trzydzieści dwa","emo":""},{"g":"num2","pg":"num","en":"thirty-three","pl":"33 / trzydzieści trzy","emo":""},{"g":"num2","pg":"num","en":"thirty-four","pl":"34 / trzydzieści cztery","emo":""},{"g":"num2","pg":"num","en":"thirty-five","pl":"35 / trzydzieści pięć","emo":""},{"g":"num2","pg":"num","en":"thirty-six","pl":"36 / trzydzieści sześć","emo":""},{"g":"num2","pg":"num","en":"thirty-seven","pl":"37 / trzydzieści siedem","emo":""},{"g":"num2","pg":"num","en":"thirty-eight","pl":"38 / trzydzieści osiem","emo":""},{"g":"num2","pg":"num","en":"thirty-nine","pl":"39 / trzydzieści dziewięć","emo":""},{"g":"num2","pg":"num","en":"forty-one","pl":"41 / czterdzieści jeden","emo":""},{"g":"num2","pg":"num","en":"forty-two","pl":"42 / czterdzieści dwa","emo":""},{"g":"num2","pg":"num","en":"forty-three","pl":"43 / czterdzieści trzy","emo":""},{"g":"num2","pg":"num","en":"forty-four","pl":"44 / czterdzieści cztery","emo":""},{"g":"num2","pg":"num","en":"forty-five","pl":"45 / czterdzieści pięć","emo":""},{"g":"num2","pg":"num","en":"forty-six","pl":"46 / czterdzieści sześć","emo":""},{"g":"num2","pg":"num","en":"forty-seven","pl":"47 / czterdzieści siedem","emo":""},{"g":"num2","pg":"num","en":"forty-eight","pl":"48 / czterdzieści osiem","emo":""},{"g":"num2","pg":"num","en":"forty-nine","pl":"49 / czterdzieści dziewięć","emo":""},{"g":"num2","pg":"num","en":"fifty-one","pl":"51 / pięćdziesiąt jeden","emo":""},{"g":"num2","pg":"num","en":"fifty-two","pl":"52 / pięćdziesiąt dwa","emo":""},{"g":"num2","pg":"num","en":"fifty-three","pl":"53 / pięćdziesiąt trzy","emo":""},{"g":"num2","pg":"num","en":"fifty-four","pl":"54 / pięćdziesiąt cztery","emo":""},{"g":"num2","pg":"num","en":"fifty-five","pl":"55 / pięćdziesiąt pięć","emo":""},{"g":"num2","pg":"num","en":"fifty-six","pl":"56 / pięćdziesiąt sześć","emo":""},{"g":"num2","pg":"num","en":"fifty-seven","pl":"57 / pięćdziesiąt siedem","emo":""},{"g":"num2","pg":"num","en":"fifty-eight","pl":"58 / pięćdziesiąt osiem","emo":""},{"g":"num2","pg":"num","en":"fifty-nine","pl":"59 / pięćdziesiąt dziewięć","emo":""},{"g":"num2","pg":"num","en":"sixty-one","pl":"61 / sześćdziesiąt jeden","emo":""},{"g":"num2","pg":"num","en":"sixty-two","pl":"62 / sześćdziesiąt dwa","emo":""},{"g":"num2","pg":"num","en":"sixty-three","pl":"63 / sześćdziesiąt trzy","emo":""},{"g":"num2","pg":"num","en":"sixty-four","pl":"64 / sześćdziesiąt cztery","emo":""},{"g":"num2","pg":"num","en":"sixty-five","pl":"65 / sześćdziesiąt pięć","emo":""},{"g":"num2","pg":"num","en":"sixty-six","pl":"66 / sześćdziesiąt sześć","emo":""},{"g":"num2","pg":"num","en":"sixty-seven","pl":"67 / sześćdziesiąt siedem","emo":""},{"g":"num2","pg":"num","en":"sixty-eight","pl":"68 / sześćdziesiąt osiem","emo":""},{"g":"num2","pg":"num","en":"sixty-nine","pl":"69 / sześćdziesiąt dziewięć","emo":""},{"g":"num2","pg":"num","en":"seventy-one","pl":"71 / siedemdziesiąt jeden","emo":""},{"g":"num2","pg":"num","en":"seventy-two","pl":"72 / siedemdziesiąt dwa","emo":""},{"g":"num2","pg":"num","en":"seventy-three","pl":"73 / siedemdziesiąt trzy","emo":""},{"g":"num2","pg":"num","en":"seventy-four","pl":"74 / siedemdziesiąt cztery","emo":""},{"g":"num2","pg":"num","en":"seventy-five","pl":"75 / siedemdziesiąt pięć","emo":""},{"g":"num2","pg":"num","en":"seventy-six","pl":"76 / siedemdziesiąt sześć","emo":""},{"g":"num2","pg":"num","en":"seventy-seven","pl":"77 / siedemdziesiąt siedem","emo":""},{"g":"num2","pg":"num","en":"seventy-eight","pl":"78 / siedemdziesiąt osiem","emo":""},{"g":"num2","pg":"num","en":"seventy-nine","pl":"79 / siedemdziesiąt dziewięć","emo":""},{"g":"num2","pg":"num","en":"eighty-one","pl":"81 / osiemdziesiąt jeden","emo":""},{"g":"num2","pg":"num","en":"eighty-two","pl":"82 / osiemdziesiąt dwa","emo":""},{"g":"num2","pg":"num","en":"eighty-three","pl":"83 / osiemdziesiąt trzy","emo":""},{"g":"num2","pg":"num","en":"eighty-four","pl":"84 / osiemdziesiąt cztery","emo":""},{"g":"num2","pg":"num","en":"eighty-five","pl":"85 / osiemdziesiąt pięć","emo":""},{"g":"num2","pg":"num","en":"eighty-six","pl":"86 / osiemdziesiąt sześć","emo":""},{"g":"num2","pg":"num","en":"eighty-seven","pl":"87 / osiemdziesiąt siedem","emo":""},{"g":"num2","pg":"num","en":"eighty-eight","pl":"88 / osiemdziesiąt osiem","emo":""},{"g":"num2","pg":"num","en":"eighty-nine","pl":"89 / osiemdziesiąt dziewięć","emo":""},{"g":"num2","pg":"num","en":"ninety-one","pl":"91 / dziewięćdziesiąt jeden","emo":""},{"g":"num2","pg":"num","en":"ninety-two","pl":"92 / dziewięćdziesiąt dwa","emo":""},{"g":"num2","pg":"num","en":"ninety-three","pl":"93 / dziewięćdziesiąt trzy","emo":""},{"g":"num2","pg":"num","en":"ninety-four","pl":"94 / dziewięćdziesiąt cztery","emo":""},{"g":"num2","pg":"num","en":"ninety-five","pl":"95 / dziewięćdziesiąt pięć","emo":""},{"g":"num2","pg":"num","en":"ninety-six","pl":"96 / dziewięćdziesiąt sześć","emo":""},{"g":"num2","pg":"num","en":"ninety-seven","pl":"97 / dziewięćdziesiąt siedem","emo":""},{"g":"num2","pg":"num","en":"ninety-eight","pl":"98 / dziewięćdziesiąt osiem","emo":""},{"g":"num2","pg":"num","en":"ninety-nine","pl":"99 / dziewięćdziesiąt dziewięć","emo":""},{"g":"day2","pg":"day","en":"morning","pl":"rano","emo":"🌅"},{"g":"day2","pg":"day","en":"evening","pl":"wieczór","emo":"🌆"},{"g":"day2","pg":"day","en":"night","pl":"noc","emo":"🌙"},{"g":"day2","pg":"day","en":"afternoon","pl":"popołudnie","emo":""},{"g":"day2","pg":"day","en":"tomorrow","pl":"jutro","emo":""},{"g":"day2","pg":"day","en":"yesterday","pl":"wczoraj","emo":""},{"g":"day2","pg":"day","en":"weekend","pl":"weekend","emo":""},{"g":"day2","pg":"day","en":"month","pl":"miesiąc","emo":""},{"g":"day2","pg":"day","en":"year","pl":"rok","emo":""},{"g":"prep2","pg":"prep","en":"between","pl":"między","emo":""},{"g":"prep2","pg":"prep","en":"in front of","pl":"przed","emo":""},{"g":"prep2","pg":"prep","en":"above","pl":"nad","emo":""},{"g":"verb2","pg":"verb","en":"run","pl":"biegać","emo":"🏃"},{"g":"verb2","pg":"verb","en":"swim","pl":"pływać","emo":"🏊"},{"g":"verb2","pg":"verb","en":"dance","pl":"tańczyć","emo":"💃"},{"g":"verb2","pg":"verb","en":"sleep","pl":"spać","emo":"😴"},{"g":"verb2","pg":"verb","en":"drink","pl":"pić","emo":"🥤"},{"g":"verb2","pg":"verb","en":"walk","pl":"chodzić","emo":"🚶"},{"g":"verb2","pg":"verb","en":"laugh","pl":"śmiać się","emo":"😂"},{"g":"verb2","pg":"verb","en":"draw","pl":"rysować","emo":"🖍️"},{"g":"verb2","pg":"verb","en":"jump","pl":"skakać","emo":""},{"g":"verb2","pg":"verb","en":"open","pl":"otwierać","emo":""},{"g":"verb2","pg":"verb","en":"close","pl":"zamykać","emo":""},{"g":"phrase2","pg":"phrase","en":"please","pl":"proszę","emo":""},{"g":"phrase2","pg":"phrase","en":"thank you","pl":"dziękuję","emo":"🙏"},{"g":"phrase2","pg":"phrase","en":"sorry","pl":"przepraszam","emo":"😔"},{"g":"phrase2","pg":"phrase","en":"yes","pl":"tak","emo":"✅"},{"g":"phrase2","pg":"phrase","en":"no","pl":"nie","emo":"❌"},{"g":"phrase2","pg":"phrase","en":"good morning","pl":"dzień dobry","emo":""},{"g":"phrase2","pg":"phrase","en":"good night","pl":"dobranoc","emo":""},{"g":"phrase2","pg":"phrase","en":"nice to meet you","pl":"miło cię poznać","emo":""},{"g":"food","pg":"room","en":"apple","pl":"jabłko","emo":"🍎"},{"g":"food","pg":"room","en":"banana","pl":"banan","emo":"🍌"},{"g":"food","pg":"room","en":"bread","pl":"chleb","emo":"🍞"},{"g":"food","pg":"room","en":"milk","pl":"mleko","emo":"🥛"},{"g":"food","pg":"room","en":"cheese","pl":"ser","emo":"🧀"},{"g":"food","pg":"room","en":"egg","pl":"jajko","emo":"🥚"},{"g":"food","pg":"room","en":"pizza","pl":"pizza","emo":"🍕"},{"g":"food","pg":"room","en":"cake","pl":"ciasto","emo":"🍰"},{"g":"food","pg":"room","en":"chocolate","pl":"czekolada","emo":"🍫"},{"g":"food","pg":"room","en":"sandwich","pl":"kanapka","emo":"🥪"},{"g":"food","pg":"room","en":"water","pl":"woda","emo":"💧"}];
 BONUS.forEach(function(b){GROUPS[b.en]=b.g==='food'?'food':b.g==='room2'?'obj':b.pg});
-var EMO={sing:'🎤',read:'🧒📖',write:'🧒✏️',count:'🔢',listen:'👂',speak:'🗣️','have fun':'🎉','climb a tree':'🌳🧗','eat ice cream':'😋🍦','ride a bike':'🚴',hello:'👋','good idea':'💡',bathroom:'🛁',bedroom:'🛏️','dining room':'🍽️🪑',garage:'🚗',toilet:'🚽',kitchen:'🍳','living room':'🛋️',house:'🏠',classroom:'🏫',week:'📅'};
+var EMO={"sing":"🎤","read":"🧒📖","write":"📝","count":"🔢","listen":"🎧","speak":"🗣️","have fun":"🎉","climb a tree":"🌳🧗","eat ice cream":"😋🍦","ride a bike":"🚴","hello":"👋","good idea":"💡","bathroom":"🛁","bedroom":"🛏️","dining room":"🍽️🪑","garage":"🚗","toilet":"🚽","kitchen":"🍳","living room":"🛋️","house":"🏠","week":"📅","arms":"💪","ears":"👂","eyes":"👀","hands":"🖐️","head":"👤","legs":"🦵","mouth":"👄","nose":"👃","bag":"🎒","pencil":"✏️","pen":"🖊️","crayon":"🖍️","ruler":"📏","basket":"🧺","tiger":"🐯","monkey":"🐵","mouse":"🐭","cat":"🐱","dog":"🐶","sheep":"🐑","fish":"🐟","castles":"🏰","sea":"🌊","music":"🎵","baby":"👶","mother":"👩","father":"👨","grandmother":"👵","grandfather":"👴","family":"👪","boy":"👦","girl":"👧","smell":"🌸","see":"👁️","touch":"🤚","taste":"👅","draw":"🎨","apple":"🍎","banana":"🍌","ball":"⚽","book":"📚","school":"🏫","teacher":"🧑‍🏫","classroom":"🏫🧒","fork":"🍴","knife":"🔪","plate":"🍽️","bowl":"🥣","cup":"☕","spoon":"🥄","crocodile":"🐊","elephant":"🐘","frog":"🐸","giraffe":"🦒","parrot":"🦜","snake":"🐍","carrots":"🥕","cheese":"🧀","eggs":"🥚","ham":"🍖","potatoes":"🥔","sausages":"🌭","milk":"🥛","vegetables":"🥦","meat":"🥩","pizza":"🍕","bike":"🚲","car":"🚙","board game":"🎲","computer game":"🎮","doll":"🧸","scooter":"🛴","skateboard":"🛹","police officer":"👮","bus driver":"🚌","flower":"🌷","chick":"🐥","Easter rabbit":"🐰","walk":"🚶","fly":"✈️","swim":"🏊","climb":"🧗","hungry":"🤤"};
 BONUS.forEach(function(b){if(b.emo)EMO[b.en]=b.emo});
 var PREP={"on":"<rect class=\"pv-t\" x=\"35\" y=\"55\" width=\"90\" height=\"8\" rx=\"2\"/><rect class=\"pv-t\" x=\"42\" y=\"63\" width=\"8\" height=\"37\"/><rect class=\"pv-t\" x=\"110\" y=\"63\" width=\"8\" height=\"37\"/><text x=\"80\" y=\"40\" text-anchor=\"middle\" dominant-baseline=\"central\" font-size=\"32\">🐯</text>","under":"<rect class=\"pv-t\" x=\"35\" y=\"55\" width=\"90\" height=\"8\" rx=\"2\"/><rect class=\"pv-t\" x=\"42\" y=\"63\" width=\"8\" height=\"37\"/><rect class=\"pv-t\" x=\"110\" y=\"63\" width=\"8\" height=\"37\"/><text x=\"80\" y=\"85\" text-anchor=\"middle\" dominant-baseline=\"central\" font-size=\"32\">🐯</text>","in":"<rect class=\"pv-b\" x=\"50\" y=\"48\" width=\"60\" height=\"52\"/><text x=\"80\" y=\"62\" text-anchor=\"middle\" dominant-baseline=\"central\" font-size=\"32\">🐯</text><rect class=\"pv-f\" x=\"50\" y=\"68\" width=\"60\" height=\"32\"/>","behind":"<text x=\"105\" y=\"84\" text-anchor=\"middle\" dominant-baseline=\"central\" font-size=\"32\">🐯</text><rect class=\"pv-f\" x=\"45\" y=\"55\" width=\"60\" height=\"45\"/>","next to":"<rect class=\"pv-f\" x=\"30\" y=\"58\" width=\"52\" height=\"42\"/><text x=\"120\" y=\"84\" text-anchor=\"middle\" dominant-baseline=\"central\" font-size=\"32\">🐯</text>","between":"<rect class=\"pv-f\" x=\"15\" y=\"58\" width=\"42\" height=\"42\"/><rect class=\"pv-f\" x=\"103\" y=\"58\" width=\"42\" height=\"42\"/><text x=\"80\" y=\"84\" text-anchor=\"middle\" dominant-baseline=\"central\" font-size=\"32\">🐯</text>","above":"<rect class=\"pv-f\" x=\"50\" y=\"68\" width=\"60\" height=\"32\"/><text x=\"80\" y=\"32\" text-anchor=\"middle\" dominant-baseline=\"central\" font-size=\"32\">🐯</text>","in front of":"<rect class=\"pv-f\" x=\"50\" y=\"45\" width=\"60\" height=\"55\"/><text x=\"80\" y=\"88\" text-anchor=\"middle\" dominant-baseline=\"central\" font-size=\"32\">🐯</text>"};
+var COLORHEX={black:'#151515',orange:'#FF8A00',red:'#E53935',blue:'#1E88E5',green:'#43A047',yellow:'#FDD835',pink:'#EC6FA6',brown:'#8D5B3A',white:'#FFFFFF'};
 var SENT_RAW=[
+"Z25|This is my [aunt].|To jest moja [ciocia].","Z25|This is my [uncle].|To jest mój [wujek].","Z25|My family is big.|Moja rodzina jest duża.","Z30|The [vet] helps animals.|[Weterynarz] pomaga zwierzętom.","Z30|The [doctor] helps me.|[Lekarz] mi pomaga.","Z31|I like [cheese].|Lubię ser.","Z31|The [milk] is white.|[Mleko] jest białe.","Z31|I eat [eggs].|Jem jajka.","Z32|I'm [hungry]!|Jestem głodny!","Z32|The pizza is delicious.|Pizza jest pyszna.","Z38|I have a [fork].|Mam [widelec].","Z38|The [plate] is on the table.|[Talerz] jest na stole.","Z39|The [elephant] is big.|[Słoń] jest duży.","Z39|The [frog] can jump.|[Żaba] umie skakać.","Z39|The [snake] is green.|[Wąż] jest zielony.","Z43|Birds can [fly].|Ptaki umieją [latać].","Z43|The monkey can climb.|Małpa umie się wspinać.","Z46|The [chick] is small.|[Kurczaczek] jest mały.","Z50|This is my [kite].|To jest mój [latawiec].","Z50|The [doll] is on the table.|[Lalka] jest na stole.","Z50|The [car] is under the table.|[Samochód] jest pod stołem.","Z50|I have a [bike].|Mam [rower].","Z51|Where's my [skateboard]?|Gdzie jest moja [deskorolka]?","Z51|I can't find my doll.|Nie mogę znaleźć mojej lalki.","Z53|The car is made of plastic.|Samochód jest zrobiony z plastiku.","Z53|The table is made of wood.|Stół jest zrobiony z drewna.",
+"Z1|Hello! My name is [Tiger].|Cześć! Mam na imię [Tygrys].","Z1|[Goodbye]!|[Do widzenia]!","Z1|I can [jump].|Umiem [skakać].","Z1|I can [run].|Umiem [biegać].","Z1|The tiger can [roar].|Tygrys umie ryczeć.","Z1|The mouse is [black].|Mysz jest czarna.","Z2|What's your name? I'm Tiger.|Jak masz na imię? Jestem Tygrys.","Z2|How old are you? I'm [eight].|Ile masz lat? Mam osiem lat.","Z2|This is my [brother].|To jest mój [brat].","Z2|This is my [sister].|To jest moja [siostra].","Z2|It's a [cat].|To jest [kot].","Z2|It's a [dog].|To jest [pies].","Z2|I have a [ball].|Mam piłkę.","Z4|This is my [pencil case].|To jest mój [piórnik].","Z4|I have a [ruler].|Mam linijkę.","Z4|Can I have a pen, [please]?|Czy mogę dostać długopis, [proszę]?","Z4|[Thank you]!|[Dziękuję]!","Z6|Can I have this pen, please? Yes, of course.|Czy mogę dostać ten długopis? Tak, oczywiście.","Z6|Can I have this pen, please? No, sorry.|Czy mogę dostać ten długopis? Nie, przepraszam.","Z9|Do you [sing] at school? Yes, I do.|Czy śpiewasz w szkole? Tak.","Z9|I [draw] at school.|Rysuję w szkole.","Z11|My [teacher] is nice.|Mój [nauczyciel] jest miły.","Z11|I'm from Poland.|Jestem z Polski.","Z12|This is my [nose].|To jest mój [nos].","Z12|This is my [head].|To jest moja [głowa].","Z12|These are my [eyes].|To są moje [oczy].","Z12|I see with my eyes.|Widzę oczami.","Z16|I [smell] with my nose.|Wącham nosem.","Z16|I [see] with my eyes.|Widzę oczami.","Z17|I listen with my ears.|Słucham uszami.","Z17|What a surprise!|Co za niespodzianka!","Z18|Clap your hands.|Klaszcz w dłonie.","Z18|[Stand up], please.|Wstań, proszę.","Z21|This is my [mother].|To jest moja [mama].","Z21|This is my [father].|To jest mój [tata].","Z21|This is my [grandmother].|To jest moja [babcia].","Z21|This is my [family].|To jest moja [rodzina].","Z22|How are you? I'm fine, thanks.|Jak się masz? Dobrze, dziękuję.","Z22|Have you got a sister? Yes, I have.|Czy masz siostrę? Tak, mam.","Z22|Have you got a brother? No, I haven't.|Czy masz brata? Nie, nie mam.",
 "1|[Hello]! I'm Tom.|[Cześć]! Jestem Tomek.","1|How are you? I'm fine, thank you.|Jak się masz? Dobrze, dziękuję.","1|[Goodbye]! See you soon.|[Do widzenia]! Do zobaczenia wkrótce.",
 "1|I like to [sing].|Lubię [śpiewać].","1|I can [read].|Umiem [czytać].","1|We [speak] English.|Mówimy po angielsku.","1|Let's [count] to fifteen.|Policzmy do piętnastu.","1|Eleven, twelve, thirteen, fourteen, fifteen.|Jedenaście, dwanaście, trzynaście, czternaście, piętnaście.",
 "2|What's your name? I'm Tom.|Jak masz na imię? Jestem Tomek.","2|How old are you? I'm eight.|Ile masz lat? Mam osiem lat.","2|I can [ride a bike].|Umiem [jeździć na rowerze].","2|I can [climb a tree].|Umiem [wspinać się na drzewo].","2|I like to [eat ice cream].|Lubię [jeść lody].","2|Let's [play on a swing]!|Bawmy się na huśtawce!","2|Let's go! [Good idea]!|Chodźmy! [Dobry pomysł]!",
 "3|What number is on the kite?|Jaki numer jest na latawcu?","3|The number on the kite is [thirty].|Numer na latawcu to trzydzieści.","3|The number on the swing is [ninety].|Numer na huśtawce to dziewięćdziesiąt.","3|I have [twenty] stickers.|Mam dwadzieścia naklejek.","3|One, two, three... [ten]!|Raz, dwa, trzy... dziesięć!",
 "4|Today is [Thursday].|Dzisiaj jest [czwartek].","4|What day is it today?|Jaki dzień jest dzisiaj?","4|[Monday] is the first day of the week.|[Poniedziałek] jest pierwszym dniem tygodnia.","4|Today is [Friday].|Dzisiaj jest [piątek].","4|There are seven days in a [week].|W [tygodniu] jest siedem dni.","4|[Sunday] is a fun day.|[Niedziela] to fajny dzień.",
-"5|Is this our classroom? Yes, it is.|Czy to nasza klasa? Tak.","5|This is our [kitchen].|To jest nasza [kuchnia].","5|I sleep in the [bedroom].|Śpię w sypialni.","5|We eat in the [dining room].|Jemy w jadalni.","5|What is it? It's a [garage].|Co to jest? To jest [garaż].","5|This is our [house].|To jest nasz [dom].","5|I take a bath in the [bathroom].|Kąpię się w łazience.",
+"5|Is this our classroom? Yes, it is.|Czy to nasza klasa? Tak.","5|Is this our kitchen? No, it isn't.|Czy to nasza kuchnia? Nie, to nie jest.","5|Is this our garage? Yes, it is.|Czy to nasz garaż? Tak, to jest.","5|This is our [kitchen].|To jest nasza [kuchnia].","5|I sleep in the [bedroom].|Śpię w sypialni.","5|We eat in the [dining room].|Jemy w jadalni.","5|What is it? It's a [garage].|Co to jest? To jest [garaż].","5|This is our [house].|To jest nasz [dom].","5|I take a bath in the [bathroom].|Kąpię się w łazience.",
 "6|Where's Tiger? He's [in] the box.|Gdzie jest Tygrys? On jest [w] pudełku.","6|Tiger is [on] the table.|Tygrys jest [na] stole.","6|Tiger is [under] the table.|Tygrys jest [pod] stołem.","6|Tiger is [behind] the box.|Tygrys jest [za] pudełkiem.","6|Tiger is [next to] the box.|Tygrys jest [obok] pudełka.","6|Is Tiger next to the box? Yes, he is.|Czy Tygrys jest obok pudełka? Tak, jest.",
 "g:room2|Open the [door].|Otwórz [drzwi].","g:room2|I watch [television].|Oglądam telewizję.","g:room2|The [key] is on the table.|[Klucz] jest na stole.","g:room2|I play in the [garden].|Bawię się w ogrodzie.",
 "g:food|I like [pizza].|Lubię pizzę.","g:food|I drink [milk].|Piję [mleko].","g:food|I eat a [banana].|Jem banana.","g:food|The [bread] is on the table.|[Chleb] jest na stole.",
@@ -179,6 +217,7 @@ var SENT_RAW=[
 "g:phrase2|[Thank you]! You're nice.|[Dziękuję]! Jesteś miły.","g:phrase2|[Please] help me.|[Proszę], pomóż mi.","g:phrase2|[Good night]!|[Dobranoc]!"];
 var SENT=SENT_RAW.map(function(l){var a=l.split('|');return{u:a[0],en:a[1],pl:a[2]}});
 var EXTRA_DEF=[['room2','Rzeczy w domu','5',8],['food','Jedzenie i picie','5',6],['num2','Liczby','3',10],['day2','Pory dnia i czas','4',99],['prep2','Więcej przyimków','6',99],['verb2','Więcej czynności','1',99],['phrase2','Grzeczne zwroty','2',99]];
+var EXAMS=[{subj:'math',date:'2026-09-21',title:'Kartkówka z matematyki',short:'kartkówka',scope:'Dodawanie i odejmowanie w zakresie 10 · działania z niewiadomą · znaki <, >, = · przemienność dodawania · składniki, suma, odjemna, odjemnik, różnica'}];
 var LVN=['Poznaj','Wybierz','Obrazki','Pisz','Finał'];
 var SPK='speechSynthesis' in window,SR=window.SpeechRecognition||window.webkitSpeechRecognition;
 var ICON={
@@ -213,15 +252,17 @@ function P(){var p=D.profiles[D.active];if(!p.sec)p.sec={};if(!p.open)p.open={};
 
 /* ---------- units (lekcje z zeszytu) i sekcje ścieżki ---------- */
 var U=[],UM={},SEC=[],SK={};
+function ck(s){return s.toLowerCase().replace(/s$/,"")}
 function buildUnits(){
   U=[];UM={};
   function get(k,title,sec,extra){if(!UM[k]){UM[k]={k:k,title:title,sec:sec,words:[],sents:[]};for(var x in extra||{})UM[k][x]=extra[x];U.push(UM[k])}return UM[k]}
-  CUR_RAW.forEach(function(l){var a=l.split('|');get(a[0],LT[a[0]],'y').words.push({en:a[1],pl:a[2],l:a[0]})});
+  CUR_RAW.forEach(function(l){var a=l.split('|');get(a[0],LT[a[0]],/^Z/.test(a[0])?'old':'y').words.push({en:a[1],pl:a[2],l:a[0]})});
+  var coreEn={};U.forEach(function(u){u.words.forEach(function(w){coreEn[ck(w.en)]=1})});D.custom.forEach(function(w){coreEn[ck(String(w.en))]=1});
   D.custom.forEach(function(w){var k=String(w.l||'M'),sec=/^Z\d+$/.test(k)?'old':/^\d+$/.test(k)?'y':'mine';
     var t=k==='M'?'Moje słówka':sec==='old'?'Zeszły rok · Lekcja '+k.slice(1):'Lekcja '+k;
     var u=get(k,LT[k]||t,sec);u.words.push({en:w.en,pl:w.pl,l:k,custom:1})});
   if(D.extras!==false)EXTRA_DEF.forEach(function(d){
-    var rows=BONUS.filter(function(b){return b.g===d[0]}),n=Math.ceil(rows.length/d[3]),per=Math.ceil(rows.length/n);
+    var rows=BONUS.filter(function(b){return b.g===d[0]&&!coreEn[ck(b.en)]});if(!rows.length)return;var n=Math.ceil(rows.length/d[3]),per=Math.ceil(rows.length/n);
     for(var i=0;i<n;i++){var part=rows.slice(i*per,(i+1)*per),title=d[1];
       if(d[0]==='num2'){title='Liczby '+parseInt(part[0].pl,10)+'–'+parseInt(part[part.length-1].pl,10)}else if(n>1)title+=' · część '+(i+1);
       var u=get('X'+d[0]+i,title,'x',{parent:d[2],g:d[0]});
@@ -234,13 +275,13 @@ function buildUnits(){
   buildSections()}
 /* Sekcja = kilka kolejnych lekcji z zeszytu, razem ok. 16 słówek. Sekcja ma (liczba porcji po ok. 5 słówek) lekcji po 10 zadań + końcowy test sekcji. */
 function buildSections(){
-  SEC=[];SK={};var T=16,MAXL=T*1.25;
+  SEC=[];SK={};var T=16,MAXL=T*1.4;
   function mkSec(g,parts,parent){
     var words=[],sents=[],seenS={},lessons=[];
     parts.forEach(function(p){p.words.forEach(function(w){words.push(w)});p.base.sents.forEach(function(s){if(!seenS[s.en]){seenS[s.en]=1;sents.push(s)}});if(lessons.indexOf(p.base.k)<0)lessons.push(p.base.k)});
     var nch=Math.max(1,Math.ceil(words.length/5)),base=Math.floor(words.length/nch),extra=words.length%nch,chunks=[],pos=0;
     for(var i=0;i<nch;i++){var sz=base+(i<extra?1:0);chunks.push(words.slice(pos,pos+sz));pos+=sz}
-    var s={key:g+':'+parts[0].id,g:g,parts:parts,words:words,sents:sents,lessons:lessons,chunks:chunks,n:chunks.length+1,parent:parent};
+    var s={subj:'en',key:g+':'+parts[0].id,g:g,parts:parts,words:words,sents:sents,lessons:lessons,chunks:chunks,n:chunks.length+1,parent:parent,free:g==='y'};
     SEC.push(s);SK[s.key]=s;return s}
   ['old','y','mine'].forEach(function(g){
     var parts=[];U.filter(function(u){return u.sec===g}).forEach(function(u){
@@ -248,25 +289,30 @@ function buildSections(){
       for(var i=0;i<pc;i++)parts.push({id:u.k+(pc>1?'#'+i:''),base:u,words:u.words.slice(i*per,(i+1)*per)})});
     var cur=[],cw=0;parts.forEach(function(p){if(cur.length&&cw+p.words.length>MAXL){mkSec(g,cur);cur=[];cw=0}cur.push(p);cw+=p.words.length});if(cur.length)mkSec(g,cur)});
   U.filter(function(u){return u.sec==='x'}).forEach(function(u){mkSec('x',[{id:u.k,base:u,words:u.words}],u.parent)});
+  buildMath();
 }
+var MATH_SECS=[{key:'m:dig',title:'Liczby jednocyfrowe',sub:'Cyfry 0–9, liczby przed i po',topic:'dig'},{key:'m:add',title:'Dodawanie do 10',sub:'Sumy w zakresie 10',topic:'add'},{key:'m:sad',title:'Składniki i suma',sub:'3 + 4 = 7',topic:'sad'},{key:'m:com',title:'Przemienność dodawania',sub:'3 + 4 = 4 + 3',topic:'com'},{key:'m:sub',title:'Odejmowanie do 10',sub:'Różnice w zakresie 10',topic:'sub'},{key:'m:sbn',title:'Odjemna, odjemnik, różnica',sub:'7 − 3 = 4',topic:'sbn'},{key:'m:unk',title:'Działania z niewiadomą',sub:'3 + □ = 7',topic:'unk'},{key:'m:cmp',title:'Znaki <, > i =',sub:'Porównywanie liczb i działań',topic:'cmp'},{key:'m:mix',title:'Powtórka przed kartkówką',sub:'Wszystkie tematy z kartkówki razem',topic:'mix'},{key:'m:two',title:'Liczby dwucyfrowe',sub:'Dziesiątki i jedności, 10–99',topic:'two'}];
+function buildMath(){MATH_SECS.forEach(function(m){var s={subj:'math',key:m.key,g:'m',title:m.title,sub:m.sub,topic:m.topic,parts:[],words:[],sents:[],lessons:[],chunks:[],n:5,free:true,parent:null};SEC.push(s);SK[s.key]=s})}
 buildUnits();
-function nSecs(){return SEC.filter(function(s){return s.g!=='x'})}
-function secNo(s){return nSecs().indexOf(s)+1}
+function nSecs(sj){sj=sj||'en';return SEC.filter(function(s){return s.g!=='x'&&s.subj===sj})}
+function secNo(s){return nSecs(s.subj).indexOf(s)+1}
 function secTitle(s){
+  if(s.subj==='math')return s.title;
   if(s.g==='x')return s.parts[0].base.title;
+  var pi=s.parts.map(function(p){var m=/#(\d+)$/.exec(p.id);return m?+m[1]+1:0}).filter(Boolean),suf=pi.length?' · część '+(pi.length>1?Math.min.apply(null,pi)+'–'+Math.max.apply(null,pi):pi[0]):'';
   var ks=s.lessons.slice(),lab=ks.map(function(k){return String(k)});
   var nums=ks.map(function(k){return parseInt(String(k).replace(/\D/g,''),10)}),pre=s.g==='old'?'Zeszły rok · ':'';
   if(s.g==='mine')return 'Moje słówka';
   var word=ks.length>1?'Lekcje ':'Lekcja ',rng=ks.length>1&&nums.every(function(n,i){return i===0||n===nums[i-1]+1})?nums[0]+'–'+nums[nums.length-1]:nums.join(', ');
-  return pre+word+rng}
-function secSub(s){return s.g==='y'?s.lessons.map(function(k){return LT[k]||''}).filter(Boolean).join(' · '):''}
+  return pre+word+rng+suf}
+function secSub(s){if(s.subj==='math')return s.sub||'';return (s.g==='y'||s.g==='old')?s.lessons.map(function(k){return LT[k]||''}).filter(Boolean).join(' · '):''}
 function sst(s){var p=P().sec;if(!p[s.key])p[s.key]=[];var a=p[s.key];while(a.length<s.n)a.push(0);return a}
 function secDone(s){return sst(s).every(function(x){return x>0})}
 function secStarted(s){return sst(s).some(function(x){return x>0})}
 function secOpen(s){
-  if(P().open[s.key])return true;
+  if(P().open[s.key]||s.free)return true;
   if(s.g==='x'){var ps=nSecs().filter(function(z){return z.lessons.indexOf(s.parent)>-1})[0];return !ps||secDone(ps)}
-  var N=nSecs(),i=N.indexOf(s);return i===0||secDone(N[i-1])}
+  var N=nSecs(s.subj),i=N.indexOf(s);return i===0||secDone(N[i-1])}
 function lessonOpen(s,j){return secOpen(s)&&(j===0||sst(s)[j-1]>0)}
 function box(w){var s=P().stats[w.en];return s?s.box:0}
 function bump(w,ok){var st=P().stats,s=st[w.en]||(st[w.en]={box:0,ok:0,bad:0});if(ok){s.box=Math.min(4,s.box+1);s.ok++}else{s.box=Math.max(0,s.box-1);s.bad++}}
@@ -281,20 +327,21 @@ function prevSecs(s){var N=nSecs();return (s.g==='x'?N:N.slice(0,Math.max(0,N.in
 function prevWords(s){var r=[];prevSecs(s).forEach(function(p){r=r.concat(p.words)});return uniq(r).sort(function(a,b){return box(a)-box(b)})}
 function streak(){var days=P().days||{},d=new Date(),n=0;if(!days[dstr(d)])d.setDate(d.getDate()-1);while(days[dstr(d)]>0){n++;d.setDate(d.getDate()-1)}return n}
 function todayN(){return (P().days||{})[dstr(new Date())]||0}
-function nextLesson(){
-  var cand=nSecs().filter(function(s){return secOpen(s)&&!secDone(s)});if(!cand.length)return null;
+function nextLesson(sj){
+  var cand=nSecs(sj).filter(function(s){return secOpen(s)&&!secDone(s)});if(!cand.length)return null;
   var last=SK[P().last],s=(last&&cand.indexOf(last)>-1)?last:cand[0],st=sst(s);
   for(var j=0;j<s.n;j++)if(!st[j])return{s:s,j:j};return null}
-function unitAvail(u){if(u.sec!=='x')return true;var s=SEC.filter(function(z){return z.parts[0].base===u})[0];return !s||secOpen(s)}
+function unitAvail(u){if(u.sec!=='x')return true;var s=SEC.filter(function(z){return z.parts.length&&z.parts[0].base===u})[0];return !s||secOpen(s)}
 
 /* ---------- pictures ---------- */
 function pic(w){
   if(EMO[w.en])return'<span role="img" aria-label="obrazek">'+EMO[w.en]+'</span>';
   if(PREP[w.en])return'<svg class="pv" viewBox="0 0 160 110" width="200" role="img" aria-label="obrazek">'+PREP[w.en]+'<line class="pv-l" x1="10" y1="101" x2="150" y2="101"/></svg>';
+  if(COLORHEX[w.en])return'<span class="swatch" role="img" aria-label="kolor" style="background:'+COLORHEX[w.en]+'"></span>';
   if(isNum(w))return'<span class="bignum">'+parseInt(w.pl,10)+'</span>';
   return''}
-function picLab(w,pk){var g=grp(w),k=PREP[w.en]?'prep':({verb:'verb',num:'num',phrase:'phrase',room:'room',obj:'obj',food:'food',day:'time'})[g]||'thing';
-  var L={prep:['Gdzie jest tygrys?','Napisz po angielsku, gdzie jest tygrys'],verb:['Jaka to czynność? (co robi?)','Napisz po angielsku czynność: co robi?'],num:['Jaka to liczba?','Napisz liczbę po angielsku'],phrase:['Co mówimy?','Napisz po angielsku, co mówimy'],room:['Jakie to pomieszczenie?','Napisz po angielsku nazwę pomieszczenia'],obj:['Co to za przedmiot?','Napisz po angielsku, co to za przedmiot'],food:['Co to za jedzenie lub picie?','Napisz po angielsku, co to jest'],time:['Co to za pora dnia lub czas?','Napisz po angielsku, co to za czas'],thing:['Co to jest?','Napisz po angielsku, co to jest']};return L[k][pk?0:1]}
+function picLab(w,pk){var g=grp(w),k=PREP[w.en]?'prep':({verb:'verb',num:'num',phrase:'phrase',room:'room',obj:'obj',food:'food',day:'time',body:'body',school:'school',family:'family',animal:'animal',color:'color'})[g]||'thing';
+  var L={prep:['Gdzie jest tygrys?','Napisz po angielsku, gdzie jest tygrys'],verb:['Jaka to czynność? (co robi?)','Napisz po angielsku czynność: co robi?'],num:['Jaka to liczba?','Napisz liczbę po angielsku'],phrase:['Co mówimy?','Napisz po angielsku, co mówimy'],room:['Jakie to pomieszczenie?','Napisz po angielsku nazwę pomieszczenia'],obj:['Co to za przedmiot?','Napisz po angielsku, co to za przedmiot'],food:['Co to za jedzenie lub picie?','Napisz po angielsku, co to jest'],body:['Jaka to część ciała?','Napisz po angielsku część ciała'],school:['Co to za przedmiot szkolny?','Napisz po angielsku przedmiot szkolny'],family:['Kto to jest?','Napisz po angielsku, kto to jest'],animal:['Jakie to zwierzę?','Napisz po angielsku nazwę zwierzęcia'],color:['Jaki to kolor?','Napisz po angielsku kolor'],time:['Co to za pora dnia lub czas?','Napisz po angielsku, co to za czas'],thing:['Co to jest?','Napisz po angielsku, co to jest']};return L[k][pk?0:1]}
 function sp(t,c){return SPK?'<button class="sp'+(c?' '+c:'')+'" data-act="say" data-t="'+esc(t)+'" aria-label="Posłuchaj">'+ICON.spk+'</button>':''}
 var voice=null;
 function speak(t){if(!SPK)return;try{speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(t);u.lang='en-US';u.rate=.85;var vs=speechSynthesis.getVoices();
@@ -359,12 +406,134 @@ function lessonQs(s,j){
   if(!fin)qs.unshift({t:'intro',ws:focus});
   return qs}
 
+/* ---------- matematyka ---------- */
+function ri(a,b){return a+Math.floor(Math.random()*(b-a+1))}
+function pickOne(a){return a[Math.floor(Math.random()*a.length)]}
+function numOpts(ans,lo,hi){var s={};s[ans]=1;var out=[ans],tries=0;while(out.length<4&&tries++<60){var v=ans+pickOne([-3,-2,-1,1,2,3]);if(v>=lo&&v<=hi&&!s[v]){s[v]=1;out.push(v)}}
+  for(var v2=lo;out.length<4&&v2<=hi;v2++)if(!s[v2]){s[v2]=1;out.push(v2)}return shuffle(out)}
+function qAdd(d){var mx=d<.3?5:d<.6?7:10,s=ri(2,mx),a=ri(0,s),b=s-a;
+  var q={t:d<.34?'nmc':'nin',lab:'Oblicz',text:a+' + '+b+' = □',ans:s,expl:a+' + '+b+' = '+s};if(q.t==='nmc')q.opts=numOpts(s,0,10);return q}
+function qSub(d){var mx=d<.3?5:d<.6?7:10,m=ri(1,mx),k=ri(0,m),r=m-k;
+  var q={t:d<.34?'nmc':'nin',lab:'Oblicz',text:m+' − '+k+' = □',ans:r,expl:m+' − '+k+' = '+r};if(q.t==='nmc')q.opts=numOpts(r,0,10);return q}
+function qUnk(d){var vs=d<.3?[0]:d<.6?[0,1]:d<.85?[0,1,2,3]:[0,1,2,3],v=pickOne(vs),t,ans,full;
+  if(v===0){var b=ri(1,10),a=ri(0,b);ans=b-a;t='□ + '+a+' = '+b;full=ans+' + '+a+' = '+b}
+  else if(v===1){var b1=ri(1,10),a1=ri(0,b1);ans=b1-a1;t=a1+' + □ = '+b1;full=a1+' + '+ans+' = '+b1}
+  else if(v===2){var m=ri(1,10),c=ri(0,m);ans=m-c;t=m+' − □ = '+c;full=m+' − '+ans+' = '+c}
+  else{var a2=ri(0,9),c2=ri(0,10-a2);ans=a2+c2;t='□ − '+a2+' = '+c2;full=ans+' − '+a2+' = '+c2}
+  var q={t:d<.34?'nmc':'nin',lab:'Jaka liczba pasuje?',text:t,ans:ans,expl:full};if(q.t==='nmc')q.opts=numOpts(ans,0,10);return q}
+function gexp(mx){if(Math.random()<.5){var s=ri(0,mx),a=ri(0,s);return{txt:a+' + '+(s-a),val:s}}var m=ri(0,mx),k=ri(0,m);return{txt:m+' − '+k,val:m-k}}
+function sgn(a,b){return a<b?'<':a>b?'>':'='}
+function qCmp(d){var l,r,lv,rv;
+  if(d<.3){lv=ri(0,10);rv=Math.random()<.2?lv:ri(0,10);l=String(lv);r=String(rv)}
+  else if(d<.6){var e=gexp(10);lv=e.val;rv=Math.max(0,Math.min(10,lv+pickOne([-2,-1,0,0,1,2])));l=e.txt;r=String(rv);if(Math.random()<.5){var t=l;l=r;r=t;var tv=lv;lv=rv;rv=tv}}
+  else{var e1=gexp(10),e2=gexp(10);if(Math.random()<.25){var tries=0;while(e2.val!==e1.val&&tries++<40)e2=gexp(10)}l=e1.txt;r=e2.txt;lv=e1.val;rv=e2.val}
+  var ans=sgn(lv,rv);return{t:'ncmp',lab:'Wstaw znak <, > lub =',l:l,r:r,ans:ans,expl:l+' '+ans+' '+r}}
+function qComm(d){var s=ri(2,10),a=ri(1,s-1),b=s-a,v=pickOne(d<.35?[0,1]:d<.7?[0,1,2,3]:[1,2,3,4]);
+  if(a===b){a=Math.max(1,a-1);b=s-a}
+  if(v===0)return{t:'nin',lab:'Przemienność dodawania',text:a+' + '+b+' = '+b+' + □',ans:a,expl:a+' + '+b+' = '+b+' + '+a};
+  if(v===1)return{t:'nin',lab:'Przemienność dodawania',text:a+' + '+b+' = □ + '+a,ans:b,expl:a+' + '+b+' = '+b+' + '+a};
+  if(v===2){var ops=[b+' + '+a],seen={};seen[b+' + '+a]=1;var tries=0;while(ops.length<4&&tries++<50){var x=ri(0,10),y=ri(0,10);if(x+y!==s){var k=x+' + '+y;if(!seen[k]){seen[k]=1;ops.push(k)}}}
+    return{t:'nmc',lab:'Które działanie ma ten sam wynik co '+a+' + '+b+'?',text:'',ans:b+' + '+a,opts:shuffle(ops),expl:a+' + '+b+' = '+b+' + '+a}}
+  if(v===3){var truth=Math.random()<.5,right=truth?a:(a+ri(1,2)>10?a-1:a+ri(1,2));if(!truth&&right===a)right=a+1;
+    return{t:'nmc',lab:'Czy to prawda?',text:a+' + '+b+' = '+b+' + '+right,ans:truth?'Tak':'Nie',opts:['Tak','Nie'],expl:truth?a+' + '+b+' = '+b+' + '+a:a+' + '+b+' = '+s+', a '+b+' + '+right+' = '+(b+right)}}
+  return{t:'nin',lab:'Zamień składniki',text:a+' + '+b+' = '+s+', więc '+b+' + '+a+' = □',ans:s,expl:b+' + '+a+' = '+s}}
+var NAMES={'+':['składnik','składnik','suma'],'−':['odjemna','odjemnik','różnica']},ALLN=['składnik','suma','odjemna','odjemnik','różnica'];
+function eqData(op){if(op==='+'){var s=ri(2,10),a=ri(0,s);return{op:'+',n:[a,s-a,s]}}var m=ri(1,10),k=ri(0,m);return{op:'−',n:[m,k,m-k]}}
+function eqHtml(e,hl,btn,S2){var p=[];for(var i=0;i<3;i++){var v=String(e.n[i]);if(btn)p.push('<button class="nb'+(S2&&S2.cls&&S2.cls[i]?' '+S2.cls[i]:'')+'" data-act="ntap" data-k="'+i+'"'+(S2&&S2.dis?' disabled':'')+'>'+v+'</button>');else p.push(i===hl?'<span class="hl">'+v+'</span>':v)}
+  return p[0]+' '+e.op+' '+p[1]+' = '+p[2]}
+function eqExpl(e){var nm=NAMES[e.op];return e.n[0]+' '+e.op+' '+e.n[1]+' = '+e.n[2]+': '+e.n[0]+' to '+nm[0]+', '+e.n[1]+' to '+nm[1]+', '+e.n[2]+' to '+nm[2]}
+function qNames(d,forceOp){
+  var ops=forceOp?[forceOp]:d<.3?['+']:d<.6?['−']:['+','−'],e=eqData(pickOne(ops)),v=d<.5?pickOne(['nname','ntap']):pickOne(['nname','ntap','ncomp','ncomp']);
+  if(v==='nname'){var i=ri(0,2),ans=NAMES[e.op][i],pool=e.op==='+'?['składnik','suma','różnica','odjemna']:['odjemna','odjemnik','różnica','suma'];
+    return{t:'nname',lab:'Jak nazywa się zaznaczona liczba?',eq:eqHtml(e,i),ans:ans,opts:shuffle(pool),expl:eqExpl(e)}}
+  if(v==='ntap'){var nm=pickOne(NAMES[e.op]),acc=[];NAMES[e.op].forEach(function(x,i){if(x===nm)acc.push(i)});
+    return{t:'ntap',lab:'Zaznacz '+nm+(nm==='składnik'?' (dowolny)':''),e:e,ans:acc,expl:eqExpl(e)}}
+  var w=ri(0,2);
+  if(e.op==='+'){if(w===0)return{t:'nin',lab:'Oblicz sumę',text:'Składniki: '+e.n[0]+' i '+e.n[1]+'. Suma = □',ans:e.n[2],expl:'Suma: '+e.n[0]+' + '+e.n[1]+' = '+e.n[2]};
+    return{t:'nin',lab:'Jaki jest drugi składnik?',text:'Suma: '+e.n[2]+'. Jeden składnik: '+e.n[0]+'. Drugi = □',ans:e.n[1],expl:e.n[0]+' + '+e.n[1]+' = '+e.n[2]}}
+  if(w===0)return{t:'nin',lab:'Oblicz różnicę',text:'Odjemna: '+e.n[0]+', odjemnik: '+e.n[1]+'. Różnica = □',ans:e.n[2],expl:'Różnica: '+e.n[0]+' − '+e.n[1]+' = '+e.n[2]};
+  return{t:'nin',lab:'Jaka jest odjemna?',text:'Odjemnik: '+e.n[1]+', różnica: '+e.n[2]+'. Odjemna = □',ans:e.n[0],expl:e.n[0]+' − '+e.n[1]+' = '+e.n[2]}}
+var DIGW=['zero','jeden','dwa','trzy','cztery','pięć','sześć','siedem','osiem','dziewięć'];
+function pl3(n,f){var m10=n%10,m100=n%100;return n===1?f[0]:(m10>=2&&m10<=4&&!(m100>=12&&m100<=14))?f[1]:f[2]}
+function qDig(d){var v=pickOne(d<.35?[0,1,2]:d<.7?[0,1,2,3,4]:[0,1,2,3,4,5,6]);
+  if(v===0){var n=ri(0,8);return{t:'nin',lab:'Jaka liczba jest po niej?',text:'Po '+n+' jest □',ans:n+1,expl:'Po '+n+' jest '+(n+1)}}
+  if(v===1){var n1=ri(1,9);return{t:'nin',lab:'Jaka liczba jest przed nią?',text:'Przed '+n1+' jest □',ans:n1-1,expl:'Przed '+n1+' jest '+(n1-1)}}
+  if(v===2){var w=ri(0,9);return{t:'nmc',lab:'Jak zapisać cyfrą: '+DIGW[w]+'?',text:'',ans:w,opts:numOpts(w,0,9),expl:DIGW[w]+' = '+w}}
+  if(v===3){var w2=ri(0,9),ws=[DIGW[w2]];while(ws.length<4){var x=DIGW[ri(0,9)];if(ws.indexOf(x)<0)ws.push(x)}return{t:'nmc',lab:'Jak czytamy tę cyfrę?',text:String(w2),ans:DIGW[w2],opts:shuffle(ws),expl:w2+' = '+DIGW[w2]}}
+  if(v===4){var a=ri(0,6);return{t:'nin',lab:'Uzupełnij ciąg liczb',text:a+', '+(a+1)+', □, '+(a+3),ans:a+2,expl:a+', '+(a+1)+', '+(a+2)+', '+(a+3)}}
+  if(v===5){var a2=ri(3,9);return{t:'nin',lab:'Uzupełnij ciąg (w dół)',text:a2+', '+(a2-1)+', □, '+(a2-3),ans:a2-2,expl:a2+', '+(a2-1)+', '+(a2-2)+', '+(a2-3)}}
+  var s={},arr=[];while(arr.length<4){var y=ri(0,9);if(!s[y]){s[y]=1;arr.push(y)}}var mx=Math.max.apply(null,arr);
+  return{t:'nmc',lab:'Która liczba jest największa?',text:'',ans:mx,opts:shuffle(arr),expl:'Największa jest '+mx}}
+function qTwo(d){var v=pickOne(d<.3?[0,1,2,3]:d<.6?[0,1,2,3,4,5]:[0,1,2,3,4,5,6,7]);
+  if(v===0){var n=ri(10,99),t=Math.floor(n/10);return{t:'nmc',lab:'Ile dziesiątek ma liczba '+n+'?',text:'',ans:t,opts:numOpts(t,0,9),expl:n+': '+t+' '+pl3(t,['dziesiątka','dziesiątki','dziesiątek'])+' i '+(n%10)+' '+pl3(n%10,['jedność','jedności','jedności'])}}
+  if(v===1){var n2=ri(10,99),u=n2%10;return{t:'nmc',lab:'Ile jedności ma liczba '+n2+'?',text:'',ans:u,opts:numOpts(u,0,9),expl:n2+': '+Math.floor(n2/10)+' '+pl3(Math.floor(n2/10),['dziesiątka','dziesiątki','dziesiątek'])+' i '+u+' '+pl3(u,['jedność','jedności','jedności'])}}
+  if(v===2){var a=ri(1,9),b=ri(0,9);return{t:'nin',lab:'Jaka to liczba?',text:a+' '+pl3(a,['dziesiątka','dziesiątki','dziesiątek'])+' i '+b+' '+pl3(b,['jedność','jedności','jedności'])+' to □',ans:a*10+b,expl:a+'0 + '+b+' = '+(a*10+b)}}
+  if(v===3){if(Math.random()<.5){var n3=ri(10,98);return{t:'nin',lab:'Jaka liczba jest po niej?',text:'Po '+n3+' jest □',ans:n3+1,expl:'Po '+n3+' jest '+(n3+1)}}var n4=ri(11,99);return{t:'nin',lab:'Jaka liczba jest przed nią?',text:'Przed '+n4+' jest □',ans:n4-1,expl:'Przed '+n4+' jest '+(n4-1)}}
+  if(v===4){var l=ri(10,99),r=Math.random()<.2?l:ri(10,99),sg=sgn(l,r);return{t:'ncmp',lab:'Wstaw znak <, > lub =',l:String(l),r:String(r),ans:sg,expl:l+' '+sg+' '+r}}
+  if(v===5){var n5=ri(11,99);while(n5%10===0)n5=ri(11,99);var tt=Math.floor(n5/10)*10;return{t:'nin',lab:'Rozłóż liczbę',text:n5+' = '+tt+' + □',ans:n5%10,expl:n5+' = '+tt+' + '+(n5%10)}}
+  if(v===6){var s={},arr=[];while(arr.length<4){var y=ri(10,99);if(!s[y]){s[y]=1;arr.push(y)}}var mn=Math.min.apply(null,arr);return{t:'nmc',lab:'Która liczba jest najmniejsza?',text:'',ans:mn,opts:shuffle(arr),expl:'Najmniejsza jest '+mn}}
+  var st=ri(1,6)*10,k=st+10;return{t:'nin',lab:'Uzupełnij ciąg (co 10)',text:(st-10>0?(st-10)+', ':'')+st+', □, '+(st+20),ans:st+10,expl:(st-10>0?(st-10)+', ':'')+st+', '+(st+10)+', '+(st+20)}}
+var MTOP={dig:qDig,add:qAdd,sad:function(d){return qNames(d,'+')},com:qComm,sub:qSub,sbn:function(d){return qNames(d,'−')},unk:qUnk,cmp:qCmp,nam:qNames,two:qTwo},MIXKEYS=['add','sub','unk','cmp','com','nam'];
+var MINTRO={
+ dig:['Liczby jednocyfrowe','Cyfry to <b>0, 1, 2, 3, 4, 5, 6, 7, 8, 9</b>. Liczby jednocyfrowe mają jedną cyfrę. Po <b>6</b> jest <b>7</b>, a przed <b>6</b> jest <b>5</b>.'],
+ two:['Liczby dwucyfrowe','Liczby dwucyfrowe mają dwie cyfry: <b>dziesiątki</b> i <b>jedności</b>. W liczbie <b>47</b> są 4 dziesiątki i 7 jedności: <b>47 = 40 + 7</b>.'],
+ sad:['Składniki i suma','W dodawaniu <b>3 + 4 = 7</b> liczby 3 i 4 to <b>składniki</b>, a 7 to <b>suma</b>.'],
+ sbn:['Odjemna, odjemnik, różnica','W odejmowaniu <b>7 − 3 = 4</b>: 7 to <b>odjemna</b>, 3 to <b>odjemnik</b>, 4 to <b>różnica</b>.'],
+ add:['Dodawanie w zakresie 10','Dodajemy, gdy łączymy liczby: <b>3 + 4 = 7</b>. Liczby, które dodajemy, to <b>składniki</b>. Wynik to <b>suma</b>.'],
+ sub:['Odejmowanie w zakresie 10','Odejmujemy, gdy coś zabieramy: <b>7 − 3 = 4</b>. Wynik odejmowania to <b>różnica</b>.'],
+ unk:['Działania z niewiadomą','Niewiadoma to brakująca liczba, np. <b>3 + □ = 7</b>. Szukamy liczby, która razem z 3 da 7. Pomaga odejmowanie: 7 − 3 = 4.<br>W <b>□ − 3 = 4</b> brakującą liczbę znajdziemy dodawaniem: 4 + 3 = 7.'],
+ cmp:['Znaki <, > i =','<b>&lt;</b> czytamy: mniejsze. <b>&gt;</b> czytamy: większe. <b>=</b> czytamy: tyle samo.<br>Otwarta strona znaku zawsze patrzy na większą liczbę: <b>3 &lt; 5</b>, <b>6 &gt; 2</b>. Działania najpierw obliczamy: 2 + 3 = 5.'],
+ com:['Przemienność dodawania','Gdy zamienimy składniki miejscami, suma się nie zmienia: <b>3 + 4 = 4 + 3</b>. Uwaga: przy odejmowaniu tak nie jest! 7 − 3 to nie to samo co 3 − 7.'],
+ nam:['Nazwy w działaniach','W dodawaniu <b>3 + 4 = 7</b>: 3 i 4 to <b>składniki</b>, 7 to <b>suma</b>.<br>W odejmowaniu <b>7 − 3 = 4</b>: 7 to <b>odjemna</b>, 3 to <b>odjemnik</b>, 4 to <b>różnica</b>.']};
+function mathQs(sec,j){
+  var fin=j===sec.n-1,topic=sec.topic,dd=[.12,.4,.68,.9],qs=[],seen={},keys=MIXKEYS;
+  function gen(tp,d){for(var t=0;t<30;t++){var q=MTOP[tp](Math.max(0,Math.min(1,d+(Math.random()-.5)*.16)));var k=(q.text||q.l+'?'+q.r||'')+q.lab+(q.eq||'');if(!seen[k]){seen[k]=1;return q}}return MTOP[tp](d)}
+  if(topic==='mix'){var dm=[.35,.55,.75,.9,1][j];for(var i=0;i<10;i++)qs.push(gen(keys[i%keys.length],dm));return shuffle(qs)}
+  var d=fin?1:dd[j],nMain=fin?7:10;
+  for(var a=0;a<nMain;a++)qs.push(gen(topic,d));
+  if(fin)for(var b=0;b<3;b++)qs.push(gen(pickOne(keys.filter(function(k){return k!==topic})),.8));
+  qs=shuffle(qs);if(j===0&&MINTRO[topic])qs.unshift({t:'mintro',title:MINTRO[topic][0],html:MINTRO[topic][1]});
+  return qs}
+function startMathTopic(tp){POOLMODE='all';var qs=[],seen={},keys=MIXKEYS;
+  for(var i=0;i<10;i++){var tpc=tp==='mix'?keys[i%keys.length]:tp,q=MTOP[tpc](.25+i*.07);qs.push(q)}
+  begin('free',shuffle(qs),{subj:'math'})}
+function startMathTest(){var keys=MIXKEYS,qs=[];for(var i=0;i<15;i++)qs.push(MTOP[keys[i%keys.length]](.4+Math.random()*.6));begin('test',shuffle(qs),{subj:'math'})}
+function checkNum(){var q=S.qs[S.i],inp=document.getElementById('ans');if(!inp||!inp.value.trim())return;var v=inp.value.trim();S.typed=v;done(/^\d+$/.test(v)&&Number(v)===q.ans,null)}
+function eqBig(t){return'<div class="eq">'+esc(t).replace(/□/g,'<span class="qb">?</span>')+'</div>'}
+function mathPlay(q){
+  var fbk=S.phase==='fb',f=fbk?fb(S.ok,q.expl||String(q.ans),null):'';
+  if(q.t==='mintro')return'<div class="card"><div class="lab">Przypomnij sobie</div><h2 style="font-size:26px;margin:6px 0 8px">'+esc(q.title)+'</h2><div class="mintro">'+q.html+'</div><div class="row"><button class="btn" data-act="next" id="nx">Zaczynamy</button></div></div>';
+  if(q.t==='nin')return'<div class="card"><div class="lab">'+esc(q.lab||'Uzupełnij')+'</div>'+eqBig(q.text)+'<div style="margin-top:8px"><input type="text" class="numin" inputmode="numeric" pattern="[0-9]*" id="ans" autocomplete="off" aria-label="Odpowiedź"'+(fbk?' disabled value="'+esc(S.typed||'')+'"':'')+'></div>'+(fbk?'':'<div class="row" style="justify-content:center"><button class="btn" data-act="check">Sprawdź</button></div>')+f+'</div>';
+  if(q.t==='nmc'||q.t==='nname'){var head=q.t==='nname'?'<div class="eq">'+q.eq+'</div>':(q.text?eqBig(q.text):'');
+    return'<div class="card"><div class="lab">'+esc(q.lab||'Wybierz')+'</div>'+head+'<div class="opts">'+q.opts.map(function(o,k){var c='';if(fbk){if(o===q.ans)c=' ok';else if(q.chosen===k)c=' bad'}return'<button class="opt'+c+'" data-act="nmo" data-k="'+k+'"'+(fbk?' disabled':'')+'>'+esc(String(o))+'</button>'}).join('')+'</div>'+f+'</div>'}
+  if(q.t==='ncmp'){return'<div class="card"><div class="lab">'+esc(q.lab)+'</div><div class="eq">'+esc(q.l)+' <span class="qb">'+(fbk?esc(q.ans):'?')+'</span> '+esc(q.r)+'</div><div class="signs">'+['<','=','>'].map(function(s){var c='';if(fbk){if(s===q.ans)c=' ok';else if(q.chosen===s)c=' bad'}return'<button class="opt'+c+'" data-act="ncmpo" data-v="'+s+'"'+(fbk?' disabled':'')+'>'+esc(s)+'</button>'}).join('')+'</div>'+f+'</div>'}
+  if(q.t==='ntap'){var cls={};if(fbk){q.ans.forEach(function(i){cls[i]='ok'});if(q.chosen!=null&&q.ans.indexOf(q.chosen)<0)cls[q.chosen]='bad'}
+    return'<div class="card"><div class="lab">'+esc(q.lab)+'</div><div class="eq">'+eqHtml(q.e,-1,true,{cls:cls,dis:fbk})+'</div>'+f+'</div>'}
+  return''}
+function exams(){var t=new Date();t.setHours(0,0,0,0);return EXAMS.map(function(x){var d=new Date(x.date+'T00:00:00');return{x:x,days:Math.round((d-t)/86400000),d:d}}).filter(function(e){return e.days>=0}).sort(function(a,b){return a.days-b.days})}
+function examBanner(subj){var es=exams().filter(function(e){return !subj||e.x.subj===subj});if(!es.length)return'';var e=es[0],when=e.days===0?'Dziś':e.days===1?'Jutro':'Za '+e.days+' dni';
+  var dn=['niedziela','poniedziałek','wtorek','środa','czwartek','piątek','sobota'][e.d.getDay()],mn=['stycznia','lutego','marca','kwietnia','maja','czerwca','lipca','sierpnia','września','października','listopada','grudnia'][e.d.getMonth()];
+  return'<div class="exam"><div class="lab">'+when+' · '+dn+', '+e.d.getDate()+' '+mn+'</div><h3>'+esc(e.x.title)+'</h3><div class="hintline">'+esc(e.x.scope)+'</div>'+(subj==='math'?'<div class="row"><button class="btn" data-act="mtest">Kartkówka próbna</button></div>':'')+'</div>'}
+function subjectsView(){var es=exams(),mb=es.filter(function(e){return e.x.subj==='math'})[0],eb=es.filter(function(e){return e.x.subj==='en'})[0];
+  var badge=function(e){return e?'<span class="badge">'+(e.days===0?'Dziś':e.days===1?'Jutro':'Za '+e.days+' dni')+': '+esc(e.x.short)+'</span>':''};
+  return header()+'<div class="lab" style="margin-top:6px">Cześć, '+esc(P().name)+'!</div><h2 style="font-size:32px;margin-bottom:14px">Czego się dziś uczysz?</h2><div class="subjects"><button class="subj-card" data-act="subject" data-s="en"><span class="si" style="background:var(--sky)">Aa</span><span><b>Angielski</b><small>Lekcje z zeszytu, słówka, zdania, mówienie</small>'+badge(eb)+'</span></button>'+
+  '<button class="subj-card" data-act="subject" data-s="math"><span class="si" style="background:var(--accent)">+−</span><span><b>Matematyka</b><small>Klasa 2 · dodawanie i odejmowanie do 10, znaki, niewiadome</small>'+badge(mb)+'</span></button></div>'}
+function mathHome(h){
+  h+=examBanner('math');
+  if(D.tab==='ex'){
+    var t=[['dig','Cyfry i liczby','0–9'],['add','Dodawanie','w zakresie 10'],['sad','Składniki i suma','3 + 4 = 7'],['com','Przemienność','3 + 4 = 4 + 3'],['sub','Odejmowanie','w zakresie 10'],['sbn','Odjemna i odjemnik','7 − 3 = 4'],['unk','Z niewiadomą','3 + □ = 7'],['cmp','Znaki < > =','porównywanie'],['mix','Cała kartkówka','mieszanka'],['two','Liczby dwucyfrowe','10–99']];
+    h+='<div class="quick" style="grid-template-columns:1fr 1fr"><button data-act="mtest">Kartkówka próbna<small>15 zadań, wynik na końcu</small></button><button data-act="tab" data-t="path">Ścieżka<small>lekcje po 10 zadań</small></button></div><h2 class="sect">Ćwiczenia dowolne</h2><div class="hint">Wybierz temat. 10 zadań z podpowiedzią po każdym.</div><div class="grid">'+t.map(function(x){return'<button class="tile" data-act="mtopic" data-t="'+x[0]+'">'+x[1]+'<small>'+x[2]+'</small></button>'}).join('')+'</div>'}
+  else{var nl=nextLesson('math');
+    h+=nl?'<div class="cont"><div><div class="lab">Dalej</div><h3>'+esc(secTitle(nl.s))+' · '+(nl.j===nl.s.n-1?'Test sekcji':'Lekcja '+(nl.j+1))+'</h3></div><button class="btn" data-act="lesson" data-k="'+esc(nl.s.key)+'" data-j="'+nl.j+'">Start</button></div>':'<div class="cont"><div><div class="lab">Wszystko zaliczone</div><h3>Kartkówka próbna</h3></div><button class="btn" data-act="mtest">Start</button></div>';
+    h+=nSecs('math').map(secCard).join('')}
+  msg='';return h+'<button class="link" data-act="settings">Ustawienia</button>'}
+
 /* ---------- sessions ---------- */
 var S=null,view='home',msg='',confirmReset=false,setup=null;
 function begin(kind,qs,extra){S={kind:kind,qs:qs,i:0,score:0,xp:0,phase:'ask',log:[],tries:0,heard:'',err:''};for(var k in extra||{})S[k]=extra[k];view='play';render();autoSay()}
-function scoredN(){return S.qs.filter(function(q){return q.t!=='intro'}).length}
+function scoredN(){return S.qs.filter(function(q){return q.t!=='intro'&&q.t!=='mintro'}).length}
 function autoSay(){var q=S.qs[S.i];if(q&&(q.t==='listen'||(q.t==='build'&&q.dir==='listen')))speak(q.t==='listen'?q.w.en:clean(q.s.en))}
-function startLesson(k,j){var s=SK[k];if(!s||!lessonOpen(s,j))return;POOLMODE='path';P().last=k;save();begin('level',lessonQs(s,j),{s:s,j:j})}
+function startLesson(k,j){var s=SK[k];if(!s||!lessonOpen(s,j))return;POOLMODE='path';P().last=k;save();begin('level',s.subj==='math'?mathQs(s,j):lessonQs(s,j),{s:s,j:j})}
 function startReview(){POOLMODE='all';var pool=knownAll().filter(function(w){return P().stats[w.en]});if(pool.length<4)pool=knownAll();
   var w=pool.slice().sort(function(a,b){return box(a)-box(b)}).slice(0,Math.min(pool.length,25));
   var qs=seq(w,10).map(function(x,k){return mk(['mc','write','pic','listen','speak'][k%5],x)});
@@ -405,10 +574,10 @@ function stars(r){return r>=.95?3:r>=.8?2:r>=.6?1:0}
 function finish(){var n=scoredN(),r=n?S.score/n:0;S.n=n;S.r=r;
   if(S.kind==='level'){var l=sst(S.s),st=stars(r);S.st=st;S.wasDone=secDone(S.s);if(st>l[S.j])l[S.j]=st;S.nowDone=secDone(S.s);save()}
   view='result';render()}
-function afterLesson(){var s=S.s,j=S.j;if(j<s.n-1)return{s:s,j:j+1};var N=nSecs(),i=N.indexOf(s),n2=N[i+1];return n2&&secOpen(n2)?{s:n2,j:0}:null}
+function afterLesson(){var s=S.s,j=S.j;if(j<s.n-1)return{s:s,j:j+1};var N=nSecs(s.subj),i=N.indexOf(s),n2=N[i+1];return n2&&secOpen(n2)?{s:n2,j:0}:null}
 
 /* ---------- checking ---------- */
-function checkWrite(){var q=S.qs[S.i],inp=document.getElementById('ans');if(!inp||!inp.value.trim())return;
+function checkWrite(){var q=S.qs[S.i],inp=document.getElementById('ans');if(!inp||!inp.value.trim())return;if(q.t==='nin')return checkNum();
   var ans=(q.t==='write'&&q.dir==='en2pl')?q.w.pl:q.w.en,ok=answers(ans).indexOf(compact(inp.value))>-1;S.typed=inp.value;
   done(ok,q.w,{say:(ok&&q.t!=='write')||(ok&&q.dir==='pl2en')?q.w.en:null})}
 function listenMic(){var q=S.qs[S.i];if(!SR||S.listening)return;
@@ -434,16 +603,18 @@ function ring(){var g=D.goal||20,n=Math.min(g,todayN()),c=2*Math.PI*26,off=c*(1-
 var OFF=[0,34,54,34,0,-34,-54,-34];
 function secCard(s){
   var open=secOpen(s),st=sst(s),done=secDone(s),nd=st.filter(Boolean).length,no=s.g==='x'?'Dodatkowa':'Sekcja '+secNo(s);
-  var head='<div class="uh"><div><div class="lab">'+no+'</div><h3>'+esc(secTitle(s))+'</h3>'+(secSub(s)?'<div class="hintline">'+esc(secSub(s))+'</div>':'')+'</div><small>'+(open?'Lekcje '+nd+'/'+s.n+' · opanowane '+secMastered(s)+'/'+s.words.length:s.words.length+' słówek')+'</small></div>';
+  var head='<div class="uh"><div><div class="lab">'+no+'</div><h3>'+esc(secTitle(s))+'</h3>'+(secSub(s)?'<div class="hintline">'+esc(secSub(s))+'</div>':'')+'</div><small>'+(open?'Lekcje '+nd+'/'+s.n+(s.subj==='math'?'':' · opanowane '+secMastered(s)+'/'+s.words.length):s.words.length+' słówek')+'</small></div>';
   if(!open)return'<section class="unit locked">'+head+'<div class="hint">'+(s.g==='x'?'Odblokuje się po ukończeniu sekcji z Lekcją '+esc(s.parent)+'.':'Odblokuje się po ukończeniu poprzedniej sekcji.')+'</div><button class="link" data-act="opensec" data-k="'+esc(s.key)+'">Zacznij od tej sekcji</button></section>';
   var cur=-1;for(var j=0;j<s.n;j++)if(!st[j]){cur=j;break}
   var nodes='';for(var i=0;i<s.n;i++){var fin=i===s.n-1,can=i===0||st[i-1]>0,cls=st[i]?'done':i===cur?'cur':can?'open':'lock',inner=st[i]?'★'.repeat(st[i]):(fin?'🏆':(i+1));
     nodes+='<div class="pn" style="transform:translateX('+OFF[i%OFF.length]+'px)"><button class="node '+cls+(fin?' fin':'')+'" data-act="lesson" data-k="'+esc(s.key)+'" data-j="'+i+'"'+(can?'':' disabled')+' aria-label="'+(fin?'Test sekcji':'Lekcja '+(i+1))+(st[i]?', gwiazdki: '+st[i]:'')+'"><span class="nc">'+inner+'</span><span class="nl">'+(i===cur?'Start':fin?'Test sekcji':'Lekcja '+(i+1))+'</span></button></div>'}
-  return'<section class="unit">'+head+'<div class="pathcol">'+nodes+'</div>'+(done?'<div class="fb ok" style="margin-top:10px">Sekcja ukończona! ✓</div>':'')+'</section>'}
-function hello(){var sk=streak();return header()+tabs()+'<div class="hello"><div><div class="lab">Cześć,</div><h2>'+esc(P().name)+'!</h2></div><div class="stats"><div class="streak" title="Seria dni">'+(sk?'🔥 '+sk+(sk===1?' dzień':' dni'):'Zacznij serię!')+'</div>'+ring()+'</div></div>'}
+  return'<section class="unit" id="sec_'+esc(s.key)+'">'+head+'<div class="pathcol">'+nodes+'</div>'+(done?'<div class="fb ok" style="margin-top:10px">Sekcja ukończona! ✓</div>':'')+'</section>'}
+function hello(){var sk=streak();return header()+'<div class="subjbar"><button class="link" data-act="subjects">‹ Przedmioty</button> · <b>'+(D.subject==='math'?'Matematyka':'Angielski')+'</b></div>'+tabs()+'<div class="hello"><div><div class="lab">Cześć,</div><h2>'+esc(P().name)+'!</h2></div><div class="stats"><div class="streak" title="Seria dni">'+(sk?'🔥 '+sk+(sk===1?' dzień':' dni'):'Zacznij serię!')+'</div>'+ring()+'</div></div>'}
 function tabs(){return'<div class="tabs" role="tablist"><button role="tab" aria-selected="'+(D.tab!=='ex')+'" data-act="tab" data-t="path">Ścieżka</button><button role="tab" aria-selected="'+(D.tab==='ex')+'" data-act="tab" data-t="ex">Ćwiczenia</button></div>'}
 function home(){
+  if(!D.subject)return subjectsView();
   var h=hello();
+  if(D.subject==='math')return mathHome(h);
   if(D.tab==='ex'){
     var t=[['mc','Wybierz','Znajdź znaczenie'],['pairs','Dopasuj','Połącz pary'],['pic','Obrazki','Co jest na obrazku?'],['write','Pisz','Wpisz tłumaczenie'],['listen','Słuchaj','Usłysz i zapisz'],['speak','Mów','Powiedz do mikrofonu'],['fill','Uzupełnij','Wstaw słówko w zdanie'],['build','Ułóż zdanie','Z rozsypanki']];
     h+='<div class="quick"><button data-act="review">Powtórka<small>10 pytań</small></button><button data-act="testsetup">Test<small>z wybranych lekcji</small></button><button data-act="tab" data-t="path">Ścieżka<small>lekcje po 10 zadań</small></button></div>';
@@ -452,6 +623,7 @@ function home(){
   else{
     var nl=nextLesson();
     h+=nl?'<div class="cont"><div><div class="lab">Dalej</div><h3>Sekcja '+secNo(nl.s)+' · '+(nl.j===nl.s.n-1?'Test sekcji':'Lekcja '+(nl.j+1))+'</h3></div><button class="btn" data-act="lesson" data-k="'+esc(nl.s.key)+'" data-j="'+nl.j+'">Start</button></div>':'<div class="cont"><div><div class="lab">Wszystko zaliczone</div><h3>Zrób powtórkę</h3></div><button class="btn" data-act="review">Start</button></div>';
+    if(SEC.some(function(z){return z.subj==='en'&&z.g==='old'}))h+='<div class="quick" style="grid-template-columns:1fr 1fr"><button data-act="jump" data-k="old">Zeszły rok<small>od początku ścieżki</small></button><button data-act="jump" data-k="y">Ten rok<small>lekcje z tego roku</small></button></div>';
     if(msg)h+='<div class="fb bad">'+esc(msg)+'</div>';
     var main=SEC.filter(function(s){return s.g!=='x'}),ex=SEC.filter(function(s){return s.g==='x'});
     h+=main.map(secCard).join('');
@@ -470,10 +642,11 @@ function testView(){
 
 function fb(ok,ans,say,extra){return'<div class="fb '+(ok?'ok':'bad')+'">'+(ok?'Super! ✓':'Prawie. Poprawna odpowiedź:')+(ok&&!extra?'':'<span>'+esc(ans)+(say?sp(say,'sm'):'')+'</span>')+'</div><div class="row"><button class="btn" data-act="next" id="nx">Dalej</button></div>'}
 function play(){
-  var q=S.qs[S.i],fbk=S.phase==='fb',body='',cnt=S.qs.filter(function(x){return x.t!=='intro'}).length,cur=S.qs.slice(0,S.i+1).filter(function(x){return x.t!=='intro'}).length;
-  var top='<div class="sess-top"><button class="x" data-act="home" aria-label="Zakończ">×</button><div class="bar"><i style="width:'+(S.i/S.qs.length*100)+'%"></i></div><span class="lab">'+(q.t==='intro'?'Nowe':cur+'/'+cnt)+'</span></div>';
+  var q=S.qs[S.i],fbk=S.phase==='fb',body='',cnt=S.qs.filter(function(x){return x.t!=='intro'&&x.t!=='mintro'}).length,cur=S.qs.slice(0,S.i+1).filter(function(x){return x.t!=='intro'&&x.t!=='mintro'}).length;
+  var top='<div class="sess-top"><button class="x" data-act="home" aria-label="Zakończ">×</button><div class="bar"><i style="width:'+(S.i/S.qs.length*100)+'%"></i></div><span class="lab">'+((q.t==='intro'||q.t==='mintro')?'Nowe':cur+'/'+cnt)+'</span></div>';
   var w=q.w;
-  if(q.t==='intro'){
+  if(q.t.charAt(0)==='n'||q.t==='mintro'){body=mathPlay(q)}
+  else if(q.t==='intro'){
     body='<div class="card"><div class="lab">Nowe słówka</div><div class="hint">Kliknij głośniczek i posłuchaj. Za chwilę je poćwiczysz.</div>'+q.ws.map(function(x){return'<div class="nw"><div class="nwp">'+pic(x)+'</div><div class="nwt"><b>'+esc(x.en)+'</b><br><small>'+esc(x.pl)+'</small></div>'+sp(x.en)+'</div>'}).join('')+'<div class="row"><button class="btn" data-act="next" id="nx">Zaczynamy</button></div></div>'}
   else if(q.t==='mc'){var en=q.dir==='en2pl';
     if(!q.opts)q.opts=shuffle([w].concat(distract(w,3,dp(),function(x){return en?x.pl:x.en})));
@@ -514,11 +687,11 @@ function pbtn(q,w,side){var c='pair';if(q.done[w.en])c+=' done';else if(q.sel&&q
   var b='<button class="'+c+'" data-act="pair" data-w="'+esc(w.en)+'" data-s="'+side+'"'+(S.phase==='fb'?' disabled':'')+'>'+esc(side==='L'?w.en:w.pl)+'</button>';return side==='L'&&!q.done[w.en]?'<div class="oc">'+b+sp(w.en)+'</div>':b}
 function result(){
   if(S.kind==='test'){var n=S.n,pc=Math.round(S.r*100),wr=S.log.filter(function(x){return !x.ok});
-    var wrong=[],seen={};wr.forEach(function(x){var o=x.w?{en:x.w.en,pl:x.w.pl}:x.q&&x.q.s?{en:clean(x.q.s.en),pl:clean(x.q.s.pl),sent:1}:null;if(o&&!seen[o.en]){seen[o.en]=1;wrong.push(o)}});
+    var wrong=[],seen={};wr.forEach(function(x){var o=x.w?{en:x.w.en,pl:x.w.pl}:x.q&&x.q.s?{en:clean(x.q.s.en),pl:clean(x.q.s.pl),sent:1}:x.q&&x.q.expl?{en:x.q.expl,pl:'',math:1,sent:1}:null;if(o&&!seen[o.en]){seen[o.en]=1;wrong.push(o)}});
     var wordsWrong=wrong.filter(function(x){return !x.sent});
     return header()+'<div class="card res"><div class="lab">Wynik testu</div><div class="big">'+S.score+' / '+n+' · '+pc+'%</div><div class="hint">'+(pc>=90?'Świetnie!':pc>=70?'Dobry wynik!':pc>=50?'Nieźle, jeszcze trochę ćwiczeń.':'Poćwicz te słówka i spróbuj jeszcze raz.')+' +'+S.xp+' XP</div>'+
-    (wrong.length?'<div class="wrongs"><div class="lab">Do powtórki</div>'+wrong.map(function(x){return'<div class="nw"><div class="nwt"><b>'+esc(x.en)+'</b><br><small>'+esc(x.pl)+'</small></div>'+sp(x.en)+'</div>'}).join('')+'</div>':'<div class="hint">Bez błędów!</div>')+
-    '<div class="row" style="justify-content:center">'+(wordsWrong.length?'<button class="btn" data-act="pracwrong">Ćwicz błędne</button>':'')+'<button class="btn alt" data-act="testsetup">Nowy test</button><button class="btn alt" data-act="home">Menu</button></div></div>'}
+    (wrong.length?'<div class="wrongs"><div class="lab">Do powtórki</div>'+wrong.map(function(x){return'<div class="nw"><div class="nwt"><b>'+esc(x.en)+'</b>'+(x.pl?'<br><small>'+esc(x.pl)+'</small>':'')+'</div>'+(x.math?'':sp(x.en))+'</div>'}).join('')+'</div>':'<div class="hint">Bez błędów!</div>')+
+    '<div class="row" style="justify-content:center">'+(wordsWrong.length?'<button class="btn" data-act="pracwrong">Ćwicz błędne</button>':'')+(S.subj==='math'?'<button class="btn alt" data-act="mtest">Jeszcze raz</button>':'<button class="btn alt" data-act="testsetup">Nowy test</button>')+'<button class="btn alt" data-act="home">Menu</button></div></div>'}
   var st=S.kind==='level'?S.st:stars(S.r),ok=S.kind!=='level'||st>0,nx=S.kind==='level'&&ok?afterLesson():null,fin=S.kind==='level'&&S.j===S.s.n-1;
   var lab=S.kind==='level'?'Sekcja '+secNo(S.s)+' · '+(fin?'Test sekcji':'Lekcja '+(S.j+1)):'Koniec rundy';
   var extra=S.kind==='level'&&S.nowDone&&!S.wasDone?'<div class="fb ok" style="text-align:left">Sekcja ukończona! Zwroty z tej sekcji wrócą w kolejnych, żeby je utrwalić.</div>':'';
@@ -555,6 +728,14 @@ document.addEventListener('keydown',function(e){if(e.key!=='Enter'||view!=='play
   if(e.target.id==='ans'&&S.phase==='ask'){e.preventDefault();checkWrite()}else if(S.phase==='fb'&&e.target.tagName!=='BUTTON')next()});
 document.addEventListener('click',function(e){var b=e.target.closest('[data-act]');if(!b)return;var a=b.dataset.act,q=S&&S.qs?S.qs[S.i]:null;
   if(a==='who'){D.active=+b.dataset.i;save();if(view==='play'||view==='result')view='home';render()}
+  else if(a==='subjects'){D.subject=null;save();view='home';render()}
+  else if(a==='subject'){D.subject=b.dataset.s;D.tab='path';save();view='home';render()}
+  else if(a==='nmo'){q.chosen=+b.dataset.k;done(q.opts[q.chosen]===q.ans,null)}
+  else if(a==='ncmpo'){q.chosen=b.dataset.v;done(q.chosen===q.ans,null)}
+  else if(a==='ntap'){q.chosen=+b.dataset.k;done(q.ans.indexOf(q.chosen)>-1,null)}
+  else if(a==='mtopic'){startMathTopic(b.dataset.t)}
+  else if(a==='mtest'){startMathTest()}
+  else if(a==='jump'){var js=SEC.filter(function(z){return z.subj==='en'&&z.g===b.dataset.k})[0],el=js&&document.getElementById('sec_'+js.key);if(el&&el.scrollIntoView)el.scrollIntoView({behavior:'smooth',block:'start'})}
   else if(a==='home'){view='home';msg='';S=null;render()}
   else if(a==='tab'){D.tab=b.dataset.t;save();view='home';render()}
   else if(a==='settings'){view='settings';msg='';confirmReset=false;render()}
