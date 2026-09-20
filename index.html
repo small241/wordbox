@@ -1,0 +1,599 @@
+<title>Wordbox</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@500;700;800&display=swap">
+<style>
+:root{
+  --bg:#EAF1FF;--surface:#FFFFFF;--ink:#16213E;--muted:#56628A;--line:#CDD9F4;
+  --accent:#FF6A3D;--accent-ink:#FFFFFF;--teal:#0E9A9A;--sun:#FFC53D;--plum:#7A5AF8;--sky:#2F80ED;
+  --ok:#1B8F4E;--ok-bg:#DDF6E8;--bad:#CC3B33;--bad-bg:#FFE4E1;--shadow:0 3px 0 rgba(22,33,62,.14);
+  --display:'Fredoka','Trebuchet MS',system-ui,sans-serif;--body:'Nunito',system-ui,-apple-system,'Segoe UI',sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#10162B;--surface:#1B2344;--ink:#EEF2FF;--muted:#A5B0D6;--line:#2E3969;
+  --accent:#FF8257;--accent-ink:#1A1020;--teal:#3CCFCF;--sun:#FFD25E;--plum:#A18CFF;--sky:#6BA8FF;
+  --ok:#4CD68F;--ok-bg:#153A2A;--bad:#FF837B;--bad-bg:#43201F;--shadow:0 3px 0 rgba(0,0,0,.35);}}
+:root[data-theme="dark"]{
+  --bg:#10162B;--surface:#1B2344;--ink:#EEF2FF;--muted:#A5B0D6;--line:#2E3969;
+  --accent:#FF8257;--accent-ink:#1A1020;--teal:#3CCFCF;--sun:#FFD25E;--plum:#A18CFF;--sky:#6BA8FF;
+  --ok:#4CD68F;--ok-bg:#153A2A;--bad:#FF837B;--bad-bg:#43201F;--shadow:0 3px 0 rgba(0,0,0,.35);}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.4;padding-inline:16px;padding-block:14px 40px}
+.wrap{max-width:640px;margin:0 auto}
+h1,h2,h3{font-family:var(--display);margin:0;text-wrap:balance;font-weight:600}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:3px solid var(--sky);outline-offset:2px}
+.top{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:16px}
+.logo{font-family:var(--display);font-weight:700;font-size:26px;letter-spacing:-.01em}
+.logo b{color:var(--accent)}
+.who{display:flex;gap:6px}
+.chip{border:2px solid var(--line);background:var(--surface);border-radius:999px;padding:6px 14px;font-weight:800;font-size:15px}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.hello{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+.hello h2{font-size:30px}
+.stats{display:flex;align-items:center;gap:14px}
+.streak{font-family:var(--display);font-weight:700;font-size:22px;color:var(--accent);white-space:nowrap}
+.ring{position:relative;width:64px;height:64px}
+.ring svg{display:block}.ring b{position:absolute;inset:0;display:grid;place-items:center;font-family:var(--display);font-size:16px;font-variant-numeric:tabular-nums}
+.ring-bg{stroke:var(--line)}.ring-fg{stroke:var(--teal)}
+.lab{font-weight:800;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:var(--accent);color:var(--accent-ink);border:0;border-radius:14px;padding:13px 22px;font-weight:800;font-size:18px;box-shadow:0 4px 0 rgba(0,0,0,.2)}
+.btn:active{transform:translateY(2px);box-shadow:none}
+.btn.alt{background:var(--surface);color:var(--ink);border:2px solid var(--line);box-shadow:var(--shadow)}
+.btn.block{width:100%}
+.btn[disabled]{opacity:.45}
+.cont{display:flex;align-items:center;justify-content:space-between;gap:12px;background:var(--ink);color:var(--bg);border-radius:18px;padding:14px 16px;margin-bottom:12px}
+.cont .lab{color:inherit;opacity:.7}.cont h3{font-size:22px}
+.cont .btn{flex:none}
+.quick{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:22px}
+.quick button{background:var(--surface);border:2px solid var(--line);border-radius:14px;padding:10px 6px;font-weight:800;font-size:15px;box-shadow:var(--shadow)}
+.quick small{display:block;color:var(--muted);font-weight:700;font-size:12px}
+.sect{font-family:var(--display);font-size:20px;margin:22px 0 10px}
+.unit{background:var(--surface);border:2px solid var(--line);border-radius:20px;padding:14px 14px 12px;margin-bottom:12px;box-shadow:var(--shadow)}
+.unit.locked{opacity:.65;box-shadow:none}
+.uh{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.uh h3{font-size:20px}.uh small{color:var(--muted);font-weight:800;font-size:13px}
+.lv{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.node{display:flex;flex-direction:column;align-items:center;gap:4px;background:none;border:0;padding:2px 0}
+.nc{width:52px;height:52px;border-radius:50%;display:grid;place-items:center;font-family:var(--display);font-weight:700;font-size:20px;background:var(--line);color:var(--muted);border:3px solid transparent}
+.node.cur .nc{background:var(--accent);color:var(--accent-ink);box-shadow:0 0 0 4px color-mix(in srgb,var(--accent) 25%,transparent)}
+.node.done .nc{background:var(--teal);color:#fff;font-size:15px;letter-spacing:-.05em}
+.node.open .nc{background:var(--surface);color:var(--ink);border-color:var(--line)}
+.node.lock{cursor:default}
+.nl{font-size:11px;font-weight:800;color:var(--muted);text-align:center;line-height:1.1}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.tile{background:var(--surface);border:2px solid var(--line);border-radius:14px;padding:12px;text-align:left;box-shadow:var(--shadow);font-weight:800}
+.tile small{display:block;color:var(--muted);font-weight:700;font-size:13px}
+.note{background:var(--surface);border:2px dashed var(--line);border-radius:14px;padding:10px 14px;color:var(--muted);font-size:14px;font-weight:700;margin-top:14px}
+.link{background:none;border:0;color:var(--sky);font-weight:800;text-decoration:underline;padding:6px 0;margin-top:10px}
+.sess-top{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+.bar{height:12px;background:var(--line);border-radius:99px;overflow:hidden;margin-top:4px}
+.sess-top .bar{flex:1;margin:0}
+.bar i{display:block;height:100%;background:var(--teal);border-radius:99px;transition:width .4s}
+.x{border:2px solid var(--line);background:var(--surface);border-radius:12px;width:42px;height:42px;font-size:20px;font-weight:800}
+.card{background:var(--surface);border:2px solid var(--line);border-radius:22px;padding:22px 18px;box-shadow:var(--shadow)}
+.big{font-family:var(--display);font-size:clamp(32px,9vw,50px);font-weight:600;line-height:1.1;margin:6px 0 4px;overflow-wrap:anywhere}
+.bigrow{display:flex;align-items:center;gap:12px}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:18px}
+@media(max-width:420px){.opts{grid-template-columns:1fr}}
+.opt{background:var(--surface);border:2px solid var(--line);border-radius:14px;padding:14px 10px;font-weight:800;font-size:18px;box-shadow:var(--shadow);min-height:58px;overflow-wrap:anywhere}
+.opt.ok,.pair.ok{background:var(--ok-bg);border-color:var(--ok);color:var(--ok)}
+.opt.bad,.pair.bad{background:var(--bad-bg);border-color:var(--bad);color:var(--bad)}
+.oc{display:flex;gap:6px;align-items:stretch}.oc .opt,.oc .pair{flex:1;min-width:0}
+.sp{flex:none;display:inline-grid;place-items:center;width:46px;min-height:46px;border-radius:12px;border:2px solid var(--line);background:var(--surface);color:var(--sky);box-shadow:var(--shadow);padding:0}
+.sp:active{transform:translateY(2px);box-shadow:none}
+.sp.sm{width:36px;min-height:36px;border-radius:10px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:16px}
+input[type=text],textarea,select{width:100%;font:inherit;font-weight:700;font-size:20px;color:var(--ink);background:var(--bg);border:2px solid var(--line);border-radius:14px;padding:12px 14px}
+textarea{font-size:16px;min-height:140px}
+select{width:auto;font-size:16px;padding:8px 10px}
+input[type=checkbox]{width:22px;height:22px;accent-color:var(--accent)}
+.fb{margin-top:16px;border-radius:14px;padding:12px 14px;font-weight:800}
+.fb.ok{background:var(--ok-bg);color:var(--ok)}.fb.bad{background:var(--bad-bg);color:var(--bad)}
+.fb span{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-family:var(--display);font-size:24px;color:var(--ink)}
+.mic{width:96px;height:96px;border-radius:50%;border:0;background:var(--plum);color:#fff;display:grid;place-items:center;box-shadow:0 5px 0 rgba(0,0,0,.2);margin:16px auto 6px}
+.mic.on{background:var(--bad);animation:pulse 1s infinite}
+@keyframes pulse{50%{transform:scale(1.08)}}
+@media(prefers-reduced-motion:reduce){.mic.on{animation:none}.bar i{transition:none}}
+.heard{text-align:center;color:var(--muted);font-weight:800;min-height:26px}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.cols .col{display:flex;flex-direction:column;gap:10px}
+.pair{background:var(--surface);border:2px solid var(--line);border-radius:14px;padding:14px 8px;font-weight:800;font-size:17px;box-shadow:var(--shadow);min-height:58px;overflow-wrap:anywhere}
+.pair.sel{border-color:var(--sky);background:var(--bg);color:var(--sky)}
+.pair.done{visibility:hidden}
+.pair.shake{animation:shake .3s}
+@keyframes shake{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+.pic{text-align:center;font-size:96px;line-height:1.1;margin:10px 0 4px}.pv{max-width:100%;height:auto}
+.bignum{font-family:var(--display);font-weight:700;font-size:84px;color:var(--teal)}
+.pv-t{fill:var(--muted)}.pv-b{fill:var(--line);stroke:var(--sky);stroke-width:3}.pv-f{fill:var(--sky)}.pv-l{stroke:var(--muted);stroke-width:3}
+.sen{font-family:var(--display);font-size:clamp(24px,6.5vw,32px);line-height:1.25;margin:8px 0}
+.blank{display:inline-block;min-width:3.2em;border-bottom:4px solid var(--sky);margin:0 4px;color:transparent}
+.blank.ok{color:var(--ok);border-color:var(--ok)}.blank.bad{color:var(--bad);border-color:var(--bad)}
+.hintline{color:var(--muted);font-weight:700;font-size:16px;margin-top:2px}
+.line{display:flex;flex-wrap:wrap;gap:8px;min-height:64px;padding:10px 0;border-top:2px solid var(--line);border-bottom:2px solid var(--line);margin:16px 0 14px;align-content:flex-start}
+.bank{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.tl{background:var(--surface);border:2px solid var(--line);border-radius:12px;padding:8px 14px;font-weight:800;font-size:18px;box-shadow:var(--shadow)}
+.tl.used{visibility:hidden}
+.line .tl{border-color:var(--sky)}
+.line.ok .tl{border-color:var(--ok);color:var(--ok)}.line.bad .tl{border-color:var(--bad);color:var(--bad)}
+.stars{font-family:var(--display);font-size:64px;color:var(--sun);letter-spacing:.1em;text-shadow:0 2px 0 rgba(0,0,0,.18)}
+.res{text-align:center}.res .big{margin-block:2px 10px}
+.hint{color:var(--muted);font-size:14px;font-weight:700;margin:4px 0 10px}
+.nw{display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid var(--line)}
+.nw:last-of-type{border-bottom:0}.nwp{width:64px;text-align:center;font-size:36px;line-height:1}.nwp .pv{width:60px}.nwp .bignum{font-size:32px}
+.nwt{flex:1;font-size:19px;min-width:0;overflow-wrap:anywhere}.nwt small{color:var(--muted);font-weight:700;font-size:15px}
+.wl{max-height:260px;overflow:auto;border:2px solid var(--line);border-radius:14px;background:var(--surface)}
+.wl div{display:flex;justify-content:space-between;gap:8px;align-items:center;padding:8px 12px;border-bottom:1px solid var(--line);font-weight:700}
+.wl div:last-child{border-bottom:0}.wl small{color:var(--muted)}
+.wl button[data-act="del"]{border:0;background:none;color:var(--bad);font-weight:800;font-size:18px;padding:0 6px}
+.sec{margin-top:22px}.sec h3{font-size:21px;margin-bottom:8px}
+label{font-weight:800;font-size:15px}
+.chk{display:flex;align-items:center;gap:10px;padding:6px 0}
+.seg{display:flex;gap:8px;flex-wrap:wrap}
+.seg label{display:flex;align-items:center;gap:6px;border:2px solid var(--line);background:var(--surface);border-radius:999px;padding:6px 12px}
+.wrongs{margin-top:14px;text-align:left}
+.tabs{display:flex;gap:6px;background:var(--line);border-radius:14px;padding:4px;margin-bottom:14px}
+.tabs button{flex:1;border:0;background:none;border-radius:11px;padding:9px;font-weight:800;font-size:16px}
+.tabs button[aria-selected="true"]{background:var(--surface);box-shadow:var(--shadow)}
+.pathcol{display:flex;flex-direction:column;align-items:center;gap:8px;padding:6px 0 4px;overflow:hidden}
+.pn{display:flex;justify-content:center}
+.node.fin .nc{width:64px;height:64px;font-size:26px}
+.node.fin{padding:0}
+</style>
+<div class="wrap"><div id="app"></div></div>
+<script>
+(function(){
+'use strict';
+var KEY='wordbox-v2',OLD='wordbox-v1';
+var LT={"1":"Hello!","2":"What's your name?","3":"What number is on the kite?","4":"The days of the week","5":"Rooms in a house","6":"Where's Joy?"};
+var CUR_RAW=[
+"1|listen|słuchać","1|sing|śpiewać","1|count|liczyć","1|write|pisać","1|read|czytać","1|play|grać / bawić się","1|speak|mówić","1|have fun|dobrze się bawić",
+"1|hello|cześć","1|goodbye|do widzenia","1|see you soon|do zobaczenia wkrótce","1|how are you|jak się masz","1|I'm fine thank you|dobrze dziękuję",
+"1|eleven|11 / jedenaście","1|twelve|12 / dwanaście","1|thirteen|13 / trzynaście","1|fourteen|14 / czternaście","1|fifteen|15 / piętnaście",
+"2|what's your name|jak masz na imię","2|how old are you|ile masz lat","2|let's|chodźmy / zróbmy","2|good idea|dobry pomysł",
+"2|climb a tree|wspinać się na drzewo","2|eat ice cream|jeść lody","2|play on a swing|bawić się na huśtawce","2|ride a bike|jeździć na rowerze",
+"3|ten|10 / dziesięć","3|twenty|20 / dwadzieścia","3|thirty|30 / trzydzieści","3|forty|40 / czterdzieści","3|fifty|50 / pięćdziesiąt","3|sixty|60 / sześćdziesiąt","3|seventy|70 / siedemdziesiąt","3|eighty|80 / osiemdziesiąt","3|ninety|90 / dziewięćdziesiąt","3|one hundred|100 / sto",
+"4|Monday|poniedziałek","4|Tuesday|wtorek","4|Wednesday|środa","4|Thursday|czwartek","4|Friday|piątek","4|Saturday|sobota","4|Sunday|niedziela","4|week|tydzień","4|today|dzisiaj",
+"5|bathroom|łazienka","5|bedroom|sypialnia","5|dining room|jadalnia","5|garage|garaż","5|hall|przedpokój / korytarz","5|kitchen|kuchnia","5|living room|salon","5|toilet|toaleta","5|room|pokój","5|house|dom","5|classroom|klasa / sala lekcyjna","5|what is it|co to jest","5|is this our classroom|czy to nasza klasa",
+"6|in|w","6|on|na","6|next to|obok","6|behind|za","6|under|pod","6|where's Tiger|gdzie jest Tygrys"];
+var GR={verb:"listen,sing,count,write,read,play,speak,have fun,climb a tree,eat ice cream,play on a swing,ride a bike",
+phrase:"hello,goodbye,see you soon,how are you,I'm fine thank you,what's your name,how old are you,good idea,let's,what is it,is this our classroom,where's Tiger",
+day:"Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday,week,today",
+room:"bathroom,bedroom,dining room,garage,hall,kitchen,living room,toilet,room,house,classroom",
+prep:"in,on,next to,behind,under"};
+var GROUPS={};Object.keys(GR).forEach(function(k){GR[k].split(',').forEach(function(w){GROUPS[w]=k})});
+var BONUS=[{"g":"room2","pg":"room","en":"door","pl":"drzwi","emo":"🚪"},{"g":"room2","pg":"room","en":"key","pl":"klucz","emo":"🔑"},{"g":"room2","pg":"room","en":"television","pl":"telewizor","emo":"📺"},{"g":"room2","pg":"room","en":"computer","pl":"komputer","emo":"💻"},{"g":"room2","pg":"room","en":"telephone","pl":"telefon","emo":"📱"},{"g":"room2","pg":"room","en":"clock","pl":"zegar","emo":"🕐"},{"g":"room2","pg":"room","en":"shower","pl":"prysznic","emo":"🚿"},{"g":"room2","pg":"room","en":"garden","pl":"ogród","emo":"🌻"},{"g":"room2","pg":"room","en":"window","pl":"okno","emo":""},{"g":"room2","pg":"room","en":"stairs","pl":"schody","emo":""},{"g":"room2","pg":"room","en":"table","pl":"stół","emo":""},{"g":"room2","pg":"room","en":"chair","pl":"krzesło","emo":""},{"g":"room2","pg":"room","en":"bed","pl":"łóżko","emo":""},{"g":"room2","pg":"room","en":"sofa","pl":"kanapa","emo":""},{"g":"room2","pg":"room","en":"wall","pl":"ściana","emo":""},{"g":"room2","pg":"room","en":"floor","pl":"podłoga","emo":""},{"g":"num2","pg":"num","en":"one","pl":"1 / jeden","emo":""},{"g":"num2","pg":"num","en":"two","pl":"2 / dwa","emo":""},{"g":"num2","pg":"num","en":"three","pl":"3 / trzy","emo":""},{"g":"num2","pg":"num","en":"four","pl":"4 / cztery","emo":""},{"g":"num2","pg":"num","en":"five","pl":"5 / pięć","emo":""},{"g":"num2","pg":"num","en":"six","pl":"6 / sześć","emo":""},{"g":"num2","pg":"num","en":"seven","pl":"7 / siedem","emo":""},{"g":"num2","pg":"num","en":"eight","pl":"8 / osiem","emo":""},{"g":"num2","pg":"num","en":"nine","pl":"9 / dziewięć","emo":""},{"g":"num2","pg":"num","en":"sixteen","pl":"16 / szesnaście","emo":""},{"g":"num2","pg":"num","en":"seventeen","pl":"17 / siedemnaście","emo":""},{"g":"num2","pg":"num","en":"eighteen","pl":"18 / osiemnaście","emo":""},{"g":"num2","pg":"num","en":"nineteen","pl":"19 / dziewiętnaście","emo":""},{"g":"num2","pg":"num","en":"twenty-one","pl":"21 / dwadzieścia jeden","emo":""},{"g":"num2","pg":"num","en":"twenty-two","pl":"22 / dwadzieścia dwa","emo":""},{"g":"num2","pg":"num","en":"twenty-three","pl":"23 / dwadzieścia trzy","emo":""},{"g":"num2","pg":"num","en":"twenty-four","pl":"24 / dwadzieścia cztery","emo":""},{"g":"num2","pg":"num","en":"twenty-five","pl":"25 / dwadzieścia pięć","emo":""},{"g":"num2","pg":"num","en":"twenty-six","pl":"26 / dwadzieścia sześć","emo":""},{"g":"num2","pg":"num","en":"twenty-seven","pl":"27 / dwadzieścia siedem","emo":""},{"g":"num2","pg":"num","en":"twenty-eight","pl":"28 / dwadzieścia osiem","emo":""},{"g":"num2","pg":"num","en":"twenty-nine","pl":"29 / dwadzieścia dziewięć","emo":""},{"g":"num2","pg":"num","en":"thirty-one","pl":"31 / trzydzieści jeden","emo":""},{"g":"num2","pg":"num","en":"thirty-two","pl":"32 / trzydzieści dwa","emo":""},{"g":"num2","pg":"num","en":"thirty-three","pl":"33 / trzydzieści trzy","emo":""},{"g":"num2","pg":"num","en":"thirty-four","pl":"34 / trzydzieści cztery","emo":""},{"g":"num2","pg":"num","en":"thirty-five","pl":"35 / trzydzieści pięć","emo":""},{"g":"num2","pg":"num","en":"thirty-six","pl":"36 / trzydzieści sześć","emo":""},{"g":"num2","pg":"num","en":"thirty-seven","pl":"37 / trzydzieści siedem","emo":""},{"g":"num2","pg":"num","en":"thirty-eight","pl":"38 / trzydzieści osiem","emo":""},{"g":"num2","pg":"num","en":"thirty-nine","pl":"39 / trzydzieści dziewięć","emo":""},{"g":"num2","pg":"num","en":"forty-one","pl":"41 / czterdzieści jeden","emo":""},{"g":"num2","pg":"num","en":"forty-two","pl":"42 / czterdzieści dwa","emo":""},{"g":"num2","pg":"num","en":"forty-three","pl":"43 / czterdzieści trzy","emo":""},{"g":"num2","pg":"num","en":"forty-four","pl":"44 / czterdzieści cztery","emo":""},{"g":"num2","pg":"num","en":"forty-five","pl":"45 / czterdzieści pięć","emo":""},{"g":"num2","pg":"num","en":"forty-six","pl":"46 / czterdzieści sześć","emo":""},{"g":"num2","pg":"num","en":"forty-seven","pl":"47 / czterdzieści siedem","emo":""},{"g":"num2","pg":"num","en":"forty-eight","pl":"48 / czterdzieści osiem","emo":""},{"g":"num2","pg":"num","en":"forty-nine","pl":"49 / czterdzieści dziewięć","emo":""},{"g":"num2","pg":"num","en":"fifty-one","pl":"51 / pięćdziesiąt jeden","emo":""},{"g":"num2","pg":"num","en":"fifty-two","pl":"52 / pięćdziesiąt dwa","emo":""},{"g":"num2","pg":"num","en":"fifty-three","pl":"53 / pięćdziesiąt trzy","emo":""},{"g":"num2","pg":"num","en":"fifty-four","pl":"54 / pięćdziesiąt cztery","emo":""},{"g":"num2","pg":"num","en":"fifty-five","pl":"55 / pięćdziesiąt pięć","emo":""},{"g":"num2","pg":"num","en":"fifty-six","pl":"56 / pięćdziesiąt sześć","emo":""},{"g":"num2","pg":"num","en":"fifty-seven","pl":"57 / pięćdziesiąt siedem","emo":""},{"g":"num2","pg":"num","en":"fifty-eight","pl":"58 / pięćdziesiąt osiem","emo":""},{"g":"num2","pg":"num","en":"fifty-nine","pl":"59 / pięćdziesiąt dziewięć","emo":""},{"g":"num2","pg":"num","en":"sixty-one","pl":"61 / sześćdziesiąt jeden","emo":""},{"g":"num2","pg":"num","en":"sixty-two","pl":"62 / sześćdziesiąt dwa","emo":""},{"g":"num2","pg":"num","en":"sixty-three","pl":"63 / sześćdziesiąt trzy","emo":""},{"g":"num2","pg":"num","en":"sixty-four","pl":"64 / sześćdziesiąt cztery","emo":""},{"g":"num2","pg":"num","en":"sixty-five","pl":"65 / sześćdziesiąt pięć","emo":""},{"g":"num2","pg":"num","en":"sixty-six","pl":"66 / sześćdziesiąt sześć","emo":""},{"g":"num2","pg":"num","en":"sixty-seven","pl":"67 / sześćdziesiąt siedem","emo":""},{"g":"num2","pg":"num","en":"sixty-eight","pl":"68 / sześćdziesiąt osiem","emo":""},{"g":"num2","pg":"num","en":"sixty-nine","pl":"69 / sześćdziesiąt dziewięć","emo":""},{"g":"num2","pg":"num","en":"seventy-one","pl":"71 / siedemdziesiąt jeden","emo":""},{"g":"num2","pg":"num","en":"seventy-two","pl":"72 / siedemdziesiąt dwa","emo":""},{"g":"num2","pg":"num","en":"seventy-three","pl":"73 / siedemdziesiąt trzy","emo":""},{"g":"num2","pg":"num","en":"seventy-four","pl":"74 / siedemdziesiąt cztery","emo":""},{"g":"num2","pg":"num","en":"seventy-five","pl":"75 / siedemdziesiąt pięć","emo":""},{"g":"num2","pg":"num","en":"seventy-six","pl":"76 / siedemdziesiąt sześć","emo":""},{"g":"num2","pg":"num","en":"seventy-seven","pl":"77 / siedemdziesiąt siedem","emo":""},{"g":"num2","pg":"num","en":"seventy-eight","pl":"78 / siedemdziesiąt osiem","emo":""},{"g":"num2","pg":"num","en":"seventy-nine","pl":"79 / siedemdziesiąt dziewięć","emo":""},{"g":"num2","pg":"num","en":"eighty-one","pl":"81 / osiemdziesiąt jeden","emo":""},{"g":"num2","pg":"num","en":"eighty-two","pl":"82 / osiemdziesiąt dwa","emo":""},{"g":"num2","pg":"num","en":"eighty-three","pl":"83 / osiemdziesiąt trzy","emo":""},{"g":"num2","pg":"num","en":"eighty-four","pl":"84 / osiemdziesiąt cztery","emo":""},{"g":"num2","pg":"num","en":"eighty-five","pl":"85 / osiemdziesiąt pięć","emo":""},{"g":"num2","pg":"num","en":"eighty-six","pl":"86 / osiemdziesiąt sześć","emo":""},{"g":"num2","pg":"num","en":"eighty-seven","pl":"87 / osiemdziesiąt siedem","emo":""},{"g":"num2","pg":"num","en":"eighty-eight","pl":"88 / osiemdziesiąt osiem","emo":""},{"g":"num2","pg":"num","en":"eighty-nine","pl":"89 / osiemdziesiąt dziewięć","emo":""},{"g":"num2","pg":"num","en":"ninety-one","pl":"91 / dziewięćdziesiąt jeden","emo":""},{"g":"num2","pg":"num","en":"ninety-two","pl":"92 / dziewięćdziesiąt dwa","emo":""},{"g":"num2","pg":"num","en":"ninety-three","pl":"93 / dziewięćdziesiąt trzy","emo":""},{"g":"num2","pg":"num","en":"ninety-four","pl":"94 / dziewięćdziesiąt cztery","emo":""},{"g":"num2","pg":"num","en":"ninety-five","pl":"95 / dziewięćdziesiąt pięć","emo":""},{"g":"num2","pg":"num","en":"ninety-six","pl":"96 / dziewięćdziesiąt sześć","emo":""},{"g":"num2","pg":"num","en":"ninety-seven","pl":"97 / dziewięćdziesiąt siedem","emo":""},{"g":"num2","pg":"num","en":"ninety-eight","pl":"98 / dziewięćdziesiąt osiem","emo":""},{"g":"num2","pg":"num","en":"ninety-nine","pl":"99 / dziewięćdziesiąt dziewięć","emo":""},{"g":"day2","pg":"day","en":"morning","pl":"rano","emo":"🌅"},{"g":"day2","pg":"day","en":"evening","pl":"wieczór","emo":"🌆"},{"g":"day2","pg":"day","en":"night","pl":"noc","emo":"🌙"},{"g":"day2","pg":"day","en":"afternoon","pl":"popołudnie","emo":""},{"g":"day2","pg":"day","en":"tomorrow","pl":"jutro","emo":""},{"g":"day2","pg":"day","en":"yesterday","pl":"wczoraj","emo":""},{"g":"day2","pg":"day","en":"weekend","pl":"weekend","emo":""},{"g":"day2","pg":"day","en":"month","pl":"miesiąc","emo":""},{"g":"day2","pg":"day","en":"year","pl":"rok","emo":""},{"g":"prep2","pg":"prep","en":"between","pl":"między","emo":""},{"g":"prep2","pg":"prep","en":"in front of","pl":"przed","emo":""},{"g":"prep2","pg":"prep","en":"above","pl":"nad","emo":""},{"g":"verb2","pg":"verb","en":"run","pl":"biegać","emo":"🏃"},{"g":"verb2","pg":"verb","en":"swim","pl":"pływać","emo":"🏊"},{"g":"verb2","pg":"verb","en":"dance","pl":"tańczyć","emo":"💃"},{"g":"verb2","pg":"verb","en":"sleep","pl":"spać","emo":"😴"},{"g":"verb2","pg":"verb","en":"drink","pl":"pić","emo":"🥤"},{"g":"verb2","pg":"verb","en":"walk","pl":"chodzić","emo":"🚶"},{"g":"verb2","pg":"verb","en":"laugh","pl":"śmiać się","emo":"😂"},{"g":"verb2","pg":"verb","en":"draw","pl":"rysować","emo":"🖍️"},{"g":"verb2","pg":"verb","en":"jump","pl":"skakać","emo":""},{"g":"verb2","pg":"verb","en":"open","pl":"otwierać","emo":""},{"g":"verb2","pg":"verb","en":"close","pl":"zamykać","emo":""},{"g":"phrase2","pg":"phrase","en":"please","pl":"proszę","emo":""},{"g":"phrase2","pg":"phrase","en":"thank you","pl":"dziękuję","emo":"🙏"},{"g":"phrase2","pg":"phrase","en":"sorry","pl":"przepraszam","emo":"😔"},{"g":"phrase2","pg":"phrase","en":"yes","pl":"tak","emo":"✅"},{"g":"phrase2","pg":"phrase","en":"no","pl":"nie","emo":"❌"},{"g":"phrase2","pg":"phrase","en":"good morning","pl":"dzień dobry","emo":""},{"g":"phrase2","pg":"phrase","en":"good night","pl":"dobranoc","emo":""},{"g":"phrase2","pg":"phrase","en":"nice to meet you","pl":"miło cię poznać","emo":""},{"g":"food","pg":"room","en":"apple","pl":"jabłko","emo":"🍎"},{"g":"food","pg":"room","en":"banana","pl":"banan","emo":"🍌"},{"g":"food","pg":"room","en":"bread","pl":"chleb","emo":"🍞"},{"g":"food","pg":"room","en":"milk","pl":"mleko","emo":"🥛"},{"g":"food","pg":"room","en":"cheese","pl":"ser","emo":"🧀"},{"g":"food","pg":"room","en":"egg","pl":"jajko","emo":"🥚"},{"g":"food","pg":"room","en":"pizza","pl":"pizza","emo":"🍕"},{"g":"food","pg":"room","en":"cake","pl":"ciasto","emo":"🍰"},{"g":"food","pg":"room","en":"chocolate","pl":"czekolada","emo":"🍫"},{"g":"food","pg":"room","en":"sandwich","pl":"kanapka","emo":"🥪"},{"g":"food","pg":"room","en":"water","pl":"woda","emo":"💧"}];
+BONUS.forEach(function(b){GROUPS[b.en]=b.g==='food'?'food':b.g==='room2'?'obj':b.pg});
+var EMO={sing:'🎤',read:'🧒📖',write:'🧒✏️',count:'🔢',listen:'👂',speak:'🗣️','have fun':'🎉','climb a tree':'🌳🧗','eat ice cream':'😋🍦','ride a bike':'🚴',hello:'👋','good idea':'💡',bathroom:'🛁',bedroom:'🛏️','dining room':'🍽️🪑',garage:'🚗',toilet:'🚽',kitchen:'🍳','living room':'🛋️',house:'🏠',classroom:'🏫',week:'📅'};
+BONUS.forEach(function(b){if(b.emo)EMO[b.en]=b.emo});
+var PREP={"on":"<rect class=\"pv-t\" x=\"35\" y=\"55\" width=\"90\" height=\"8\" rx=\"2\"/><rect class=\"pv-t\" x=\"42\" y=\"63\" width=\"8\" height=\"37\"/><rect class=\"pv-t\" x=\"110\" y=\"63\" width=\"8\" height=\"37\"/><text x=\"80\" y=\"40\" text-anchor=\"middle\" dominant-baseline=\"central\" font-size=\"32\">🐯</text>","under":"<rect class=\"pv-t\" x=\"35\" y=\"55\" width=\"90\" height=\"8\" rx=\"2\"/><rect class=\"pv-t\" x=\"42\" y=\"63\" width=\"8\" height=\"37\"/><rect class=\"pv-t\" x=\"110\" y=\"63\" width=\"8\" height=\"37\"/><text x=\"80\" y=\"85\" text-anchor=\"middle\" dominant-baseline=\"central\" font-size=\"32\">🐯</text>","in":"<rect class=\"pv-b\" x=\"50\" y=\"48\" width=\"60\" height=\"52\"/><text x=\"80\" y=\"62\" text-anchor=\"middle\" dominant-baseline=\"central\" font-size=\"32\">🐯</text><rect class=\"pv-f\" x=\"50\" y=\"68\" width=\"60\" height=\"32\"/>","behind":"<text x=\"105\" y=\"84\" text-anchor=\"middle\" dominant-baseline=\"central\" font-size=\"32\">🐯</text><rect class=\"pv-f\" x=\"45\" y=\"55\" width=\"60\" height=\"45\"/>","next to":"<rect class=\"pv-f\" x=\"30\" y=\"58\" width=\"52\" height=\"42\"/><text x=\"120\" y=\"84\" text-anchor=\"middle\" dominant-baseline=\"central\" font-size=\"32\">🐯</text>","between":"<rect class=\"pv-f\" x=\"15\" y=\"58\" width=\"42\" height=\"42\"/><rect class=\"pv-f\" x=\"103\" y=\"58\" width=\"42\" height=\"42\"/><text x=\"80\" y=\"84\" text-anchor=\"middle\" dominant-baseline=\"central\" font-size=\"32\">🐯</text>","above":"<rect class=\"pv-f\" x=\"50\" y=\"68\" width=\"60\" height=\"32\"/><text x=\"80\" y=\"32\" text-anchor=\"middle\" dominant-baseline=\"central\" font-size=\"32\">🐯</text>","in front of":"<rect class=\"pv-f\" x=\"50\" y=\"45\" width=\"60\" height=\"55\"/><text x=\"80\" y=\"88\" text-anchor=\"middle\" dominant-baseline=\"central\" font-size=\"32\">🐯</text>"};
+var SENT_RAW=[
+"1|[Hello]! I'm Tom.|[Cześć]! Jestem Tomek.","1|How are you? I'm fine, thank you.|Jak się masz? Dobrze, dziękuję.","1|[Goodbye]! See you soon.|[Do widzenia]! Do zobaczenia wkrótce.",
+"1|I like to [sing].|Lubię [śpiewać].","1|I can [read].|Umiem [czytać].","1|We [speak] English.|Mówimy po angielsku.","1|Let's [count] to fifteen.|Policzmy do piętnastu.","1|Eleven, twelve, thirteen, fourteen, fifteen.|Jedenaście, dwanaście, trzynaście, czternaście, piętnaście.",
+"2|What's your name? I'm Tom.|Jak masz na imię? Jestem Tomek.","2|How old are you? I'm eight.|Ile masz lat? Mam osiem lat.","2|I can [ride a bike].|Umiem [jeździć na rowerze].","2|I can [climb a tree].|Umiem [wspinać się na drzewo].","2|I like to [eat ice cream].|Lubię [jeść lody].","2|Let's [play on a swing]!|Bawmy się na huśtawce!","2|Let's go! [Good idea]!|Chodźmy! [Dobry pomysł]!",
+"3|What number is on the kite?|Jaki numer jest na latawcu?","3|The number on the kite is [thirty].|Numer na latawcu to trzydzieści.","3|The number on the swing is [ninety].|Numer na huśtawce to dziewięćdziesiąt.","3|I have [twenty] stickers.|Mam dwadzieścia naklejek.","3|One, two, three... [ten]!|Raz, dwa, trzy... dziesięć!",
+"4|Today is [Thursday].|Dzisiaj jest [czwartek].","4|What day is it today?|Jaki dzień jest dzisiaj?","4|[Monday] is the first day of the week.|[Poniedziałek] jest pierwszym dniem tygodnia.","4|Today is [Friday].|Dzisiaj jest [piątek].","4|There are seven days in a [week].|W [tygodniu] jest siedem dni.","4|[Sunday] is a fun day.|[Niedziela] to fajny dzień.",
+"5|Is this our classroom? Yes, it is.|Czy to nasza klasa? Tak.","5|This is our [kitchen].|To jest nasza [kuchnia].","5|I sleep in the [bedroom].|Śpię w sypialni.","5|We eat in the [dining room].|Jemy w jadalni.","5|What is it? It's a [garage].|Co to jest? To jest [garaż].","5|This is our [house].|To jest nasz [dom].","5|I take a bath in the [bathroom].|Kąpię się w łazience.",
+"6|Where's Tiger? He's [in] the box.|Gdzie jest Tygrys? On jest [w] pudełku.","6|Tiger is [on] the table.|Tygrys jest [na] stole.","6|Tiger is [under] the table.|Tygrys jest [pod] stołem.","6|Tiger is [behind] the box.|Tygrys jest [za] pudełkiem.","6|Tiger is [next to] the box.|Tygrys jest [obok] pudełka.","6|Is Tiger next to the box? Yes, he is.|Czy Tygrys jest obok pudełka? Tak, jest.",
+"g:room2|Open the [door].|Otwórz [drzwi].","g:room2|I watch [television].|Oglądam telewizję.","g:room2|The [key] is on the table.|[Klucz] jest na stole.","g:room2|I play in the [garden].|Bawię się w ogrodzie.",
+"g:food|I like [pizza].|Lubię pizzę.","g:food|I drink [milk].|Piję [mleko].","g:food|I eat a [banana].|Jem banana.","g:food|The [bread] is on the table.|[Chleb] jest na stole.",
+"g:day2|Good [morning]! See you [tomorrow].|Dzień dobry! Do zobaczenia jutro.","g:day2|I sleep at [night].|Śpię w nocy.","g:verb2|I like to [run].|Lubię [biegać].","g:verb2|I can [swim].|Umiem [pływać].","g:verb2|I like to [dance].|Lubię [tańczyć].","g:verb2|I [sleep] at night.|[Śpię] w nocy.",
+"g:phrase2|[Thank you]! You're nice.|[Dziękuję]! Jesteś miły.","g:phrase2|[Please] help me.|[Proszę], pomóż mi.","g:phrase2|[Good night]!|[Dobranoc]!"];
+var SENT=SENT_RAW.map(function(l){var a=l.split('|');return{u:a[0],en:a[1],pl:a[2]}});
+var EXTRA_DEF=[['room2','Rzeczy w domu','5',8],['food','Jedzenie i picie','5',6],['num2','Liczby','3',10],['day2','Pory dnia i czas','4',99],['prep2','Więcej przyimków','6',99],['verb2','Więcej czynności','1',99],['phrase2','Grzeczne zwroty','2',99]];
+var LVN=['Poznaj','Wybierz','Obrazki','Pisz','Finał'];
+var SPK='speechSynthesis' in window,SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+var ICON={
+ mic:'<svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3" fill="currentColor"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>',
+ spk:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 4V5L8 9z" fill="currentColor"/><path d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/></svg>'};
+
+/* ---------- helpers ---------- */
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+function norm(s){return String(s).toLowerCase().replace(/ł/g,'l').normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9 ]/g,'').replace(/\s+/g,' ').trim()}
+function compact(s){return norm(s).replace(/ /g,'')}
+function answers(s){return s.split(/[\/,]/).map(compact).filter(Boolean)}
+function shuffle(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t}return a}
+function isNum(w){return /^\d/.test(w.pl)}
+function grp(w){return GROUPS[w.en]||(isNum(w)?'num':null)}
+function dstr(d){return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2)}
+function clean(s){return s.replace(/[\[\]]/g,'')}
+
+/* ---------- state ---------- */
+function newProfile(n){return{name:n,stats:{},xp:0,sec:{},open:{},last:null,days:{}}}
+function blank(){return{custom:[],extras:true,goal:20,tab:'path',active:0,profiles:[newProfile('Chłopiec 1'),newProfile('Chłopiec 2')]}}
+function load(){
+  try{var s=JSON.parse(localStorage.getItem(KEY));if(s&&s.profiles)return s}catch(e){}
+  var d=blank();
+  try{var o=JSON.parse(localStorage.getItem(OLD));if(o&&o.profiles){
+    d.profiles=o.profiles.map(function(p){var n=newProfile(p.name);n.stats=p.stats||{};n.xp=p.xp||0;return n});d.active=o.active||0;
+    var known={};CUR_RAW.forEach(function(l){known[l.split('|')[1].toLowerCase()]=1});
+    (o.words||[]).forEach(function(w){if(!known[String(w.en).toLowerCase()])d.custom.push({en:w.en,pl:w.pl,l:'M'})})}}catch(e){}
+  return d}
+var D=load();
+function save(){try{localStorage.setItem(KEY,JSON.stringify(D))}catch(e){}}
+function P(){var p=D.profiles[D.active];if(!p.sec)p.sec={};if(!p.open)p.open={};if(!p.days)p.days={};if(!p.stats)p.stats={};return p}
+
+/* ---------- units (lekcje z zeszytu) i sekcje ścieżki ---------- */
+var U=[],UM={},SEC=[],SK={};
+function buildUnits(){
+  U=[];UM={};
+  function get(k,title,sec,extra){if(!UM[k]){UM[k]={k:k,title:title,sec:sec,words:[],sents:[]};for(var x in extra||{})UM[k][x]=extra[x];U.push(UM[k])}return UM[k]}
+  CUR_RAW.forEach(function(l){var a=l.split('|');get(a[0],LT[a[0]],'y').words.push({en:a[1],pl:a[2],l:a[0]})});
+  D.custom.forEach(function(w){var k=String(w.l||'M'),sec=/^Z\d+$/.test(k)?'old':/^\d+$/.test(k)?'y':'mine';
+    var t=k==='M'?'Moje słówka':sec==='old'?'Zeszły rok · Lekcja '+k.slice(1):'Lekcja '+k;
+    var u=get(k,LT[k]||t,sec);u.words.push({en:w.en,pl:w.pl,l:k,custom:1})});
+  if(D.extras!==false)EXTRA_DEF.forEach(function(d){
+    var rows=BONUS.filter(function(b){return b.g===d[0]}),n=Math.ceil(rows.length/d[3]),per=Math.ceil(rows.length/n);
+    for(var i=0;i<n;i++){var part=rows.slice(i*per,(i+1)*per),title=d[1];
+      if(d[0]==='num2'){title='Liczby '+parseInt(part[0].pl,10)+'–'+parseInt(part[part.length-1].pl,10)}else if(n>1)title+=' · część '+(i+1);
+      var u=get('X'+d[0]+i,title,'x',{parent:d[2],g:d[0]});
+      part.forEach(function(r){u.words.push({en:r.en,pl:r.pl,l:u.k,extra:1})})}});
+  U.forEach(function(u){u.sents=SENT.filter(function(s){return s.u===u.k||(u.g&&s.u==='g:'+u.g)})});
+  var num=function(k){return parseInt(String(k).replace(/\D/g,''),10)||0};
+  var yk=U.filter(function(u){return u.sec==='y'}).sort(function(a,b){return num(a.k)-num(b.k)});
+  var ok=U.filter(function(u){return u.sec==='old'}).sort(function(a,b){return num(a.k)-num(b.k)});
+  U=ok.concat(yk,U.filter(function(u){return u.sec==='mine'}),U.filter(function(u){return u.sec==='x'}));
+  buildSections()}
+/* Sekcja = kilka kolejnych lekcji z zeszytu, razem ok. 16 słówek. Sekcja ma (liczba porcji po ok. 5 słówek) lekcji po 10 zadań + końcowy test sekcji. */
+function buildSections(){
+  SEC=[];SK={};var T=16,MAXL=T*1.25;
+  function mkSec(g,parts,parent){
+    var words=[],sents=[],seenS={},lessons=[];
+    parts.forEach(function(p){p.words.forEach(function(w){words.push(w)});p.base.sents.forEach(function(s){if(!seenS[s.en]){seenS[s.en]=1;sents.push(s)}});if(lessons.indexOf(p.base.k)<0)lessons.push(p.base.k)});
+    var nch=Math.max(1,Math.ceil(words.length/5)),base=Math.floor(words.length/nch),extra=words.length%nch,chunks=[],pos=0;
+    for(var i=0;i<nch;i++){var sz=base+(i<extra?1:0);chunks.push(words.slice(pos,pos+sz));pos+=sz}
+    var s={key:g+':'+parts[0].id,g:g,parts:parts,words:words,sents:sents,lessons:lessons,chunks:chunks,n:chunks.length+1,parent:parent};
+    SEC.push(s);SK[s.key]=s;return s}
+  ['old','y','mine'].forEach(function(g){
+    var parts=[];U.filter(function(u){return u.sec===g}).forEach(function(u){
+      var pc=u.words.length>MAXL*1.3?Math.ceil(u.words.length/T):1,per=Math.ceil(u.words.length/pc);
+      for(var i=0;i<pc;i++)parts.push({id:u.k+(pc>1?'#'+i:''),base:u,words:u.words.slice(i*per,(i+1)*per)})});
+    var cur=[],cw=0;parts.forEach(function(p){if(cur.length&&cw+p.words.length>MAXL){mkSec(g,cur);cur=[];cw=0}cur.push(p);cw+=p.words.length});if(cur.length)mkSec(g,cur)});
+  U.filter(function(u){return u.sec==='x'}).forEach(function(u){mkSec('x',[{id:u.k,base:u,words:u.words}],u.parent)});
+}
+buildUnits();
+function nSecs(){return SEC.filter(function(s){return s.g!=='x'})}
+function secNo(s){return nSecs().indexOf(s)+1}
+function secTitle(s){
+  if(s.g==='x')return s.parts[0].base.title;
+  var ks=s.lessons.slice(),lab=ks.map(function(k){return String(k)});
+  var nums=ks.map(function(k){return parseInt(String(k).replace(/\D/g,''),10)}),pre=s.g==='old'?'Zeszły rok · ':'';
+  if(s.g==='mine')return 'Moje słówka';
+  var word=ks.length>1?'Lekcje ':'Lekcja ',rng=ks.length>1&&nums.every(function(n,i){return i===0||n===nums[i-1]+1})?nums[0]+'–'+nums[nums.length-1]:nums.join(', ');
+  return pre+word+rng}
+function secSub(s){return s.g==='y'?s.lessons.map(function(k){return LT[k]||''}).filter(Boolean).join(' · '):''}
+function sst(s){var p=P().sec;if(!p[s.key])p[s.key]=[];var a=p[s.key];while(a.length<s.n)a.push(0);return a}
+function secDone(s){return sst(s).every(function(x){return x>0})}
+function secStarted(s){return sst(s).some(function(x){return x>0})}
+function secOpen(s){
+  if(P().open[s.key])return true;
+  if(s.g==='x'){var ps=nSecs().filter(function(z){return z.lessons.indexOf(s.parent)>-1})[0];return !ps||secDone(ps)}
+  var N=nSecs(),i=N.indexOf(s);return i===0||secDone(N[i-1])}
+function lessonOpen(s,j){return secOpen(s)&&(j===0||sst(s)[j-1]>0)}
+function box(w){var s=P().stats[w.en];return s?s.box:0}
+function bump(w,ok){var st=P().stats,s=st[w.en]||(st[w.en]={box:0,ok:0,bad:0});if(ok){s.box=Math.min(4,s.box+1);s.ok++}else{s.box=Math.max(0,s.box-1);s.bad++}}
+function uniq(a){var seen={},out=[];a.forEach(function(w){var k=w.en.toLowerCase();if(!seen[k]){seen[k]=1;out.push(w)}});return out}
+function knownPath(){var r=[];SEC.forEach(function(s){if(secOpen(s))r=r.concat(s.words)});return uniq(r)}
+function knownAll(){var r=[];SEC.forEach(function(s){if(s.g!=='x'||(secOpen(s)&&secStarted(s)))r=r.concat(s.words)});return uniq(r)}
+var POOLMODE='all';
+function openSents(){var r=[];SEC.forEach(function(s){if(secOpen(s))r=r.concat(s.sents)});return r.length?r:SENT}
+function dp(){return POOLMODE==='path'?knownPath():knownAll()}
+function secMastered(s){return s.words.filter(function(w){return box(w)>=3}).length}
+function prevSecs(s){var N=nSecs();return (s.g==='x'?N:N.slice(0,Math.max(0,N.indexOf(s)))).filter(secStarted)}
+function prevWords(s){var r=[];prevSecs(s).forEach(function(p){r=r.concat(p.words)});return uniq(r).sort(function(a,b){return box(a)-box(b)})}
+function streak(){var days=P().days||{},d=new Date(),n=0;if(!days[dstr(d)])d.setDate(d.getDate()-1);while(days[dstr(d)]>0){n++;d.setDate(d.getDate()-1)}return n}
+function todayN(){return (P().days||{})[dstr(new Date())]||0}
+function nextLesson(){
+  var cand=nSecs().filter(function(s){return secOpen(s)&&!secDone(s)});if(!cand.length)return null;
+  var last=SK[P().last],s=(last&&cand.indexOf(last)>-1)?last:cand[0],st=sst(s);
+  for(var j=0;j<s.n;j++)if(!st[j])return{s:s,j:j};return null}
+function unitAvail(u){if(u.sec!=='x')return true;var s=SEC.filter(function(z){return z.parts[0].base===u})[0];return !s||secOpen(s)}
+
+/* ---------- pictures ---------- */
+function pic(w){
+  if(EMO[w.en])return'<span role="img" aria-label="obrazek">'+EMO[w.en]+'</span>';
+  if(PREP[w.en])return'<svg class="pv" viewBox="0 0 160 110" width="200" role="img" aria-label="obrazek">'+PREP[w.en]+'<line class="pv-l" x1="10" y1="101" x2="150" y2="101"/></svg>';
+  if(isNum(w))return'<span class="bignum">'+parseInt(w.pl,10)+'</span>';
+  return''}
+function picLab(w,pk){var g=grp(w),k=PREP[w.en]?'prep':({verb:'verb',num:'num',phrase:'phrase',room:'room',obj:'obj',food:'food',day:'time'})[g]||'thing';
+  var L={prep:['Gdzie jest tygrys?','Napisz po angielsku, gdzie jest tygrys'],verb:['Jaka to czynność? (co robi?)','Napisz po angielsku czynność: co robi?'],num:['Jaka to liczba?','Napisz liczbę po angielsku'],phrase:['Co mówimy?','Napisz po angielsku, co mówimy'],room:['Jakie to pomieszczenie?','Napisz po angielsku nazwę pomieszczenia'],obj:['Co to za przedmiot?','Napisz po angielsku, co to za przedmiot'],food:['Co to za jedzenie lub picie?','Napisz po angielsku, co to jest'],time:['Co to za pora dnia lub czas?','Napisz po angielsku, co to za czas'],thing:['Co to jest?','Napisz po angielsku, co to jest']};return L[k][pk?0:1]}
+function sp(t,c){return SPK?'<button class="sp'+(c?' '+c:'')+'" data-act="say" data-t="'+esc(t)+'" aria-label="Posłuchaj">'+ICON.spk+'</button>':''}
+var voice=null;
+function speak(t){if(!SPK)return;try{speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(t);u.lang='en-US';u.rate=.85;var vs=speechSynthesis.getVoices();
+  voice=voice||vs.filter(function(v){return /^en[-_]US/i.test(v.lang)})[0]||vs.filter(function(v){return /^en/i.test(v.lang)})[0];if(voice)u.voice=voice;speechSynthesis.speak(u)}catch(e){}}
+
+/* ---------- question building ---------- */
+function seq(list,n){var out=[],bag=[];if(!list.length)return out;
+  while(out.length<n){if(!bag.length)bag=list.slice();var tot=0,ws=bag.map(function(w){var x=5-box(w);tot+=x;return x}),r=Math.random()*tot,k=0;
+    while(k<bag.length-1&&(r-=ws[k])>0)k++;var w=bag.splice(k,1)[0];
+    if(out.length&&out[out.length-1]===w&&bag.length){bag.push(w);continue}out.push(w)}
+  return out}
+function mk(t,w){
+  if(t==='speak'&&!SR)t='write';if(t==='pic'&&!pic(w))t='mc';
+  var q={t:t,w:w};
+  if(t==='mc'||t==='write')q.dir=Math.random()<.5?'en2pl':'pl2en';
+  if(t==='pic')q.kind=Math.random()<.7?'pick':'type';
+  return q}
+function pairsQ(ws){ws=uniq(ws).slice(0,5);if(ws.length<2)return mk('mc',ws[0]);return{t:'pairs',ws:ws,left:shuffle(ws),right:shuffle(ws),sel:null,done:{},bad:{},first:{},mist:0}}
+function distract(w,n,pool,txt,filter){
+  var g=grp(w),c=pool.filter(function(x){return x.en!==w.en&&(!filter||filter(x))}),same=shuffle(c.filter(function(x){return g&&grp(x)===g})),rest=shuffle(c.filter(function(x){return !g||grp(x)!==g}));
+  var out=[],seen={};seen[txt(w).toLowerCase()]=1;
+  same.concat(rest).forEach(function(x){var t=txt(x);if(out.length<n&&!seen[t.toLowerCase()]){seen[t.toLowerCase()]=1;out.push(x)}});return out}
+function findWord(text,lang){var t=text.toLowerCase(),a=uniq(U.reduce(function(r,u){return r.concat(u.words)},[]));
+  for(var i=0;i<a.length;i++){var v=(lang==='en'?a[i].en:a[i].pl).toLowerCase();if(v===t)return a[i]}return null}
+function fillQ(s,okFn){
+  var be=s.en.match(/\[(.+?)\]/),bp=s.pl.match(/\[(.+?)\]/),dir=be&&bp?(Math.random()<.5?'en':'pl'):be?'en':bp?'pl':null;if(!dir)return null;
+  var target=(dir==='en'?be:bp)[1],tw=findWord(target,dir);
+  if(okFn&&tw&&!okFn(tw))return null;
+  var pool=dp(),ds;
+  if(tw)ds=distract(tw,3,pool,function(x){return dir==='en'?x.en:x.pl},function(x){return dir==='en'||!isNum(x)}).map(function(x){return dir==='en'?x.en:x.pl});
+  else ds=shuffle(pool.filter(function(x){return (dir==='en'?x.en:x.pl).toLowerCase()!==target.toLowerCase()&&!(dir==='pl'&&isNum(x))})).slice(0,3).map(function(x){return dir==='en'?x.en:x.pl});
+  return{t:'fill',s:s,dir:dir,target:target,tw:tw,opts:shuffle([target].concat(ds))}}
+function tokens(s){return clean(s).replace(/[.,!?…]/g,' ').split(/\s+/).filter(Boolean)}
+function buildQ(s,dir){
+  var target=dir==='en2pl'?s.pl:s.en,toks=tokens(target),lang=dir==='en2pl'?'pl':'en',have={};toks.forEach(function(t){have[compact(t)]=1});
+  var pool=[];(POOLMODE==='path'?openSents():SENT).forEach(function(x){tokens(x[lang]).forEach(function(t){var c=compact(t);if(!have[c]&&pool.indexOf(t)<0&&t.length>1)pool.push(t)})});
+  var ds=shuffle(pool).slice(0,toks.length>5?3:2);
+  var tiles=shuffle(toks.concat(ds)).map(function(t,i){return{id:i,t:t}});
+  return{t:'build',s:s,dir:dir,target:toks,tiles:tiles,sel:[]}}
+function sentQ(ss,type,okFn,used){
+  var c=shuffle(ss||[]);
+  for(var i=0;i<c.length;i++){var s=c[i];if(used&&used[s.en])continue;
+    if(type==='fill'){if(!/\[/.test(s.en)&&!/\[/.test(s.pl))continue;var q=fillQ(s,okFn);if(q){if(used)used[s.en]=1;return q}}
+    else{if(used)used[s.en]=1;return buildQ(s,type==='lbuild'?'listen':(Math.random()<.5?'en2pl':'pl2en'))}}
+  return null}
+var EASY=['mc','pic','pairs','mc','pic','fill','mc','pic','mc','write'],
+    MID=['mc','pic','write','fill','listen','pairs','build','pic','speak','mc'],
+    HARD=['write','speak','build','fill','listen','pic','write','lbuild','speak','pairs'];
+function lessonQs(s,j){
+  var fin=j===s.n-1,ch=s.chunks,focus=fin?s.words:ch[j],earlier=fin?[]:[].concat.apply([],ch.slice(0,j)),prev=prevWords(s),
+      rev=uniq((fin?[]:earlier).concat(prev)).sort(function(a,b){return box(a)-box(b)}).slice(0,8),
+      seen=uniq((fin?s.words:earlier.concat(focus)).concat(prev)),
+      T=fin?HARD:(j===0?EASY:MID);
+  var nf=rev.length?7:10,ws=seq(focus,nf).concat(rev.length?seq(rev,10-nf):[]);ws=shuffle(ws);
+  for(var a=1;a<ws.length;a++)if(ws[a]===ws[a-1]){var b=(a+3)%ws.length;var t=ws[a];ws[a]=ws[b];ws[b]=t}
+  var sents=s.sents.slice();prevSecs(s).forEach(function(p){sents=sents.concat(p.sents)});
+  var okSet={};seen.forEach(function(w){okSet[w.en.toLowerCase()]=1});var okFn=function(w){return !!okSet[w.en.toLowerCase()]},used={},qs=[];
+  T.forEach(function(t,i){
+    if(t==='pairs'){qs.push(pairsQ(focus.length>=3?focus.concat(rev):uniq(focus.concat(rev,seen))));return}
+    if(t==='fill'||t==='build'||t==='lbuild'){var q=sentQ(sents,t,okFn,used);if(q){qs.push(q);return}t=(t==='fill'?'mc':'write')}
+    qs.push(mk(t,ws[i%ws.length]))});
+  if(!fin)qs.unshift({t:'intro',ws:focus});
+  return qs}
+
+/* ---------- sessions ---------- */
+var S=null,view='home',msg='',confirmReset=false,setup=null;
+function begin(kind,qs,extra){S={kind:kind,qs:qs,i:0,score:0,xp:0,phase:'ask',log:[],tries:0,heard:'',err:''};for(var k in extra||{})S[k]=extra[k];view='play';render();autoSay()}
+function scoredN(){return S.qs.filter(function(q){return q.t!=='intro'}).length}
+function autoSay(){var q=S.qs[S.i];if(q&&(q.t==='listen'||(q.t==='build'&&q.dir==='listen')))speak(q.t==='listen'?q.w.en:clean(q.s.en))}
+function startLesson(k,j){var s=SK[k];if(!s||!lessonOpen(s,j))return;POOLMODE='path';P().last=k;save();begin('level',lessonQs(s,j),{s:s,j:j})}
+function startReview(){POOLMODE='all';var pool=knownAll().filter(function(w){return P().stats[w.en]});if(pool.length<4)pool=knownAll();
+  var w=pool.slice().sort(function(a,b){return box(a)-box(b)}).slice(0,Math.min(pool.length,25));
+  var qs=seq(w,10).map(function(x,k){return mk(['mc','write','pic','listen','speak'][k%5],x)});
+  var ss=[];SEC.forEach(function(s){if(s.g!=='x'&&secStarted(s))ss=ss.concat(s.sents)});
+  var a=sentQ(ss,'fill'),b=sentQ(ss,'build');if(a)qs[3]=a;if(b)qs[8]=b;
+  begin('review',qs)}
+function startFree(t){POOLMODE='all';var pool=knownAll();
+  if(t==='pairs'){var ws=seq(pool,15),qs=[];for(var i=0;i<15;i+=5)qs.push(pairsQ(ws.slice(i,i+5)));return begin('free',qs)}
+  if(t==='fill'||t==='build'){var ss=[];SEC.forEach(function(s){if(s.g!=='x'||secStarted(s))ss=ss.concat(s.sents)});var used={},q2=[];for(var j=0;j<8;j++){var q=sentQ(ss,t,null,used);if(q)q2.push(q)}
+    if(!q2.length){msg='Brak zdań do ćwiczenia.';return render()}return begin('free',q2)}
+  var p2=t==='pic'?pool.filter(pic):pool;if(p2.length<4){msg='Za mało słówek z obrazkami.';return render()}
+  begin('free',seq(p2,10).map(function(w){return mk(t,w)}))}
+function startTest(){POOLMODE='all';
+  var ks=setup.units,types=setup.types,n=setup.n,W=[],SS=[];
+  U.forEach(function(u){if(ks[u.k]){u.words.forEach(function(w){if(!W.some(function(x){return x.en===w.en}))W.push(w)});SS=SS.concat(u.sents)}});
+  if(W.length<4){setup.err='Wybierz lekcje, które razem mają co najmniej 4 słówka.';return render()}
+  var qs=[],tw=types.filter(function(t){return ['mc','pic','write','listen','speak'].indexOf(t)>-1}),words=seq(W,n),i=0,used={};
+  while(qs.length<n){
+    var t=types[qs.length%types.length];
+    if(t==='fill'||t==='build'||t==='lbuild'){var q=sentQ(SS,t,null,used);if(q){qs.push(q);continue}t=tw[0]||'mc'}
+    if(t==='pairs'){qs.push(pairsQ(seq(W,Math.min(5,W.length))));continue}
+    qs.push(mk(t,words[i++%words.length]))}
+  begin('test',qs.slice(0,n),{})}
+function startPractice(ws){POOLMODE='all';begin('review',seq(ws,Math.min(12,Math.max(6,ws.length*2))).map(function(w,k){return mk(['mc','write','listen'][k%3],w)}))}
+
+function credit(ok,w,scored){
+  if(w&&scored!==false)bump(w,ok);
+  if(ok){S.score++;S.xp+=10;P().xp+=10;var d=dstr(new Date()),days=P().days;days[d]=(days[d]||0)+1}
+  save()}
+function done(ok,w,info){
+  credit(ok,w);S.ok=ok;
+  if(S.kind==='test'){S.log.push({ok:ok,w:w,q:S.qs[S.i]});return next()}
+  S.phase='fb';render();
+  if(info&&info.say)speak(info.say)}
+function next(){S.i++;S.phase='ask';S.tries=0;S.heard='';S.err='';S.typed='';
+  if(S.i>=S.qs.length)return finish();render();autoSay()}
+function stars(r){return r>=.95?3:r>=.8?2:r>=.6?1:0}
+function finish(){var n=scoredN(),r=n?S.score/n:0;S.n=n;S.r=r;
+  if(S.kind==='level'){var l=sst(S.s),st=stars(r);S.st=st;S.wasDone=secDone(S.s);if(st>l[S.j])l[S.j]=st;S.nowDone=secDone(S.s);save()}
+  view='result';render()}
+function afterLesson(){var s=S.s,j=S.j;if(j<s.n-1)return{s:s,j:j+1};var N=nSecs(),i=N.indexOf(s),n2=N[i+1];return n2&&secOpen(n2)?{s:n2,j:0}:null}
+
+/* ---------- checking ---------- */
+function checkWrite(){var q=S.qs[S.i],inp=document.getElementById('ans');if(!inp||!inp.value.trim())return;
+  var ans=(q.t==='write'&&q.dir==='en2pl')?q.w.pl:q.w.en,ok=answers(ans).indexOf(compact(inp.value))>-1;S.typed=inp.value;
+  done(ok,q.w,{say:(ok&&q.t!=='write')||(ok&&q.dir==='pl2en')?q.w.en:null})}
+function listenMic(){var q=S.qs[S.i];if(!SR||S.listening)return;
+  var r=new SR();r.lang='en-US';r.interimResults=false;r.maxAlternatives=5;S.listening=true;S.err='';S.heard='';var got=false;
+  r.onresult=function(e){got=true;var alts=[];for(var i=0;i<e.results[0].length;i++)alts.push(e.results[0][i].transcript);S.heard=alts[0];
+    var want=norm(q.w.en),wc=want.replace(/ /g,''),num=isNum(q.w)?String(parseInt(q.w.pl,10)):null;
+    var ok=alts.some(function(a){var n=norm(a);return n.replace(/ /g,'')===wc||n.split(' ').indexOf(want)>-1||(num&&n===num)});
+    S.tries++;S.listening=false;
+    var max=S.kind==='test'?1:2;
+    if(ok)done(true,q.w,{say:q.w.en});else if(S.tries>=max)done(false,q.w);else{S.err='Prawie! Spróbuj jeszcze raz.';render()}};
+  r.onerror=function(e){got=true;S.listening=false;if(e.error==='not-allowed'||e.error==='service-not-allowed'){D.micOff=true;save();S.err='';return render()}S.err=e.error==='no-speech'?'Nic nie słyszę. Spróbuj jeszcze raz.':'Nie udało się rozpoznać mowy ('+e.error+').';render()};
+  r.onend=function(){if(S.listening){S.listening=false;if(!got)S.err='Nic nie słyszę. Spróbuj jeszcze raz.';render()}};
+  try{r.start()}catch(e){S.listening=false;S.err='Nie mogę uruchomić mikrofonu.'}render()}
+function checkBuild(){var q=S.qs[S.i];if(!q.sel.length)return;
+  var got=q.sel.map(function(id){return compact(q.tiles[id].t)}).join('|'),want=q.target.map(compact).join('|'),ok=got===want;
+  done(ok,null,{say:clean(q.s.en)})}
+
+/* ---------- views ---------- */
+function header(){return'<div class="top"><div class="logo">Word<b>box</b></div><div class="who" role="group" aria-label="Kto ćwiczy">'+
+  D.profiles.map(function(p,i){return'<button class="chip" aria-pressed="'+(i===D.active)+'" data-act="who" data-i="'+i+'">'+esc(p.name)+'</button>'}).join('')+'</div></div>'}
+function ring(){var g=D.goal||20,n=Math.min(g,todayN()),c=2*Math.PI*26,off=c*(1-n/g);
+  return'<div class="ring" aria-label="Dzisiejszy cel: '+n+' z '+g+'"><svg width="64" height="64" viewBox="0 0 64 64"><circle class="ring-bg" cx="32" cy="32" r="26" fill="none" stroke-width="7"/><circle class="ring-fg" cx="32" cy="32" r="26" fill="none" stroke-width="7" stroke-linecap="round" stroke-dasharray="'+c.toFixed(1)+'" stroke-dashoffset="'+off.toFixed(1)+'" transform="rotate(-90 32 32)"/></svg><b>'+n+'/'+g+'</b></div>'}
+var OFF=[0,34,54,34,0,-34,-54,-34];
+function secCard(s){
+  var open=secOpen(s),st=sst(s),done=secDone(s),nd=st.filter(Boolean).length,no=s.g==='x'?'Dodatkowa':'Sekcja '+secNo(s);
+  var head='<div class="uh"><div><div class="lab">'+no+'</div><h3>'+esc(secTitle(s))+'</h3>'+(secSub(s)?'<div class="hintline">'+esc(secSub(s))+'</div>':'')+'</div><small>'+(open?'Lekcje '+nd+'/'+s.n+' · opanowane '+secMastered(s)+'/'+s.words.length:s.words.length+' słówek')+'</small></div>';
+  if(!open)return'<section class="unit locked">'+head+'<div class="hint">'+(s.g==='x'?'Odblokuje się po ukończeniu sekcji z Lekcją '+esc(s.parent)+'.':'Odblokuje się po ukończeniu poprzedniej sekcji.')+'</div><button class="link" data-act="opensec" data-k="'+esc(s.key)+'">Zacznij od tej sekcji</button></section>';
+  var cur=-1;for(var j=0;j<s.n;j++)if(!st[j]){cur=j;break}
+  var nodes='';for(var i=0;i<s.n;i++){var fin=i===s.n-1,can=i===0||st[i-1]>0,cls=st[i]?'done':i===cur?'cur':can?'open':'lock',inner=st[i]?'★'.repeat(st[i]):(fin?'🏆':(i+1));
+    nodes+='<div class="pn" style="transform:translateX('+OFF[i%OFF.length]+'px)"><button class="node '+cls+(fin?' fin':'')+'" data-act="lesson" data-k="'+esc(s.key)+'" data-j="'+i+'"'+(can?'':' disabled')+' aria-label="'+(fin?'Test sekcji':'Lekcja '+(i+1))+(st[i]?', gwiazdki: '+st[i]:'')+'"><span class="nc">'+inner+'</span><span class="nl">'+(i===cur?'Start':fin?'Test sekcji':'Lekcja '+(i+1))+'</span></button></div>'}
+  return'<section class="unit">'+head+'<div class="pathcol">'+nodes+'</div>'+(done?'<div class="fb ok" style="margin-top:10px">Sekcja ukończona! ✓</div>':'')+'</section>'}
+function hello(){var sk=streak();return header()+tabs()+'<div class="hello"><div><div class="lab">Cześć,</div><h2>'+esc(P().name)+'!</h2></div><div class="stats"><div class="streak" title="Seria dni">'+(sk?'🔥 '+sk+(sk===1?' dzień':' dni'):'Zacznij serię!')+'</div>'+ring()+'</div></div>'}
+function tabs(){return'<div class="tabs" role="tablist"><button role="tab" aria-selected="'+(D.tab!=='ex')+'" data-act="tab" data-t="path">Ścieżka</button><button role="tab" aria-selected="'+(D.tab==='ex')+'" data-act="tab" data-t="ex">Ćwiczenia</button></div>'}
+function home(){
+  var h=hello();
+  if(D.tab==='ex'){
+    var t=[['mc','Wybierz','Znajdź znaczenie'],['pairs','Dopasuj','Połącz pary'],['pic','Obrazki','Co jest na obrazku?'],['write','Pisz','Wpisz tłumaczenie'],['listen','Słuchaj','Usłysz i zapisz'],['speak','Mów','Powiedz do mikrofonu'],['fill','Uzupełnij','Wstaw słówko w zdanie'],['build','Ułóż zdanie','Z rozsypanki']];
+    h+='<div class="quick"><button data-act="review">Powtórka<small>10 pytań</small></button><button data-act="testsetup">Test<small>z wybranych lekcji</small></button><button data-act="tab" data-t="path">Ścieżka<small>lekcje po 10 zadań</small></button></div>';
+    if(msg)h+='<div class="fb bad">'+esc(msg)+'</div>';
+    h+='<h2 class="sect">Ćwiczenia dowolne</h2><div class="hint">Jeden typ zadań, słówka z całego zeszytu.</div><div class="grid">'+t.map(function(x){return'<button class="tile" data-act="free" data-t="'+x[0]+'">'+x[1]+'<small>'+x[2]+'</small></button>'}).join('')+'</div>'}
+  else{
+    var nl=nextLesson();
+    h+=nl?'<div class="cont"><div><div class="lab">Dalej</div><h3>Sekcja '+secNo(nl.s)+' · '+(nl.j===nl.s.n-1?'Test sekcji':'Lekcja '+(nl.j+1))+'</h3></div><button class="btn" data-act="lesson" data-k="'+esc(nl.s.key)+'" data-j="'+nl.j+'">Start</button></div>':'<div class="cont"><div><div class="lab">Wszystko zaliczone</div><h3>Zrób powtórkę</h3></div><button class="btn" data-act="review">Start</button></div>';
+    if(msg)h+='<div class="fb bad">'+esc(msg)+'</div>';
+    var main=SEC.filter(function(s){return s.g!=='x'}),ex=SEC.filter(function(s){return s.g==='x'});
+    h+=main.map(secCard).join('');
+    if(ex.length)h+='<h2 class="sect">Poza zeszytem</h2><div class="hint">Dodatkowe słówka z tych samych tematów.</div>'+ex.map(secCard).join('')}
+  msg='';return h+'<button class="link" data-act="settings">Ustawienia i lista słówek</button>'}
+function testView(){
+  var secs=[['old','Zeszły rok'],['y','Ten rok'],['mine','Moje słówka'],['x','Poza zeszytem']],h=header()+'<h2 style="margin-bottom:6px">Test</h2><div class="hint">Zaznacz lekcje, z których ma być test. Wynik zobaczysz na końcu.</div>';
+  secs.forEach(function(s){var us=U.filter(function(u){return u.sec===s[0]&&unitAvail(u)});if(!us.length)return;
+    h+='<div class="sec"><h3>'+s[1]+'</h3>'+us.map(function(u){return'<div class="chk"><input type="checkbox" id="u_'+esc(u.k)+'" data-act="tu" data-k="'+esc(u.k)+'"'+(setup.units[u.k]?' checked':'')+'><label for="u_'+esc(u.k)+'">'+(u.sec==='y'?'Lekcja '+esc(u.k)+' · ':'')+esc(u.title)+' <small style="color:var(--muted)">('+u.words.length+' słów)</small></label></div>'}).join('')+'</div>'});
+  h+='<div class="row"><button class="btn alt" data-act="tall" data-v="1">Zaznacz wszystko</button><button class="btn alt" data-act="tall" data-v="0">Wyczyść</button></div>';
+  h+='<div class="sec"><h3>Liczba pytań</h3><div class="seg">'+[10,15,20,30].map(function(n){return'<label><input type="radio" name="tn" data-act="tn" data-n="'+n+'"'+(setup.n===n?' checked':'')+'> '+n+'</label>'}).join('')+'</div></div>';
+  var TT=[['mc','Wybierz'],['pic','Obrazki'],['write','Pisz'],['listen','Słuchaj'],['speak','Mów'],['pairs','Dopasuj'],['fill','Uzupełnij zdanie'],['build','Ułóż zdanie'],['lbuild','Ułóż ze słuchu']];
+  h+='<div class="sec"><h3>Typy zadań</h3><div class="seg">'+TT.filter(function(x){return x[0]!=='speak'||SR}).map(function(x){return'<label><input type="checkbox" data-act="tt" data-t="'+x[0]+'"'+(setup.types.indexOf(x[0])>-1?' checked':'')+'> '+x[1]+'</label>'}).join('')+'</div></div>';
+  if(setup.err)h+='<div class="fb bad">'+esc(setup.err)+'</div>';
+  return h+'<div class="row"><button class="btn" data-act="starttest">Zacznij test</button><button class="btn alt" data-act="home">Wróć</button></div>'}
+
+function fb(ok,ans,say,extra){return'<div class="fb '+(ok?'ok':'bad')+'">'+(ok?'Super! ✓':'Prawie. Poprawna odpowiedź:')+(ok&&!extra?'':'<span>'+esc(ans)+(say?sp(say,'sm'):'')+'</span>')+'</div><div class="row"><button class="btn" data-act="next" id="nx">Dalej</button></div>'}
+function play(){
+  var q=S.qs[S.i],fbk=S.phase==='fb',body='',cnt=S.qs.filter(function(x){return x.t!=='intro'}).length,cur=S.qs.slice(0,S.i+1).filter(function(x){return x.t!=='intro'}).length;
+  var top='<div class="sess-top"><button class="x" data-act="home" aria-label="Zakończ">×</button><div class="bar"><i style="width:'+(S.i/S.qs.length*100)+'%"></i></div><span class="lab">'+(q.t==='intro'?'Nowe':cur+'/'+cnt)+'</span></div>';
+  var w=q.w;
+  if(q.t==='intro'){
+    body='<div class="card"><div class="lab">Nowe słówka</div><div class="hint">Kliknij głośniczek i posłuchaj. Za chwilę je poćwiczysz.</div>'+q.ws.map(function(x){return'<div class="nw"><div class="nwp">'+pic(x)+'</div><div class="nwt"><b>'+esc(x.en)+'</b><br><small>'+esc(x.pl)+'</small></div>'+sp(x.en)+'</div>'}).join('')+'<div class="row"><button class="btn" data-act="next" id="nx">Zaczynamy</button></div></div>'}
+  else if(q.t==='mc'){var en=q.dir==='en2pl';
+    if(!q.opts)q.opts=shuffle([w].concat(distract(w,3,dp(),function(x){return en?x.pl:x.en})));
+    body='<div class="card"><div class="lab">'+(en?'Co znaczy po polsku?':'Jak to będzie po angielsku?')+'</div><div class="bigrow"><div class="big">'+esc(en?w.en:w.pl)+'</div>'+(en?sp(w.en):'')+'</div><div class="opts">'+
+    q.opts.map(function(o,k){var c='';if(fbk){if(o.en===w.en)c=' ok';else if(q.chosen&&o.en===q.chosen.en)c=' bad'}
+      var b='<button class="opt'+c+'" data-act="mc" data-k="'+k+'"'+(fbk?' disabled':'')+'>'+esc(en?o.pl:o.en)+'</button>';return en?b:'<div class="oc">'+b+sp(o.en)+'</div>'}).join('')+'</div>'+(fbk?fb(S.ok,en?w.pl:w.en,en?null:w.en):'')+'</div>'}
+  else if(q.t==='pic'){var pk=q.kind==='pick';
+    if(!q.opts)q.opts=shuffle([w].concat(distract(w,3,dp().filter(pic),function(x){return x.en})));
+    body='<div class="card"><div class="lab">'+picLab(w,pk)+'</div><div class="pic">'+pic(w)+'</div>'+(pk?'<div class="opts">'+q.opts.map(function(o,k){var c='';if(fbk){if(o.en===w.en)c=' ok';else if(q.chosen&&o.en===q.chosen.en)c=' bad'}return'<div class="oc"><button class="opt'+c+'" data-act="mc" data-k="'+k+'"'+(fbk?' disabled':'')+'>'+esc(o.en)+'</button>'+sp(o.en)+'</div>'}).join('')+'</div>'+(fbk?fb(S.ok,w.en,w.en):''):
+      inputHtml(q,w.en)+(fbk?fb(S.ok,w.en,w.en):''))+'</div>'}
+  else if(q.t==='write'||q.t==='listen'){var e2=q.t==='write'&&q.dir==='en2pl',ans=e2?w.pl:w.en;
+    body='<div class="card">'+(q.t==='listen'?'<div class="lab">Posłuchaj i wpisz po angielsku</div><div class="row" style="margin-top:12px">'+(SPK?'<button class="btn" data-act="say" data-t="'+esc(w.en)+'">'+ICON.spk+' Odtwórz</button>':'')+'</div><div class="hint">'+esc(w.pl)+'</div>':
+      '<div class="lab">'+(e2?'Napisz po polsku':'Napisz po angielsku')+'</div><div class="bigrow"><div class="big">'+esc(e2?w.en:w.pl)+'</div>'+(e2?sp(w.en):'')+'</div>')+inputHtml(q,ans,e2)+(fbk?fb(S.ok,ans,e2?null:w.en):'')+'</div>'}
+  else if(q.t==='speak'&&!fbk&&(D.micOff||!SR)){
+    body='<div class="card"><div class="lab">Powiedz po angielsku</div><div class="big">'+esc(w.pl)+'</div><div class="hint">Mikrofon w aplikacji jest niedostępny. Dotknij ikonki mikrofonu na klawiaturze telefonu (albo wpisz) i powiedz to słowo.</div>'+inputHtml(q,w.en,true)+'<div class="row">'+(SPK&&S.kind!=='test'?'<button class="btn alt" data-act="say" data-t="'+esc(w.en)+'">'+ICON.spk+' Podpowiedź</button>':'')+'<button class="btn alt" data-act="skip">Nie wiem</button></div></div>'}
+  else if(q.t==='speak'){
+    body='<div class="card" style="text-align:center"><div class="lab">Powiedz po angielsku</div><div class="big">'+esc(w.pl)+'</div>'+
+    (fbk?'<div class="heard">'+(S.heard?'Usłyszałem: „'+esc(S.heard)+'”':'')+'</div>'+fb(S.ok,w.en,w.en):
+      '<button class="mic'+(S.listening?' on':'')+'" data-act="mic" aria-label="Mów">'+ICON.mic+'</button><div class="heard">'+(S.listening?'Słucham…':(S.heard?'Usłyszałem: „'+esc(S.heard)+'”':'Dotknij mikrofonu i mów'))+'</div>'+(S.err?'<div class="fb bad" style="text-align:left">'+esc(S.err)+'</div>':'')+
+      '<div class="row" style="justify-content:center">'+(SPK&&S.kind!=='test'?'<button class="btn alt" data-act="say" data-t="'+esc(w.en)+'">'+ICON.spk+' Podpowiedź</button>':'')+'<button class="btn alt" data-act="skip">Nie wiem</button></div>')+'</div>'}
+  else if(q.t==='pairs'){
+    body='<div class="card"><div class="lab">Dotknij słówko, potem jego znaczenie</div><div class="cols" style="margin-top:14px"><div class="col">'+q.left.map(function(x){return pbtn(q,x,'L')}).join('')+'</div><div class="col">'+q.right.map(function(x){return pbtn(q,x,'R')}).join('')+'</div></div>'+(fbk?fb(S.ok,'',null).replace('Prawie. Poprawna odpowiedź:','Prawie. Pomyłki: '+q.mist):'')+'</div>'}
+  else if(q.t==='fill'){var s=q.s,mine=q.dir==='en'?s.en:s.pl,other=q.dir==='en'?s.pl:s.en,cls=fbk?(S.ok?' ok':' bad'):'';
+    var shown=esc(mine).replace(/\[.+?\]/,'<span class="blank'+cls+'">'+esc(q.target)+'</span>');
+    body='<div class="card"><div class="lab">Uzupełnij zdanie</div><div class="sen">'+shown+(q.dir==='en'?' '+sp(clean(s.en),'sm'):'')+'</div><div class="hintline">'+esc(clean(other))+'</div><div class="opts">'+
+    q.opts.map(function(o,k){var c='';if(fbk){if(o===q.target)c=' ok';else if(q.chosen===o)c=' bad'}return'<button class="opt'+c+'" data-act="fillo" data-k="'+k+'"'+(fbk?' disabled':'')+'>'+esc(o)+'</button>'}).join('')+'</div>'+(fbk?fb(S.ok,clean(mine),q.dir==='en'?clean(s.en):null):'')+'</div>'}
+  else if(q.t==='build'){var s2=q.s,ls=q.dir==='en2pl'?s2.en:q.dir==='pl2en'?s2.pl:null,lab=q.dir==='listen'?'Napisz to, co usłyszysz':q.dir==='en2pl'?'Przetłumacz na polski':'Przetłumacz na angielski',cls2=fbk?(S.ok?' ok':' bad'):'';
+    var used={};q.sel.forEach(function(id){used[id]=1});
+    body='<div class="card"><div class="lab">'+lab+'</div>'+(q.dir==='listen'?'<div class="row" style="margin-top:12px"><button class="btn" data-act="say" data-t="'+esc(clean(s2.en))+'">'+ICON.spk+' Odtwórz</button></div>':'<div class="sen">'+esc(clean(ls))+(q.dir==='en2pl'?' '+sp(clean(s2.en),'sm'):'')+'</div>')+
+    '<div class="line'+cls2+'">'+q.sel.map(function(id){return'<button class="tl" data-act="tile" data-id="'+id+'"'+(fbk?' disabled':'')+'>'+esc(q.tiles[id].t)+'</button>'}).join('')+'</div><div class="bank">'+
+    q.tiles.map(function(t){return'<button class="tl'+(used[t.id]?' used':'')+'" data-act="tile" data-id="'+t.id+'"'+(fbk||used[t.id]?' disabled':'')+'>'+esc(t.t)+'</button>'}).join('')+'</div>'+
+    (fbk?fb(S.ok,q.dir==='en2pl'?clean(s2.pl):clean(s2.en),q.dir==='en2pl'?null:clean(s2.en),true):'<div class="row"><button class="btn" data-act="checkb"'+(q.sel.length?'':' disabled')+'>Sprawdź</button></div>')+'</div>'}
+  return top+body}
+function inputHtml(q,ans,noCount){var fbk=S.phase==='fb',n=ans.split(' ').length;
+  return'<div style="margin-top:16px"><input type="text" id="ans" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" aria-label="Twoja odpowiedź"'+(fbk?' disabled value="'+esc(S.typed||'')+'"':'')+'></div>'+
+    (fbk?'':'<div class="row"><button class="btn" data-act="check">Sprawdź</button></div>'+(n>1&&!noCount&&ans.indexOf('/')<0?'<div class="hint">Liczba słów: '+n+'</div>':''))}
+function pbtn(q,w,side){var c='pair';if(q.done[w.en])c+=' done';else if(q.sel&&q.sel.w.en===w.en&&q.sel.side===side)c+=' sel';if(q.bad[w.en+side])c+=' shake';
+  var b='<button class="'+c+'" data-act="pair" data-w="'+esc(w.en)+'" data-s="'+side+'"'+(S.phase==='fb'?' disabled':'')+'>'+esc(side==='L'?w.en:w.pl)+'</button>';return side==='L'&&!q.done[w.en]?'<div class="oc">'+b+sp(w.en)+'</div>':b}
+function result(){
+  if(S.kind==='test'){var n=S.n,pc=Math.round(S.r*100),wr=S.log.filter(function(x){return !x.ok});
+    var wrong=[],seen={};wr.forEach(function(x){var o=x.w?{en:x.w.en,pl:x.w.pl}:x.q&&x.q.s?{en:clean(x.q.s.en),pl:clean(x.q.s.pl),sent:1}:null;if(o&&!seen[o.en]){seen[o.en]=1;wrong.push(o)}});
+    var wordsWrong=wrong.filter(function(x){return !x.sent});
+    return header()+'<div class="card res"><div class="lab">Wynik testu</div><div class="big">'+S.score+' / '+n+' · '+pc+'%</div><div class="hint">'+(pc>=90?'Świetnie!':pc>=70?'Dobry wynik!':pc>=50?'Nieźle, jeszcze trochę ćwiczeń.':'Poćwicz te słówka i spróbuj jeszcze raz.')+' +'+S.xp+' XP</div>'+
+    (wrong.length?'<div class="wrongs"><div class="lab">Do powtórki</div>'+wrong.map(function(x){return'<div class="nw"><div class="nwt"><b>'+esc(x.en)+'</b><br><small>'+esc(x.pl)+'</small></div>'+sp(x.en)+'</div>'}).join('')+'</div>':'<div class="hint">Bez błędów!</div>')+
+    '<div class="row" style="justify-content:center">'+(wordsWrong.length?'<button class="btn" data-act="pracwrong">Ćwicz błędne</button>':'')+'<button class="btn alt" data-act="testsetup">Nowy test</button><button class="btn alt" data-act="home">Menu</button></div></div>'}
+  var st=S.kind==='level'?S.st:stars(S.r),ok=S.kind!=='level'||st>0,nx=S.kind==='level'&&ok?afterLesson():null,fin=S.kind==='level'&&S.j===S.s.n-1;
+  var lab=S.kind==='level'?'Sekcja '+secNo(S.s)+' · '+(fin?'Test sekcji':'Lekcja '+(S.j+1)):'Koniec rundy';
+  var extra=S.kind==='level'&&S.nowDone&&!S.wasDone?'<div class="fb ok" style="text-align:left">Sekcja ukończona! Zwroty z tej sekcji wrócą w kolejnych, żeby je utrwalić.</div>':'';
+  return header()+'<div class="card res"><div class="lab">'+lab+'</div><div class="stars" aria-label="'+st+' z 3 gwiazdek">'+'★'.repeat(st)+'<span style="opacity:.25">'+'★'.repeat(3-st)+'</span></div><div class="big">'+S.score+' / '+S.n+'</div><div class="hint">+'+S.xp+' XP. '+(S.kind==='level'&&!ok?'Potrzeba co najmniej 60%. Spróbuj jeszcze raz!':S.r>=.9?'Świetna robota!':S.r>=.6?'Dobrze idzie!':'Ćwicz dalej.')+'</div>'+extra+
+  '<div class="row" style="justify-content:center">'+(nx?'<button class="btn" data-act="lesson" data-k="'+esc(nx.s.key)+'" data-j="'+nx.j+'">Dalej</button>':'')+(S.kind==='level'?'<button class="btn alt" data-act="lesson" data-k="'+esc(S.s.key)+'" data-j="'+S.j+'">Jeszcze raz</button>':'<button class="btn" data-act="review">Jeszcze raz</button>')+'<button class="btn alt" data-act="home">Menu</button></div></div>'}
+function parseImport(t,swap,dflt){var out=[],bad=0,cur=dflt||'M';
+  t.split(/\r?\n/).forEach(function(l){l=l.trim();if(!l)return;
+    var h=l.match(/^#?\s*(zesz[łl]y\s+rok\s*[-–:,]?\s*)?(?:lekcj[aęi]|lesson)\s*(\d+)/i);if(h){cur=(h[1]?'Z':'')+h[2];return}
+    if(/^#?\s*moje\s+s/i.test(l)){cur='M';return}
+    var m=l.split(/\s*(?:\t|;|=|\s[-–—]\s|:)\s*/);if(m.length<2||!m[0]||!m[1]){var mm=l.match(/^(.+?)\s*[-–—]\s*(.+)$/);if(mm)m=[mm[1],mm[2]];else{bad++;return}}
+    var a=m[0].trim(),b=m.slice(1).join(' ').trim();out.push(swap?{en:b,pl:a,l:cur}:{en:a,pl:b,l:cur})});return{out:out,bad:bad}}
+function settings(){
+  return header()+'<h2 style="margin-bottom:6px">Ustawienia</h2>'+(msg?'<div class="fb ok">'+esc(msg)+'</div>':'')+
+  '<div class="sec"><h3>Imiona</h3>'+D.profiles.map(function(p,i){return'<div style="margin-bottom:8px"><input type="text" id="nm'+i+'" data-name="'+i+'" value="'+esc(p.name)+'" aria-label="Imię '+(i+1)+'" maxlength="16"></div>'}).join('')+'</div>'+
+  '<div class="sec"><h3>Dzienny cel</h3><div class="seg">'+[10,20,30,50].map(function(n){return'<label><input type="radio" name="goal" data-act="goal" data-n="'+n+'"'+((D.goal||20)===n?' checked':'')+'> '+n+' zadań</label>'}).join('')+'</div></div>'+
+  '<div class="sec"><h3>Mikrofon</h3><div class="chk"><input type="checkbox" id="micck" data-act="micon"'+(D.micOff?'':' checked')+'><label for="micck">Próbuj rozpoznawania mowy w aplikacji</label></div><div class="hint">Gdy przeglądarka blokuje mikrofon, zadania „Mów” działają przez dyktowanie z klawiatury.</div></div>'+
+  '<div class="sec"><h3>Ścieżka</h3><div class="chk"><input type="checkbox" id="exck" data-act="extras"'+(D.extras!==false?' checked':'')+'><label for="exck">Pokazuj dodatkowe sekcje spoza zeszytu (dom, jedzenie, liczby do 100...)</label></div><div class="row"><button class="btn alt" data-act="openall">Odblokuj wszystkie sekcje</button></div></div>'+
+  '<div class="sec"><h3>Dodaj słówka</h3><div class="hint">Jedno w linii: <b>apple - jabłko</b>. Wiersz <b>Lekcja 7</b> albo <b>Zeszły rok - Lekcja 3</b> przypisuje kolejne słówka do tej lekcji. Ścieżka sama podzieli słówka na sekcje.</div>'+
+  '<textarea id="imp" placeholder="Lekcja 7&#10;apple - jabłko&#10;dog - pies" aria-label="Lista słówek"></textarea>'+
+  '<div class="row" style="margin-top:8px"><label for="impl">Bez nagłówka dodaj do:</label><input type="text" id="impl" style="width:120px" placeholder="np. 7 lub Z3" aria-label="Lekcja"></div>'+
+  '<div class="chk"><input type="checkbox" id="swap"><label for="swap">Polskie słowo jest pierwsze</label></div>'+
+  '<div class="row"><button class="btn" data-act="add">Dodaj</button></div></div>'+
+  '<div class="sec"><h3>Moje dodane słówka ('+D.custom.length+')</h3><div class="wl">'+D.custom.map(function(w,i){return'<div><span>'+esc(w.en)+' <small>'+esc(w.pl)+' · '+esc(w.l)+'</small></span><span style="display:flex;gap:6px;align-items:center">'+sp(w.en,'sm')+'<button data-act="del" data-i="'+i+'" aria-label="Usuń '+esc(w.en)+'">×</button></span></div>'}).join('')+'</div></div>'+
+  '<div class="sec"><h3>Postępy</h3><button class="btn alt" data-act="reset">'+(confirmReset?'Na pewno? Kliknij jeszcze raz':'Wyzeruj postępy: '+esc(P().name))+'</button></div>'+
+  '<div class="row"><button class="btn" data-act="home">Gotowe</button></div><div class="note">Postępy zapisują się w przeglądarce, na tym urządzeniu. Na telefonie i komputerze są osobne.</div>'}
+function render(){var app=document.getElementById('app');
+  app.innerHTML=view==='play'?play():view==='result'?result():view==='settings'?settings():view==='test'?testView():home();
+  var a=document.getElementById('ans');if(a&&!a.disabled)a.focus();else{var n=document.getElementById('nx');if(n&&view==='play')n.focus()}
+  window.scrollTo(0,0)}
+
+/* ---------- events ---------- */
+document.addEventListener('input',function(e){var i=e.target.getAttribute&&e.target.getAttribute('data-name');if(i!==null&&i!==undefined){D.profiles[+i].name=e.target.value||'Syn '+(+i+1);save()}});
+document.addEventListener('keydown',function(e){if(e.key!=='Enter'||view!=='play'||!S)return;
+  if(e.target.id==='ans'&&S.phase==='ask'){e.preventDefault();checkWrite()}else if(S.phase==='fb'&&e.target.tagName!=='BUTTON')next()});
+document.addEventListener('click',function(e){var b=e.target.closest('[data-act]');if(!b)return;var a=b.dataset.act,q=S&&S.qs?S.qs[S.i]:null;
+  if(a==='who'){D.active=+b.dataset.i;save();if(view==='play'||view==='result')view='home';render()}
+  else if(a==='home'){view='home';msg='';S=null;render()}
+  else if(a==='tab'){D.tab=b.dataset.t;save();view='home';render()}
+  else if(a==='settings'){view='settings';msg='';confirmReset=false;render()}
+  else if(a==='say'){speak(b.dataset.t)}
+  else if(a==='lesson'){startLesson(b.dataset.k,+b.dataset.j)}
+  else if(a==='opensec'){P().open[b.dataset.k]=1;save();render()}
+  else if(a==='openall'){SEC.forEach(function(s){P().open[s.key]=1});save();msg='Wszystkie sekcje są odblokowane.';render()}
+  else if(a==='review'){startReview()}
+  else if(a==='free'){startFree(b.dataset.t)}
+  else if(a==='testsetup'){setup=setup||{units:{},n:15,types:['mc','pic','write','listen','fill','build']};setup.err='';view='test';render()}
+  else if(a==='tu'){setup.units[b.dataset.k]=b.checked}
+  else if(a==='tall'){U.forEach(function(u){if(unitAvail(u))setup.units[u.k]=b.dataset.v==='1'});render()}
+  else if(a==='tn'){setup.n=+b.dataset.n}
+  else if(a==='tt'){var t=b.dataset.t,ix=setup.types.indexOf(t);if(b.checked&&ix<0)setup.types.push(t);if(!b.checked&&ix>-1)setup.types.splice(ix,1);if(!setup.types.length){setup.types=['mc'];render()}}
+  else if(a==='starttest'){startTest()}
+  else if(a==='pracwrong'){var seen={},ws=[];S.log.forEach(function(x){if(!x.ok&&x.w&&!seen[x.w.en]){seen[x.w.en]=1;ws.push(x.w)}});if(ws.length)startPractice(ws)}
+  else if(a==='mc'){q.chosen=q.opts[+b.dataset.k];done(q.chosen.en===q.w.en,q.w,{say:q.w.en})}
+  else if(a==='fillo'){q.chosen=q.opts[+b.dataset.k];done(q.chosen===q.target,q.tw,{say:clean(q.s.en)})}
+  else if(a==='check'){checkWrite()}
+  else if(a==='next'){next()}
+  else if(a==='mic'){listenMic()}
+  else if(a==='skip'){done(false,q.w)}
+  else if(a==='tile'){var id=+b.dataset.id,ix2=q.sel.indexOf(id);if(ix2>-1)q.sel.splice(ix2,1);else q.sel.push(id);render()}
+  else if(a==='checkb'){checkBuild()}
+  else if(a==='pair'){var w=q.ws.filter(function(x){return x.en===b.dataset.w})[0],side=b.dataset.s;q.bad={};
+    if(!q.sel||q.sel.side===side){q.sel={w:w,side:side};render();return}
+    var f=q.sel;q.sel=null;
+    if(f.w.en===w.en){q.done[w.en]=1;if(Object.keys(q.done).length===q.ws.length){q.ws.forEach(function(x){bump(x,!q.first[x.en])});var ok=q.mist<=1;credit(ok,null,false);S.ok=ok;if(S.kind==='test'){S.log.push({ok:ok,w:q.ws[0],q:q});return next()}S.phase='fb'}render()}
+    else{q.first[f.w.en]=1;q.first[w.en]=1;q.mist++;q.bad[f.w.en+f.side]=1;q.bad[w.en+side]=1;render()}}
+  else if(a==='micon'){D.micOff=!b.checked;save()}
+  else if(a==='goal'){D.goal=+b.dataset.n;save()}
+  else if(a==='extras'){D.extras=b.checked;save();buildUnits()}
+  else if(a==='add'){var r=parseImport(document.getElementById('imp').value,document.getElementById('swap').checked,(document.getElementById('impl').value||'M').trim().toUpperCase());
+    if(!r.out.length){msg='Nie znalazłem żadnych par. Sprawdź, czy słowa są rozdzielone myślnikiem.';render();return}
+    r.out.forEach(function(w){if(!D.custom.some(function(x){return x.en.toLowerCase()===w.en.toLowerCase()&&x.l===w.l}))D.custom.push(w)});
+    save();buildUnits();msg='Dodano '+r.out.length+' słówek'+(r.bad?' ('+r.bad+' linii pominięto)':'')+'.';render()}
+  else if(a==='del'){D.custom.splice(+b.dataset.i,1);save();buildUnits();render()}
+  else if(a==='reset'){if(!confirmReset){confirmReset=true;render();return}var p=P();p.stats={};p.xp=0;p.sec={};p.open={};p.last=null;p.days={};confirmReset=false;save();msg='Postępy wyzerowane.';render()}});
+if(SPK)try{speechSynthesis.getVoices()}catch(e){}
+render();
+})();
+</script>
