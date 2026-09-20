@@ -158,6 +158,7 @@ pre.code{background:#111a33;color:#e8eeff;border-radius:12px;padding:14px;font-f
 .tokbar{display:flex;align-items:center;gap:8px;background:var(--surface);border:2px solid var(--line);border-radius:14px;padding:10px 14px;margin-bottom:12px;font-size:18px}.tokbar small{margin-left:auto;color:var(--muted);font-weight:700;font-size:13px}.coin{width:22px;height:22px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#ffe27a,#f2a900);border:2px solid #c88400;display:inline-block}
 .tokchip{display:flex;align-items:center;gap:8px;background:var(--surface);border:2px solid var(--line);border-radius:999px;padding:6px 14px;margin:0 0 12px;font-weight:800;width:fit-content}.tokchip small{color:var(--muted);font-weight:700}.reqline{font-weight:700;color:var(--muted);margin-top:6px}.reqline.ok{color:var(--ok)}
 .thumbs{display:flex;gap:6px;margin:8px 0;flex-wrap:wrap}.thumb{width:52px;height:52px;border-radius:10px;background:var(--bg);display:grid;place-items:center;font-size:26px;overflow:hidden;flex:none}.thumb.own{outline:2px solid var(--ok)}.thumb.more{font-size:15px;font-weight:800;color:var(--muted)}.thumb .iso{width:46px;height:46px;max-height:46px;margin:0}.thumb.big{width:72px;height:72px;font-size:36px}.thumb.big .iso{width:64px;height:64px;max-height:64px}.goal{display:block;font-weight:800;font-size:14px}.gbar{display:block;height:8px;background:var(--line);border-radius:99px;overflow:hidden;margin-top:6px}.gbar i{display:block;height:100%;background:var(--teal)}.shopcard{align-items:flex-start}
+.palrow{display:flex;gap:8px;align-items:center;margin:6px 0 4px;flex-wrap:wrap}.pc{width:44px;height:44px;border-radius:12px;border:3px solid transparent;color:#fff;font-weight:800;box-shadow:var(--shadow)}.pc.on{border-color:var(--ink)}.pc span{text-shadow:0 1px 2px rgba(0,0,0,.55)}
 .bgrid{display:grid;gap:4px;max-width:320px;margin:12px auto}.bc{aspect-ratio:1;border:2px solid var(--line);border-radius:8px;background:var(--bg)}.bc.under{background:repeating-linear-gradient(45deg,var(--line),var(--line) 4px,var(--bg) 4px,var(--bg) 8px)}.bc.on{background:var(--sky);border-color:var(--sky)}
 .iso-wrap{background:var(--bg);border-radius:14px;padding:8px;margin:12px 0;min-height:120px}.iso{display:block;max-width:100%;max-height:260px;margin:0 auto}
 .acct{font-size:13px;color:var(--muted);margin-bottom:6px;display:flex;gap:10px;flex-wrap:wrap;align-items:center}.acct .link{margin:0;padding:0;font-size:13px}.acct b{color:var(--ink)}.syncerr{color:var(--bad);font-weight:800}.subj-card{position:relative}.lockb{position:absolute;top:10px;right:12px;background:var(--ink);color:var(--bg);border-radius:999px;padding:2px 10px;font-size:12px;font-weight:800}
@@ -891,13 +892,13 @@ var CODECARD='<button class="subj-card" data-act="subject" data-s="'+'CODESUBJ'+
 
 /* ---------- projekty 3D ---------- */
 var PROJ_STEPS=['Wymyśl','Narysuj','Zmierz','Zaprojektuj','Wydrukuj','Sprawdź'];
-function cellsBox(x0,x1,y0,y1,z0,z1){var r=[];for(var z=z0;z<=z1;z++)for(var y=y0;y<=y1;y++)for(var x=x0;x<=x1;x++)r.push([x,y,z]);return r}
+function cellsBox(x0,x1,y0,y1,z0,z1,c){var r=[];for(var z=z0;z<=z1;z++)for(var y=y0;y<=y1;y++)for(var x=x0;x<=x1;x++)r.push([x,y,z,c||1]);return r}
 var TPL={
- steve:function(){return cellsBox(2,3,3,3,0,2).concat(cellsBox(2,3,3,3,3,5),cellsBox(1,1,3,3,3,5),cellsBox(4,4,3,3,3,5),cellsBox(2,3,2,3,6,7))},
- creeper:function(){return cellsBox(2,3,2,3,0,0).concat(cellsBox(2,3,2,3,1,3),cellsBox(2,3,2,3,4,5))},
- sword:function(){return[[1,1,0]].concat(cellsBox(0,2,1,1,1,1),cellsBox(1,1,1,1,2,6))},
- pickaxe:function(){return cellsBox(2,2,1,1,0,4).concat(cellsBox(0,4,1,1,5,5),[[0,1,4],[4,1,4]])},
- shield:function(){var r=cellsBox(1,4,0,4,0,0).filter(function(c){return !(c[1]===4&&(c[0]===1||c[0]===4))});return r.concat(cellsBox(2,3,1,3,1,1))}
+ steve:function(){return cellsBox(2,3,3,3,0,2,3).concat(cellsBox(2,3,3,3,3,5,2),cellsBox(1,1,3,3,3,5,4),cellsBox(4,4,3,3,3,5,4),cellsBox(2,3,2,3,6,7,4))},
+ creeper:function(){return cellsBox(2,3,2,3,0,0,2).concat(cellsBox(2,3,2,3,1,3,2),cellsBox(2,3,2,3,4,5,2))},
+ sword:function(){return[[1,1,0,3]].concat(cellsBox(0,2,1,1,1,1,3),cellsBox(1,1,1,1,2,6,1))},
+ pickaxe:function(){return cellsBox(2,2,1,1,0,4,4).concat(cellsBox(0,4,1,1,5,5,1),[[0,1,4,1],[4,1,4,1]])},
+ shield:function(){var r=cellsBox(1,4,0,4,0,0,3).filter(function(q){return !(q[1]===4&&(q[0]===1||q[0]===4))});return r.concat(cellsBox(2,3,1,3,1,1,4))}
 };
 var COLL=[
  {id:'steve',t:'Steve — ludzik z Minecrafta',n:6,h:8,s:8,tpl:'steve',d:'Głowa, tułów, ręce i nogi. Zacznij od wzoru i zmień go po swojemu.'},
@@ -913,7 +914,7 @@ var COLL=[
 function bsetDefault(){return P().kid?{n:4,h:3,s:12}:{n:6,h:5,s:10}}
 function d3(){var p=P();if(!p.designs)p.designs=[];if(!p.printq)p.printq=[];if(!p.proj)p.proj={};return p}
 function stageOf(id){for(var i=0;i<COLL.length;i++)if(COLL[i].id===id)return COLL[i];return null}
-function designFor(id){var p=d3(),r=null;p.designs.forEach(function(d,i){if(d.stage===id&&d.c.indexOf('1')>-1)r={d:d,i:i}});return r}
+function designFor(id){var p=d3(),r=null;p.designs.forEach(function(d,i){if(d.stage===id&&/[1-9]/.test(d.c))r={d:d,i:i}});return r}
 function printItem(idx){var r=null;d3().printq.forEach(function(x){if(x.di===idx)r=x});return r}
 var SHOP={steve:{price:8,kid:'c:k1',adult:'c:o1'},sword:{price:6,kid:'c:k1',adult:'c:o1'},pick:{price:6,kid:'c:k2',adult:'c:o2'},shield:{price:6,kid:'c:k2',adult:'c:o3'},armor:{price:10,kid:'c:k3',adult:'c:o3'},creeper:{price:10,kid:'c:k3',adult:'c:o4'},skeleton:{price:12,kid:'c:k4',adult:'c:o5'},zombie:{price:12,kid:'c:k4',adult:'c:o5'},spider:{price:15,kid:'c:k5',adult:'c:o6'},ender:{price:18,kid:'c:k5',adult:'c:o6'}};
 function shopReq(id){var k=P().kid?SHOP[id].kid:SHOP[id].adult;return SK[k]||null}
@@ -948,65 +949,82 @@ function threeDHome(h){var p=d3(),t=tokensInfo();
   if(own2.length)h+='<div class="wl" style="margin-top:12px">'+own2.map(function(x){var pi=printItem(x.i);return'<div><span>'+esc(x.g.name)+' <small>'+x.g.n+'×'+x.g.n+'×'+x.g.h+(pi?' · '+(pi.done?'wydrukowane':'czeka na wydruk'):'')+'</small></span><span style="display:flex;gap:6px"><button class="btn alt" data-act="wopen" data-i="'+x.i+'" style="padding:6px 12px;font-size:14px">Otwórz</button>'+(pi?'':'<button class="btn alt" data-act="wreq" data-i="'+x.i+'" style="padding:6px 12px;font-size:14px">Do wydruku</button>')+'<button data-act="wdel" data-i="'+x.i+'" style="border:0;background:none;color:var(--bad);font-size:18px;font-weight:800" aria-label="Usuń">×</button></span></div>'}).join('')+'</div>';
   h+='<div class="note"><b>Bezpieczeństwo:</b> drukarka jest gorąca (dysza i stół). Drukujemy tylko z dorosłym, w wietrzonym pomieszczeniu. Nie dotykamy, dopóki wydruk nie ostygnie.</div>';
   msg='';return h+'<button class="link" data-act="settings">Ustawienia</button>'}
-/* ---- edytor bloków ---- */
+/* ---- edytor bloków (do 4 kolorów jak w AMS lite) ---- */
 var BLD=null;
+var PAL=[{n:'Szary',a:'Szary',h:'#9aa3b5'},{n:'Zielony',a:'Zielony',h:'#3fa34d'},{n:'Niebieski',a:'Niebieski',h:'#3b6fd4'},{n:'Beżowy',a:'Bezowy',h:'#e6b98a'}];
 function bidx(g,x,y,z){return (z*g.n+y)*g.n+x}
-function bget(g,x,y,z){return x>=0&&y>=0&&z>=0&&x<g.n&&y<g.n&&z<g.h&&g.c[bidx(g,x,y,z)]===1}
-function bmake(o){var g={i:-1,name:o.name,n:o.n,h:o.h,s:o.s,c:new Array(o.n*o.n*o.h).fill(0),z:0,show:false,stage:o.stage||null};(o.tpl?o.tpl():[]).forEach(function(c){if(c[0]<g.n&&c[1]<g.n&&c[2]<g.h)g.c[bidx(g,c[0],c[1],c[2])]=1});return g}
+function bcol(g,x,y,z){return (x>=0&&y>=0&&z>=0&&x<g.n&&y<g.n&&z<g.h)?(g.c[bidx(g,x,y,z)]|0):0}
+function bget(g,x,y,z){return bcol(g,x,y,z)>0}
+function bmake(o){var g={i:-1,name:o.name,n:o.n,h:o.h,s:o.s,c:new Array(o.n*o.n*o.h).fill(0),z:0,show:false,stage:o.stage||null,col:1,sym:false,undo:[]};
+  (o.tpl?o.tpl():[]).forEach(function(c){if(c[0]<g.n&&c[1]<g.n&&c[2]<g.h)g.c[bidx(g,c[0],c[1],c[2])]=c[3]||1});return g}
 function bopen(i){var p=d3(),bs=bsetDefault();
   if(i==null||!p.designs[i])BLD=bmake({name:'Mój projekt '+(p.designs.length+1),n:bs.n,h:bs.h,s:bs.s});
-  else{var d=p.designs[i];BLD={i:i,name:d.name,n:d.n,h:d.h,s:d.s||bs.s,c:d.c.split('').map(Number),z:0,show:false,stage:d.stage||null}}
+  else{var d=p.designs[i];BLD={i:i,name:d.name,n:d.n,h:d.h,s:d.s||bs.s,c:d.c.split('').map(Number),z:0,show:false,stage:d.stage||null,col:1,sym:false,undo:[]}}
   view='build';render()}
 function bstage(id){var st=stageOf(id),ex=designFor(id);if(ex)return bopen(ex.i);
   BLD=bmake({name:st.t,n:st.n,h:st.h,s:st.s,tpl:st.tpl?TPL[st.tpl]:null,stage:st.id});view='build';render()}
-function bstats(g){var cnt=0,minx=99,miny=99,maxx=-1,maxy=-1,maxz=-1,floating=0;
-  for(var z=0;z<g.h;z++)for(var y=0;y<g.n;y++)for(var x=0;x<g.n;x++)if(bget(g,x,y,z)){cnt++;minx=Math.min(minx,x);maxx=Math.max(maxx,x);miny=Math.min(miny,y);maxy=Math.max(maxy,y);maxz=Math.max(maxz,z);if(z>0&&!bget(g,x,y,z-1))floating++}
+function bpaint(x,y){var g=BLD,ix=bidx(g,x,y,g.z),nv=g.c[ix]===g.col?0:g.col;g.undo.push(g.c.slice());if(g.undo.length>30)g.undo.shift();g.c[ix]=nv;
+  if(g.sym){var mx=g.n-1-x;g.c[bidx(g,mx,y,g.z)]=nv}}
+function bundo(){var g=BLD;if(g.undo.length)g.c=g.undo.pop()}
+function bstats(g){var cnt=0,minx=99,miny=99,maxx=-1,maxy=-1,maxz=-1,floating=0,cols={};
+  for(var z=0;z<g.h;z++)for(var y=0;y<g.n;y++)for(var x=0;x<g.n;x++)if(bget(g,x,y,z)){cnt++;cols[bcol(g,x,y,z)]=1;minx=Math.min(minx,x);maxx=Math.max(maxx,x);miny=Math.min(miny,y);maxy=Math.max(maxy,y);maxz=Math.max(maxz,z);if(z>0&&!bget(g,x,y,z-1))floating++}
   var conn=true;if(cnt){var seen={},q=[],start=null;for(var z2=0;z2<g.h&&!start;z2++)for(var y2=0;y2<g.n&&!start;y2++)for(var x2=0;x2<g.n&&!start;x2++)if(bget(g,x2,y2,z2))start=[x2,y2,z2];
     seen[start.join()]=1;q.push(start);var got=0;while(q.length){var c=q.pop();got++;[[1,0,0],[-1,0,0],[0,1,0],[0,-1,0],[0,0,1],[0,0,-1]].forEach(function(d){var nx=c[0]+d[0],ny=c[1]+d[1],nz=c[2]+d[2],k=nx+','+ny+','+nz;if(bget(g,nx,ny,nz)&&!seen[k]){seen[k]=1;q.push([nx,ny,nz])}})}conn=got===cnt}
-  return{cnt:cnt,w:cnt?(maxx-minx+1):0,d:cnt?(maxy-miny+1):0,hh:cnt?(maxz+1):0,floating:floating,conn:conn}}
+  var vol=cnt*Math.pow(g.s/10,3);
+  return{cnt:cnt,w:cnt?(maxx-minx+1):0,d:cnt?(maxy-miny+1):0,hh:cnt?(maxz+1):0,floating:floating,conn:conn,colors:Object.keys(cols).map(Number).sort(),grams:Math.round(vol*1.24*0.4)}}
+function shade(hex,f){var n=parseInt(hex.slice(1),16),r=(n>>16)&255,gg=(n>>8)&255,b=n&255;function c(v){return Math.max(0,Math.min(255,Math.round(v*f)))}return'#'+((1<<24)+(c(r)<<16)+(c(gg)<<8)+c(b)).toString(16).slice(1)}
 function isoSvg(g){var C=16,pts=[],minx=1e9,maxx=-1e9,miny=1e9,maxy=-1e9;
-  for(var z=0;z<g.h;z++)for(var y=0;y<g.n;y++)for(var x=0;x<g.n;x++)if(bget(g,x,y,z))pts.push([x,y,z]);
+  for(var z=0;z<g.h;z++)for(var y=0;y<g.n;y++)for(var x=0;x<g.n;x++)if(bget(g,x,y,z))pts.push([x,y,z,bcol(g,x,y,z)]);
   if(!pts.length)return'<div class="hintline" style="text-align:center;padding:24px 0">Dotknij pól, żeby postawić bloki.</div>';
   pts.sort(function(a,b){return (a[0]+a[1])-(b[0]+b[1])||a[2]-b[2]});
   function P2(x,y,z){return[(x-y)*C*.87,(x+y)*C*.5-z*C]}
-  var out='';pts.forEach(function(p){var x=p[0],y=p[1],z=p[2],a=P2(x,y,z+1),b=P2(x+1,y,z+1),c=P2(x+1,y+1,z+1),d=P2(x,y+1,z+1),e=P2(x,y+1,z),f=P2(x+1,y+1,z),h=P2(x+1,y,z);
-    function poly(pp,col){pp.forEach(function(q){minx=Math.min(minx,q[0]);maxx=Math.max(maxx,q[0]);miny=Math.min(miny,q[1]);maxy=Math.max(maxy,q[1])});return'<polygon points="'+pp.map(function(q){return q[0].toFixed(1)+','+q[1].toFixed(1)}).join(' ')+'" fill="'+col+'" stroke="#0d2a55" stroke-opacity=".5" stroke-width="1"/>'}
-    out+=poly([d,e,f,c],'#3f7fd6')+poly([b,h,f,c],'#2a5fa8')+poly([a,b,c,d],'#8cc0ff')});
+  var out='';pts.forEach(function(p){var x=p[0],y=p[1],z=p[2],base=PAL[p[3]-1].h,a=P2(x,y,z+1),b=P2(x+1,y,z+1),c=P2(x+1,y+1,z+1),d=P2(x,y+1,z+1),e=P2(x,y+1,z),f=P2(x+1,y+1,z),h=P2(x+1,y,z);
+    function poly(pp,col){pp.forEach(function(q){minx=Math.min(minx,q[0]);maxx=Math.max(maxx,q[0]);miny=Math.min(miny,q[1]);maxy=Math.max(maxy,q[1])});return'<polygon points="'+pp.map(function(q){return q[0].toFixed(1)+','+q[1].toFixed(1)}).join(' ')+'" fill="'+col+'" stroke="#0d2a55" stroke-opacity=".45" stroke-width="1"/>'}
+    out+=poly([d,e,f,c],shade(base,.82))+poly([b,h,f,c],shade(base,.62))+poly([a,b,c,d],shade(base,1.08))});
   return'<svg class="iso" viewBox="'+(minx-6).toFixed(0)+' '+(miny-6).toFixed(0)+' '+(maxx-minx+12).toFixed(0)+' '+(maxy-miny+12).toFixed(0)+'" role="img" aria-label="Podgląd 3D">'+out+'</svg>'}
-function stlText(g,name){var s=g.s,tris=[];
+/* STL: color=0 -> cała bryła; color=1..4 -> tylko ta część (osobna, zamknięta bryła) */
+function stlText(g,name,color){var s=g.s,tris=[],col=color||0;
   var F=[[1,0,0,[[1,0,0],[1,1,0],[1,1,1],[1,0,1]]],[-1,0,0,[[0,0,0],[0,0,1],[0,1,1],[0,1,0]]],[0,1,0,[[0,1,0],[0,1,1],[1,1,1],[1,1,0]]],[0,-1,0,[[0,0,0],[1,0,0],[1,0,1],[0,0,1]]],[0,0,1,[[0,0,1],[1,0,1],[1,1,1],[0,1,1]]],[0,0,-1,[[0,0,0],[0,1,0],[1,1,0],[1,0,0]]]];
-  for(var z=0;z<g.h;z++)for(var y=0;y<g.n;y++)for(var x=0;x<g.n;x++)if(bget(g,x,y,z))F.forEach(function(f){if(!bget(g,x+f[0],y+f[1],z+f[2])){var v=f[3].map(function(o){return[(x+o[0])*s,(y+o[1])*s,(z+o[2])*s]});
+  function inside(x,y,z){var v=bcol(g,x,y,z);return col?v===col:v>0}
+  for(var z=0;z<g.h;z++)for(var y=0;y<g.n;y++)for(var x=0;x<g.n;x++)if(inside(x,y,z))F.forEach(function(f){if(!inside(x+f[0],y+f[1],z+f[2])){var v=f[3].map(function(o){return[(x+o[0])*s,(y+o[1])*s,(z+o[2])*s]});
     [[0,1,2],[0,2,3]].forEach(function(t){var a=v[t[0]],b=v[t[1]],c=v[t[2]],u=[b[0]-a[0],b[1]-a[1],b[2]-a[2]],w=[c[0]-a[0],c[1]-a[1],c[2]-a[2]],nx=u[1]*w[2]-u[2]*w[1],ny=u[2]*w[0]-u[0]*w[2],nz=u[0]*w[1]-u[1]*w[0];
       if(nx*f[0]+ny*f[1]+nz*f[2]<0)tris.push([f,a,c,b]);else tris.push([f,a,b,c])})}});
   var nm=name.replace(/[^A-Za-z0-9_]/g,'_')||'model',t='solid '+nm+'\n';
   tris.forEach(function(q){t+='facet normal '+q[0][0]+' '+q[0][1]+' '+q[0][2]+'\n outer loop\n';for(var i=1;i<4;i++)t+='  vertex '+q[i][0]+' '+q[i][1]+' '+q[i][2]+'\n';t+=' endloop\nendfacet\n'});
   return t+'endsolid '+nm+'\n'}
-function plainDl(name,text){try{var b=new Blob([text],{type:'model/stl'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=name+'.stl';document.body.appendChild(a);a.click();document.body.removeChild(a);setTimeout(function(){URL.revokeObjectURL(a.href)},3000)}catch(e){}}
+function exportFiles(g,base){var st=bstats(g),files=[{name:base+'_calosc.stl',text:stlText(g,base,0)}];
+  if(st.colors.length>1)st.colors.forEach(function(c){files.push({name:base+'_'+c+'_'+PAL[c-1].a+'.stl',text:stlText(g,base+'_'+c,c)})});return files}
+function plainDl(name,text){try{var b=new Blob([text],{type:'model/stl'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=name;document.body.appendChild(a);a.click();document.body.removeChild(a);setTimeout(function(){URL.revokeObjectURL(a.href)},3000)}catch(e){}}
 var CRCT=null;
 function crc32(u){if(!CRCT){CRCT=[];for(var n=0;n<256;n++){var c=n;for(var k=0;k<8;k++)c=(c&1)?(0xEDB88320^(c>>>1)):(c>>>1);CRCT[n]=c>>>0}}var c2=0xFFFFFFFF;for(var i=0;i<u.length;i++)c2=CRCT[(c2^u[i])&255]^(c2>>>8);return (c2^0xFFFFFFFF)>>>0}
-function zipStore(fname,text){var enc=new TextEncoder(),nm=enc.encode(fname),d=enc.encode(text),crc=crc32(d),
-  lh=new Uint8Array(30+nm.length),lv=new DataView(lh.buffer);lv.setUint32(0,0x04034b50,true);lv.setUint16(4,20,true);lv.setUint16(6,0x0800,true);lv.setUint16(8,0,true);lv.setUint16(10,0,true);lv.setUint16(12,0x21,true);lv.setUint32(14,crc,true);lv.setUint32(18,d.length,true);lv.setUint32(22,d.length,true);lv.setUint16(26,nm.length,true);lv.setUint16(28,0,true);lh.set(nm,30);
-  var off=lh.length+d.length,cd=new Uint8Array(46+nm.length),cv=new DataView(cd.buffer);cv.setUint32(0,0x02014b50,true);cv.setUint16(4,20,true);cv.setUint16(6,20,true);cv.setUint16(8,0x0800,true);cv.setUint16(10,0,true);cv.setUint16(12,0,true);cv.setUint16(14,0x21,true);cv.setUint32(16,crc,true);cv.setUint32(20,d.length,true);cv.setUint32(24,d.length,true);cv.setUint16(28,nm.length,true);cv.setUint32(42,0,true);cd.set(nm,46);
-  var end=new Uint8Array(22),ev=new DataView(end.buffer);ev.setUint32(0,0x06054b50,true);ev.setUint16(8,1,true);ev.setUint16(10,1,true);ev.setUint32(12,cd.length,true);ev.setUint32(16,off,true);
-  var out=new Uint8Array(lh.length+d.length+cd.length+end.length);out.set(lh,0);out.set(d,lh.length);out.set(cd,off);out.set(end,off+cd.length);return out}
-function dlFile(name,text){
-  if(window.claude&&window.claude.use){window.claude.use('downloads').then(function(d){if(d){d.save({filename:name+'.zip',data:zipStore(name+'.stl',text)}).then(function(){msg='Zapisano '+name+'.zip. Rozpakuj go: w środku jest '+name+'.stl.';render()},function(){})}else plainDl(name,text)}).catch(function(){plainDl(name,text)});return}
-  plainDl(name,text)}
-var PRESETS=[[4,3,'Mały 4×4×3'],[6,5,'Średni 6×6×5'],[6,8,'Wysoki 6×6×8'],[8,8,'Duży 8×8×8']];
+function zipStore(files){var enc=new TextEncoder(),parts=[],cds=[],off=0;
+  files.forEach(function(f){var nm=enc.encode(f.name),d=enc.encode(f.text),crc=crc32(d),lh=new Uint8Array(30+nm.length),lv=new DataView(lh.buffer);
+    lv.setUint32(0,0x04034b50,true);lv.setUint16(4,20,true);lv.setUint16(6,0x0800,true);lv.setUint16(8,0,true);lv.setUint16(10,0,true);lv.setUint16(12,0x21,true);lv.setUint32(14,crc,true);lv.setUint32(18,d.length,true);lv.setUint32(22,d.length,true);lv.setUint16(26,nm.length,true);lv.setUint16(28,0,true);lh.set(nm,30);
+    var cd=new Uint8Array(46+nm.length),cv=new DataView(cd.buffer);cv.setUint32(0,0x02014b50,true);cv.setUint16(4,20,true);cv.setUint16(6,20,true);cv.setUint16(8,0x0800,true);cv.setUint16(10,0,true);cv.setUint16(12,0,true);cv.setUint16(14,0x21,true);cv.setUint32(16,crc,true);cv.setUint32(20,d.length,true);cv.setUint32(24,d.length,true);cv.setUint16(28,nm.length,true);cv.setUint32(42,off,true);cd.set(nm,46);
+    parts.push(lh,d);cds.push(cd);off+=lh.length+d.length});
+  var cdlen=cds.reduce(function(a,c){return a+c.length},0),end=new Uint8Array(22),ev=new DataView(end.buffer);ev.setUint32(0,0x06054b50,true);ev.setUint16(8,files.length,true);ev.setUint16(10,files.length,true);ev.setUint32(12,cdlen,true);ev.setUint32(16,off,true);
+  var all=parts.concat(cds,[end]),total=all.reduce(function(a,c){return a+c.length},0),out=new Uint8Array(total),p=0;all.forEach(function(c){out.set(c,p);p+=c.length});return out}
+function dlFile(base,files){
+  if(window.claude&&window.claude.use){window.claude.use('downloads').then(function(d){if(d){d.save({filename:base+'.zip',data:zipStore(files)}).then(function(){msg='Zapisano '+base+'.zip. Rozpakuj go: w środku są pliki .stl.';render()},function(){})}else files.forEach(function(f){plainDl(f.name,f.text)})}).catch(function(){files.forEach(function(f){plainDl(f.name,f.text)})});return}
+  files.forEach(function(f,i){setTimeout(function(){plainDl(f.name,f.text)},i*350)})}
+var PRESETS=[[4,3,'Mały 4×4×3'],[6,5,'Średni 6×6×5'],[6,8,'Wysoki 6×6×8'],[8,8,'Duży 8×8×8'],[10,12,'Bardzo duży 10×10×12']];
 function buildView(){var g=BLD,st=bstats(g),cells='',mm=function(v){return v*g.s},sg=g.stage?stageOf(g.stage):null;
-  for(var y=0;y<g.n;y++)for(var x=0;x<g.n;x++){var on=bget(g,x,y,g.z),under=g.z>0&&bget(g,x,y,g.z-1);cells+='<button class="bc'+(on?' on':under?' under':'')+'" data-act="wcell" data-x="'+x+'" data-y="'+y+'" aria-label="Pole '+(x+1)+','+(y+1)+(on?', blok':'')+'"></button>'}
+  for(var y=0;y<g.n;y++)for(var x=0;x<g.n;x++){var v=bcol(g,x,y,g.z),under=g.z>0&&bget(g,x,y,g.z-1);cells+='<button class="bc'+(v?' on':under?' under':'')+'"'+(v?' style="background:'+PAL[v-1].h+';border-color:'+shade(PAL[v-1].h,.7)+'"':'')+' data-act="wcell" data-x="'+x+'" data-y="'+y+'" aria-label="Pole '+(x+1)+','+(y+1)+(v?', '+PAL[v-1].n:'')+'"></button>'}
   var warns='';if(st.cnt&&st.floating)warns+='<div class="fb bad">Uwaga: '+st.floating+' '+pl3(st.floating,['blok wisi','bloki wiszą','bloków wisi'])+' w powietrzu. Drukarka postawi je tylko z podporami. Włącz podpory w Bambu Studio albo dodaj bloki pod spodem.</div>';
   if(st.cnt&&!st.conn)warns+='<div class="fb bad">Projekt składa się z kilku osobnych kawałków. Połącz je klockami.</div>';
   var canPreset=g.i<0&&!st.cnt&&!g.stage;
   return header()+'<div class="sess-top"><button class="x" data-act="wback" aria-label="Wróć">×</button><h2 style="font-size:24px;flex:1">'+(sg?'Etap: '+esc(sg.t):'Edytor klocków')+'</h2></div><div class="card">'+(sg?'<div class="hint">'+esc(sg.d)+'</div>':'')+'<input type="text" id="dname" data-dname="1" value="'+esc(g.name)+'" maxlength="24" aria-label="Nazwa projektu" style="font-size:18px">'+
     '<div class="iso-wrap">'+isoSvg(g)+'</div>'+(canPreset?'<div class="lab">Rozmiar planszy</div><div class="seg" style="margin:6px 0 10px">'+PRESETS.map(function(p){return'<label><input type="radio" name="pr" data-act="wpreset" data-n="'+p[0]+'" data-h="'+p[1]+'"'+(g.n===p[0]&&g.h===p[1]?' checked':'')+'> '+p[2]+'</label>'}).join('')+'</div>':'')+
-    '<div class="lab">Warstwa (od dołu)</div><div class="row" style="margin-top:6px">'+Array.apply(null,Array(g.h)).map(function(_,z){return'<button class="chip" aria-pressed="'+(z===g.z)+'" data-act="wlayer" data-z="'+z+'">'+(z+1)+'</button>'}).join('')+'</div>'+
-    '<div class="bgrid" style="grid-template-columns:repeat('+g.n+',1fr)">'+cells+'</div>'+warns+
-    '<div class="hint" style="margin-top:10px">Bloków: <b>'+st.cnt+'</b>'+(st.cnt?' · rozmiar: <b>'+mm(st.w)+' × '+mm(st.d)+' × '+mm(st.hh)+' mm</b>':'')+'</div>'+
-    '<div class="lab">Wielkość jednego bloku</div><div class="seg" style="margin-top:6px">'+[5,6,8,10,12,15].map(function(s){return'<label><input type="radio" name="bs" data-act="wsize" data-s="'+s+'"'+(g.s===s?' checked':'')+'> '+s+' mm</label>'}).join('')+'</div>'+
-    '<div class="row"><button class="btn" data-act="wsave">Zapisz</button><button class="btn alt" data-act="wexp"'+(st.cnt?'':' disabled')+'>Pobierz STL</button><button class="btn alt" data-act="wshow"'+(st.cnt?'':' disabled')+'>Pokaż kod STL</button><button class="btn alt" data-act="wclear">Wyczyść</button></div>'+
-    (g.show&&st.cnt?'<div class="hint">Skopiuj cały tekst do pliku o nazwie <b>model.stl</b> i otwórz go w Bambu Studio.</div><textarea readonly id="stl" aria-label="Kod STL" style="min-height:160px;font-family:monospace;font-size:12px">'+esc(stlText(g,g.name))+'</textarea>':'')+
-    '<div class="note">Przed wydrukiem w Bambu Studio sprawdź rozmiar, ustaw model płasko na stole i pokaż go dorosłemu. W Claude plik zapisuje się jako ZIP, rozpakuj go, a w środku jest plik .stl.</div></div>'}
+    '<div class="lab">Kolor (jak filament w AMS)</div><div class="palrow">'+PAL.map(function(p,i){return'<button class="pc'+(g.col===i+1?' on':'')+'" style="background:'+p.h+'" data-act="wcolor" data-c="'+(i+1)+'" aria-label="'+p.n+'" aria-pressed="'+(g.col===i+1)+'"><span>'+(i+1)+'</span></button>'}).join('')+'<span class="hintline">'+PAL[g.col-1].n+'</span></div>'+
+    '<div class="lab" style="margin-top:8px">Warstwa (od dołu)</div><div class="row" style="margin-top:6px">'+Array.apply(null,Array(g.h)).map(function(_,z){return'<button class="chip" aria-pressed="'+(z===g.z)+'" data-act="wlayer" data-z="'+z+'">'+(z+1)+'</button>'}).join('')+'</div>'+
+    '<div class="bgrid" style="grid-template-columns:repeat('+g.n+',1fr)">'+cells+'</div>'+
+    '<div class="row" style="margin-top:0"><button class="btn alt" data-act="wsym" aria-pressed="'+g.sym+'" style="padding:8px 14px;font-size:15px">Symetria: '+(g.sym?'włączona':'wyłączona')+'</button><button class="btn alt" data-act="wundo" style="padding:8px 14px;font-size:15px"'+(g.undo.length?'':' disabled')+'>Cofnij</button></div>'+warns+
+    '<div class="hint" style="margin-top:10px">Bloków: <b>'+st.cnt+'</b>'+(st.cnt?' · rozmiar: <b>'+mm(st.w)+' × '+mm(st.d)+' × '+mm(st.hh)+' mm</b> · filament: ok. <b>'+st.grams+' g</b> (orientacyjnie) · kolory: <b>'+st.colors.length+'</b>':'')+'</div>'+
+    (st.colors.length>4?'':'')+
+    '<div class="lab">Wielkość jednego bloku</div><div class="seg" style="margin-top:6px">'+[4,5,6,8,10,12,15].map(function(s){return'<label><input type="radio" name="bs" data-act="wsize" data-s="'+s+'"'+(g.s===s?' checked':'')+'> '+s+' mm</label>'}).join('')+'</div>'+
+    '<div class="row"><button class="btn" data-act="wsave">Zapisz</button><button class="btn alt" data-act="wexp"'+(st.cnt?'':' disabled')+'>Pobierz do druku</button><button class="btn alt" data-act="wclear">Wyczyść</button></div>'+
+    (st.colors.length>1?'<div class="note">Model ma <b>'+st.colors.length+' kolory</b>. Dostaniesz osobny plik STL dla każdego koloru i jeden plik z całością. W Bambu Studio zaimportuj pliki kolorów naraz (jeśli program zapyta, wczytaj jako jeden obiekt z wieloma częściami) i przypisz każdej części filament z AMS.</div>':'')+
+    '<div class="note">Przed wydrukiem sprawdź rozmiar w Bambu Studio, ustaw model płasko na stole i pokaż go dorosłemu. W Claude pliki zapisują się w ZIP: rozpakuj go.</div></div>'}
 function bsave(){var p=d3(),g=BLD,rec={name:g.name,n:g.n,h:g.h,s:g.s,c:g.c.join(''),stage:g.stage||null};if(g.i>=0)p.designs[g.i]=rec;else{p.designs.push(rec);g.i=p.designs.length-1}save();msg='Zapisano projekt „'+g.name+'”.'}
 
 var BKTXT='';
@@ -1342,14 +1360,17 @@ document.addEventListener('click',function(e){var b=e.target.closest('[data-act]
   else if(a==='wbuy'){var bid=b.dataset.id,bsh=SHOP[bid],breq=shopReq(bid),bt=tokensInfo(),bpp=d3();if(!owned(bid)&&(!breq||secDone(breq))&&bt.avail>=bsh.price){bpp.shop=bpp.shop||{};bpp.shop[bid]=bsh.price;save();msg='Kupiono: '+stageOf(bid).t+'. Możesz go teraz zaprojektować.'}render()}
   else if(a==='wdel'){var di=+b.dataset.i,pp0=d3();pp0.designs.splice(di,1);pp0.printq=pp0.printq.filter(function(x){return x.di!==di}).map(function(x){if(x.di>di)x.di--;return x});save();render()}
   else if(a==='wback'){view='home';BLD=null;render()}
-  else if(a==='wcell'){var gx=+b.dataset.x,gy=+b.dataset.y,ix=bidx(BLD,gx,gy,BLD.z);BLD.c[ix]=BLD.c[ix]?0:1;render()}
+  else if(a==='wcell'){bpaint(+b.dataset.x,+b.dataset.y);render()}
+  else if(a==='wcolor'){BLD.col=+b.dataset.c;render()}
+  else if(a==='wsym'){BLD.sym=!BLD.sym;render()}
+  else if(a==='wundo'){bundo();render()}
   else if(a==='wlayer'){BLD.z=+b.dataset.z;render()}
-  else if(a==='wclear'){BLD.c=BLD.c.map(function(){return 0});render()}
+  else if(a==='wclear'){BLD.undo.push(BLD.c.slice());BLD.c=BLD.c.map(function(){return 0});render()}
   else if(a==='wsize'){BLD.s=+b.dataset.s;render()}
-  else if(a==='wpreset'){var pn=+b.dataset.n,ph=+b.dataset.h;BLD.n=pn;BLD.h=ph;BLD.c=new Array(pn*pn*ph).fill(0);BLD.z=0;render()}
+  else if(a==='wpreset'){var pn=+b.dataset.n,ph=+b.dataset.h;BLD.n=pn;BLD.h=ph;BLD.c=new Array(pn*pn*ph).fill(0);BLD.z=0;BLD.undo=[];render()}
   else if(a==='wsave'){bsave();render()}
   else if(a==='wshow'){BLD.show=!BLD.show;render()}
-  else if(a==='wexp'){bsave();dlFile(BLD.name.replace(/[^A-Za-z0-9_-]/g,'_')||'model',stlText(BLD,BLD.name));BLD.show=true;render()}
+  else if(a==='wexp'){bsave();var bb=(BLD.name.replace(/[^A-Za-z0-9_-]/g,'_')||'model');dlFile(bb,exportFiles(BLD,bb));render()}
   else if(a==='wreq'){var pq=d3(),ri2=+b.dataset.i;if(!printItem(ri2)){pq.printq.push({di:ri2,done:false,d:dstr(new Date())});save();msg='Dodano do wydruku. Poproś rodzica.'}render()}
   else if(a==='wdone'){var it=printItem(+b.dataset.i);if(it){it.done=!it.done;save()}render()}
   else if(a==='kidoff'||a==='kidon'){P().kid=(a==='kidon');D.subject=null;save();view='home';render()}
