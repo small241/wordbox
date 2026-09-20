@@ -384,6 +384,58 @@ var CODE_DEF=[
 {subj:'code',key:'c:o5',title:'Pętle i funkcje',sub:'Powtórz N razy',topic:'loop'},
 {subj:'code',key:'c:o6',title:'Lua i MakeCode',sub:'Roblox Studio i Minecraft Education',topic:'lua'}];
 function buildCode(){CODE_DEF.forEach(function(d){var s={subj:d.subj,key:d.key,g:'k',kid:true,title:d.title,sub:d.sub,topic:d.topic,parts:[],words:[],kw:[],sents:[],lessons:[],chunks:[],n:3,free:true,parent:null};SEC.push(s);SK[s.key]=s})}
+/* ---------- własne flagi i ikonki (bez emoji: na Windowsie flagi emoji się nie rysują) ---------- */
+// każdy kształt: ['r',x,y,w,h,kolor] prostokąt · ['c',x,y,r,kolor] koło · ['p','punkty',kolor] wielokąt
+// płótno 30 x 20
+var FLAGDEF={
+ pl:[['r',0,0,30,10,'#fff'],['r',0,10,30,10,'#DC143C']],
+ de:[['r',0,0,30,6.7,'#000'],['r',0,6.7,30,6.6,'#DD0000'],['r',0,13.3,30,6.7,'#FFCE00']],
+ cz:[['r',0,0,30,10,'#fff'],['r',0,10,30,10,'#D7141A'],['p','0,0 15,10 0,20','#11457E']],
+ sk:[['r',0,0,30,6.7,'#fff'],['r',0,6.7,30,6.6,'#0B4EA2'],['r',0,13.3,30,6.7,'#EE1C25'],['r',6,5,7,9,'#EE1C25'],['r',7.5,6.5,4,4,'#fff']],
+ ua:[['r',0,0,30,10,'#005BBB'],['r',0,10,30,10,'#FFD500']],
+ lt:[['r',0,0,30,6.7,'#FDB913'],['r',0,6.7,30,6.6,'#006A44'],['r',0,13.3,30,6.7,'#C1272D']],
+ fr:[['r',0,0,10,20,'#002395'],['r',10,0,10,20,'#fff'],['r',20,0,10,20,'#ED2939']],
+ es:[['r',0,0,30,5,'#AA151B'],['r',0,5,30,10,'#F1BF00'],['r',0,15,30,5,'#AA151B'],['r',7,8,4,5,'#AA151B']],
+ it:[['r',0,0,10,20,'#008C45'],['r',10,0,10,20,'#fff'],['r',20,0,10,20,'#CD212A']],
+ gb:[['r',0,0,30,20,'#012169'],['p','0,0 12,20 0,20','#012169'],['r',0,0,30,20,'#012169'],
+     ['p','0,0 4,0 30,17 30,20 26,20 0,3','#fff'],['p','26,0 30,0 30,3 4,20 0,20 0,17','#fff'],
+     ['p','0,0 2.5,0 30,18.5 30,20 27.5,20 0,1.5','#C8102E'],['p','27.5,0 30,0 30,1.5 2.5,20 0,20 0,18.5','#C8102E'],
+     ['r',12,0,6,20,'#fff'],['r',0,7,30,6,'#fff'],['r',13.5,0,3,20,'#C8102E'],['r',0,8.5,30,3,'#C8102E']],
+ se:[['r',0,0,30,20,'#006AA7'],['r',9,0,4,20,'#FECC00'],['r',0,8,30,4,'#FECC00']],
+ no:[['r',0,0,30,20,'#BA0C2F'],['r',8,0,6,20,'#fff'],['r',0,7,30,6,'#fff'],['r',9.5,0,3,20,'#00205B'],['r',0,8.5,30,3,'#00205B']],
+ fi:[['r',0,0,30,20,'#fff'],['r',9,0,5,20,'#003580'],['r',0,7.5,30,5,'#003580']],
+ dk:[['r',0,0,30,20,'#C8102E'],['r',9,0,4,20,'#fff'],['r',0,8,30,4,'#fff']],
+ gr:[['r',0,0,30,20,'#fff'],['r',0,0,30,2.2,'#0D5EAF'],['r',0,4.4,30,2.3,'#0D5EAF'],['r',0,8.9,30,2.2,'#0D5EAF'],['r',0,13.3,30,2.3,'#0D5EAF'],['r',0,17.8,30,2.2,'#0D5EAF'],['r',0,0,11.1,11.1,'#0D5EAF'],['r',4.4,0,2.3,11.1,'#fff'],['r',0,4.4,11.1,2.3,'#fff']],
+ pt:[['r',0,0,12,20,'#006600'],['r',12,0,18,20,'#FF0000'],['c',12,10,4,'#FFFF00'],['c',12,10,2.4,'#FF0000']],
+ nl:[['r',0,0,30,6.7,'#AE1C28'],['r',0,6.7,30,6.6,'#fff'],['r',0,13.3,30,6.7,'#21468B']],
+ at:[['r',0,0,30,6.7,'#ED2939'],['r',0,6.7,30,6.6,'#fff'],['r',0,13.3,30,6.7,'#ED2939']],
+ be:[['r',0,0,10,20,'#000'],['r',10,0,10,20,'#FDDA24'],['r',20,0,10,20,'#EF3340']],
+ ch:[['r',0,0,30,20,'#DA291C'],['r',12.5,5,5,10,'#fff'],['r',10,7.5,10,5,'#fff']],
+ us:[['r',0,0,30,20,'#fff'],['r',0,0,30,1.55,'#B22234'],['r',0,3.1,30,1.55,'#B22234'],['r',0,6.2,30,1.55,'#B22234'],['r',0,9.2,30,1.55,'#B22234'],['r',0,12.3,30,1.55,'#B22234'],['r',0,15.4,30,1.55,'#B22234'],['r',0,18.4,30,1.55,'#B22234'],['r',0,0,12,10.8,'#3C3B6E']],
+ jp:[['r',0,0,30,20,'#fff'],['c',15,10,6,'#BC002D']],
+ cn:[['r',0,0,30,20,'#DE2910'],['p','5,3 6.4,7 10.5,7 7.2,9.4 8.4,13.4 5,11 1.6,13.4 2.8,9.4 -0.5,7 3.6,7','#FFDE00']],
+ br:[['r',0,0,30,20,'#009C3B'],['p','15,1.5 28.5,10 15,18.5 1.5,10','#FFDF00'],['c',15,10,4.2,'#002776']],
+ ca:[['r',0,0,30,20,'#D80621'],['r',7.5,0,15,20,'#fff'],['p','15,3 16.4,7.5 19,6.5 18,10.5 21,10 19.5,12.5 16.5,12 16.8,17 15,15.5 13.2,17 13.5,12 10.5,12.5 9,10 12,10.5 11,6.5 13.6,7.5','#D80621']],
+ au:[['r',0,0,30,20,'#00008B'],['r',0,0,15,10,'#00008B'],['p','0,0 2,0 15,8.5 15,10 13,10 0,1.5','#fff'],['p','13,0 15,0 15,1.5 2,10 0,10 0,8.5','#fff'],['r',6,0,3,10,'#fff'],['r',0,3.5,15,3,'#fff'],['r',6.8,0,1.6,10,'#C8102E'],['r',0,4.2,15,1.6,'#C8102E'],['c',22,12,2,'#fff'],['c',25,5,1.4,'#fff'],['c',19,5,1.2,'#fff']]
+};
+function flagSvg(code,h){h=h||60;var d=FLAGDEF[code];if(!d)return'';var w=Math.round(h*1.5);
+  var body=d.map(function(s){
+    if(s[0]==='r')return'<rect x="'+s[1]+'" y="'+s[2]+'" width="'+s[3]+'" height="'+s[4]+'" fill="'+s[5]+'"/>';
+    if(s[0]==='c')return'<circle cx="'+s[1]+'" cy="'+s[2]+'" r="'+s[3]+'" fill="'+s[4]+'"/>';
+    return'<polygon points="'+s[1]+'" fill="'+s[2]+'"/>'}).join('');
+  return'<svg class="flag" viewBox="0 0 30 20" width="'+w+'" height="'+h+'" role="img" aria-label="flaga"><clipPath id="fc'+code+'"><rect width="30" height="20"/></clipPath><g clip-path="url(#fc'+code+')">'+body+'</g><rect x="0.25" y="0.25" width="29.5" height="19.5" fill="none" stroke="#1B1B1B" stroke-opacity=".45" stroke-width=".5"/></svg>'}
+// rysowane ikonki krajobrazu — emoji bywały mylące (kajak zamiast rzeki)
+var ICON={
+ gora:'<svg viewBox="0 0 48 32" class="picon" aria-label="góra"><rect width="48" height="32" fill="#BFE3F5"/><polygon points="2,32 16,8 30,32" fill="#6B7A5E"/><polygon points="16,8 10,18 22,18" fill="#fff"/><polygon points="22,32 34,14 46,32" fill="#8A9A78"/></svg>',
+ morze:'<svg viewBox="0 0 48 32" class="picon" aria-label="morze"><rect width="48" height="32" fill="#BFE3F5"/><rect y="12" width="48" height="20" fill="#2F80ED"/><rect y="12" width="48" height="3" fill="#8FC4F7"/><rect x="0" y="28" width="48" height="4" fill="#F2D399"/></svg>',
+ jezioro:'<svg viewBox="0 0 48 32" class="picon" aria-label="jezioro"><rect width="48" height="32" fill="#BFE3F5"/><rect y="20" width="48" height="12" fill="#3F7A1F"/><ellipse cx="24" cy="24" rx="15" ry="7" fill="#2F80ED"/><polygon points="4,20 10,10 16,20" fill="#3F7A1F"/></svg>',
+ las:'<svg viewBox="0 0 48 32" class="picon" aria-label="las"><rect width="48" height="32" fill="#BFE3F5"/><rect y="26" width="48" height="6" fill="#6B4A2B"/><polygon points="12,26 20,6 28,26" fill="#2E7D32"/><polygon points="28,26 35,12 42,26" fill="#3FA34D"/><polygon points="4,26 10,14 16,26" fill="#3FA34D"/></svg>',
+ wyspa:'<svg viewBox="0 0 48 32" class="picon" aria-label="wyspa"><rect width="48" height="32" fill="#2F80ED"/><ellipse cx="24" cy="26" rx="14" ry="5" fill="#F2D399"/><rect x="23" y="12" width="2" height="12" fill="#6B4A2B"/><circle cx="24" cy="12" r="6" fill="#3FA34D"/></svg>',
+ pustynia:'<svg viewBox="0 0 48 32" class="picon" aria-label="pustynia"><rect width="48" height="32" fill="#F7D488"/><circle cx="40" cy="7" r="5" fill="#FFB300"/><path d="M0 26 Q12 18 24 26 T48 26 L48 32 L0 32Z" fill="#E0B063"/><rect x="20" y="14" width="3" height="10" fill="#3FA34D"/><rect x="16" y="17" width="3" height="4" fill="#3FA34D"/></svg>',
+ rzeka:'<svg viewBox="0 0 48 32" class="picon" aria-label="rzeka"><rect width="48" height="32" fill="#8FBF6A"/><path d="M14 0 L22 0 L18 12 L26 20 L22 32 L14 32 L18 20 L10 12 Z" fill="#2F80ED"/><polygon points="34,32 40,18 46,32" fill="#6B7A5E"/></svg>',
+ wulkan:'<svg viewBox="0 0 48 32" class="picon" aria-label="wulkan"><rect width="48" height="32" fill="#4A3B4F"/><polygon points="6,32 20,8 34,32" fill="#5B5147"/><polygon points="16,10 24,10 26,4 20,7 14,2" fill="#E2561F"/><rect x="18" y="8" width="6" height="3" fill="#E2561F"/></svg>'
+};
+
 /* ---------- moduły życiowe: kieszonkowe, przyroda i ciało, geografia ---------- */
 function lvl(){var p=P();return p.lvl||(p.kid?6:8)}
 function isLife(sj){return sj==='fin'||sj==='nat'||sj==='geo'}
@@ -440,7 +492,8 @@ var SEAS=[['wiosna','🌷'],['lato','☀️'],['jesień','🍂'],['zima','❄️
 var TRASH=[['butelka PET','żółty'],['gazeta','niebieski'],['słoik','zielony'],['obierki','brązowy'],['puszka','żółty'],['karton','niebieski'],['szklanka','zielony']];
 var HEALTH=[['myć zęby 2 razy dziennie',1],['spać 10 godzin',1],['pić wodę',1],['biegać i skakać',1],['jeść warzywa',1],
   ['grać w grę do północy',0],['jeść słodycze zamiast obiadu',0],['siedzieć cały dzień',0],['pić colę do śniadania',0]];
-LGEN.body=function(){if(Math.random()<.5)return lpick(BODY,'Co to jest?',true);return lpick(BODYJOB,'Co robi ta część ciała?',false)};
+LGEN.body=function(){if(Math.random()<.5)return lpick(BODYJOB,'Która część ciała to robi?',false);
+  var it=pickOne(BODYJOB);return lmc('Co robi '+it[0]+'?','<span style="font-size:.5em">'+esc(it[0])+'</span>',it[1],[it[1]].concat(kdisL(BODYJOB,it,3).map(function(x){return x[1]})),it[0]+': '+it[1])};
 LGEN.sense=function(){var it=pickOne(SENSE);return lmc('Który zmysł?','<span style="font-size:.6em">'+esc(it[1])+'</span>',it[0],[it[0]].concat(kdisL(SENSE,it,3).map(function(x){return x[0]})),it[1]+' to '+it[0])};
 LGEN.anim=function(){var it=pickOne(ANIM),grp=['ssak','ptak','ryba','płaz','gad','owad'];
   return lmc('Do jakiej grupy należy?','<span style="font-size:.7em">'+esc(it[0])+'</span>',it[1],[it[1]].concat(shuffle(grp.filter(function(g){return g!==it[1]})).slice(0,3)),it[0]+' to '+it[1])};
@@ -455,22 +508,23 @@ LGEN.health=function(){var it=pickOne(HEALTH);
   return lmc('Czy to zdrowe?','<span style="font-size:.55em">'+esc(it[0])+'</span>',it[1]?'Zdrowe':'Niezdrowe',['Zdrowe','Niezdrowe'],it[1]?'Tak, to dobre dla ciała':'To lepiej robić rzadko')};
 
 /* ---- geografia i flagi ---- */
-var FLAGS=[['Polska','🇵🇱'],['Niemcy','🇩🇪'],['Czechy','🇨🇿'],['Słowacja','🇸🇰'],['Ukraina','🇺🇦'],['Litwa','🇱🇹'],['Francja','🇫🇷'],['Hiszpania','🇪🇸'],['Włochy','🇮🇹'],['Wielka Brytania','🇬🇧'],['Szwecja','🇸🇪'],['Norwegia','🇳🇴'],['Grecja','🇬🇷'],['Portugalia','🇵🇹'],['Holandia','🇳🇱'],['Austria','🇦🇹']];
-var FARFLAGS=[['Stany Zjednoczone','🇺🇸'],['Japonia','🇯🇵'],['Brazylia','🇧🇷'],['Kanada','🇨🇦'],['Australia','🇦🇺'],['Chiny','🇨🇳'],['Egipt','🇪🇬'],['Indie','🇮🇳']];
+var FLAGS=[['Polska','pl'],['Niemcy','de'],['Czechy','cz'],['Słowacja','sk'],['Ukraina','ua'],['Litwa','lt'],['Francja','fr'],['Hiszpania','es'],['Włochy','it'],['Wielka Brytania','gb'],['Szwecja','se'],['Norwegia','no'],['Dania','dk'],['Finlandia','fi'],['Grecja','gr'],['Portugalia','pt'],['Holandia','nl'],['Austria','at'],['Belgia','be'],['Szwajcaria','ch']];
+var FARFLAGS=[['Stany Zjednoczone','us'],['Japonia','jp'],['Brazylia','br'],['Kanada','ca'],['Australia','au'],['Chiny','cn']];
 var CAPS=[['Polska','Warszawa'],['Niemcy','Berlin'],['Czechy','Praga'],['Francja','Paryż'],['Hiszpania','Madryt'],['Włochy','Rzym'],['Wielka Brytania','Londyn'],['Ukraina','Kijów'],['Słowacja','Bratysława'],['Litwa','Wilno'],['Szwecja','Sztokholm'],['Austria','Wiedeń']];
 var PLCITY=[['Warszawa','stolica Polski'],['Kraków','Wawel i smok'],['Gdańsk','port nad Bałtykiem'],['Zakopane','góry Tatry'],['Poznań','koziołki na ratuszu'],['Wrocław','krasnale i Odra'],['Toruń','pierniki i Kopernik'],['Łódź','ulica Piotrkowska']];
 var PLNAT=[['Wisła','najdłuższa rzeka Polski'],['Odra','rzeka na zachodzie'],['Bałtyk','morze na północy'],['Tatry','najwyższe góry'],['Mazury','kraina jezior'],['Śnieżka','szczyt w Karkonoszach']];
 var CONT=[['Europa','tu leży Polska'],['Azja','największy kontynent'],['Afryka','Sahara i słonie'],['Ameryka Północna','Kanada i USA'],['Ameryka Południowa','Amazonia'],['Australia','kangury'],['Antarktyda','lód i pingwiny']];
-var LAND=[['góra','⛰️'],['morze','🌊'],['jezioro','🏞️'],['las','🌲'],['wyspa','🏝️'],['pustynia','🏜️'],['rzeka','🛶'],['wulkan','🌋']];
+var LAND=[['góra','gora'],['morze','morze'],['jezioro','jezioro'],['las','las'],['wyspa','wyspa'],['pustynia','pustynia'],['rzeka','rzeka'],['wulkan','wulkan']];
 LGEN.flag=function(){var L=lvl(),pool=L>=8?FLAGS.concat(FARFLAGS):FLAGS.slice(0,L===6?8:14),it=pickOne(pool);
-  if(Math.random()<.5)return lmc('Czyja to flaga?',it[1],it[0],[it[0]].concat(kdisL(pool,it,3).map(function(x){return x[0]})),it[1]+' to '+it[0]);
-  return lmc('Która flaga to '+it[0]+'?','<span style="font-size:.6em">'+esc(it[0])+'</span>',it[1],[it[1]].concat(kdisL(pool,it,3).map(function(x){return x[1]})),it[0]+' — '+it[1])};
+  var q=lmc('Czyja to flaga?',flagSvg(it[1],120),it[0],[it[0]].concat(kdisL(pool,it,3).map(function(x){return x[0]})),'To flaga: '+it[0]);
+  q.say=it[0];return q};
 LGEN.cap=function(){var it=pickOne(CAPS);
   if(Math.random()<.5)return lmc('Jaka to stolica?','<span style="font-size:.7em">'+esc(it[0])+'</span>',it[1],[it[1]].concat(kdisL(CAPS,it,3).map(function(x){return x[1]})),'Stolica: '+it[0]+' — '+it[1]);
   return lmc('Stolicą jakiego kraju jest to miasto?','<span style="font-size:.7em">'+esc(it[1])+'</span>',it[0],[it[0]].concat(kdisL(CAPS,it,3).map(function(x){return x[0]})),it[1]+' to stolica: '+it[0])};
 LGEN.plgeo=function(){var use=Math.random()<.5?PLCITY:PLNAT;return lpick(use,'O czym mowa?',false)};
 LGEN.cont=function(){return lpick(CONT,'Który to kontynent?',false)};
-LGEN.land=function(){return lpick(LAND,'Co to jest?',true)};
+LGEN.land=function(){var it=pickOne(LAND),dis=kdisL(LAND,it,3);
+  var q=lmc('Co widzisz na obrazku?',ICON[it[1]],it[0],[it[0]].concat(dis.map(function(x){return x[0]})),'To '+it[0]);q.say=it[0];return q};
 
 /* ---- sekcje ---- */
 var LIFE_SECS=[
@@ -1079,6 +1133,26 @@ var CODECARD='<button class="subj-card" data-act="subject" data-s="'+'CODESUBJ'+
 var PROJ_STEPS=['Wymyśl','Narysuj','Zmierz','Zaprojektuj','Wydrukuj','Sprawdź'];
 function cellsBox(x0,x1,y0,y1,z0,z1,c){var r=[];for(var z=z0;z<=z1;z++)for(var y=y0;y<=y1;y++)for(var x=x0;x<=x1;x++)r.push([x,y,z,c||1]);return r}
 var TPL={
+ steve2:function(){return cellsBox(3,5,1,4,0,6,4).concat(cellsBox(6,8,1,4,0,6,4),cellsBox(3,8,1,4,0,1,2),cellsBox(3,8,1,4,7,13,3),cellsBox(3,8,1,4,7,7,2),
+   cellsBox(0,2,1,4,7,13,1),cellsBox(9,11,1,4,7,13,1),cellsBox(0,2,1,4,11,13,3),cellsBox(9,11,1,4,11,13,3),
+   cellsBox(3,8,0,5,14,19,1),cellsBox(3,8,0,5,18,19,2),cellsBox(3,8,0,1,14,19,2),cellsBox(3,3,0,4,17,17,2),cellsBox(8,8,0,4,17,17,2),
+   [[4,5,16,4],[7,5,16,4],[5,5,15,2],[6,5,15,2]])},
+ creeper2:function(){return cellsBox(1,2,1,2,0,3,3).concat(cellsBox(5,6,1,2,0,3,3),cellsBox(1,2,5,6,0,3,3),cellsBox(5,6,5,6,0,3,3),
+   cellsBox(2,5,2,5,4,11,3),cellsBox(1,6,1,6,12,17,3),
+   [[2,6,16,2],[3,6,16,2],[5,6,16,2],[6,6,16,2],[1,6,15,2],[2,6,15,2],[5,6,15,2],[6,6,15,2],[3,6,14,2],[4,6,14,2],[2,6,13,2],[3,6,13,2],[4,6,13,2],[5,6,13,2],[2,6,12,2],[5,6,12,2]])},
+ skeleton2:function(){return cellsBox(4,5,2,3,0,6,1).concat(cellsBox(6,7,2,3,0,6,1),cellsBox(4,7,2,4,7,13,1),
+   cellsBox(4,7,4,4,8,8,2),cellsBox(4,7,4,4,10,10,2),cellsBox(4,7,4,4,12,12,2),
+   cellsBox(2,3,2,3,7,13,1),cellsBox(8,9,2,3,7,13,1),cellsBox(3,8,1,5,14,19,1),
+   cellsBox(4,4,5,5,16,17,2),cellsBox(7,7,5,5,16,17,2),cellsBox(5,6,5,5,15,15,2))},
+ zombie2:function(){return cellsBox(3,5,1,4,0,6,4).concat(cellsBox(6,8,1,4,0,6,4),cellsBox(3,8,1,4,0,1,2),cellsBox(3,8,1,4,7,13,3),
+   cellsBox(0,2,1,4,11,13,3),cellsBox(9,11,1,4,11,13,3),cellsBox(0,2,5,8,11,13,3),cellsBox(9,11,5,8,11,13,3),cellsBox(3,8,5,5,11,13,3),
+   cellsBox(3,8,0,5,14,19,3),cellsBox(3,8,0,5,18,19,2),cellsBox(3,8,0,1,14,19,2),
+   cellsBox(4,4,5,5,16,16,2),cellsBox(7,7,5,5,16,16,2),cellsBox(5,6,5,5,15,15,2))},
+ spider2:function(){var r=cellsBox(4,7,2,6,2,4,2).concat(cellsBox(4,7,7,9,2,4,2),cellsBox(4,7,9,9,4,4,5));
+   [2,4,6,8].forEach(function(y){r=r.concat(cellsBox(1,3,y,y,3,3,2),cellsBox(1,1,y,y,0,3,2),cellsBox(8,10,y,y,3,3,2),cellsBox(10,10,y,y,0,3,2))});return r},
+ ender2:function(){return cellsBox(2,3,4,5,0,9,2).concat(cellsBox(6,7,4,5,0,9,2),cellsBox(2,7,4,5,10,15,2),
+   cellsBox(0,1,4,5,7,15,2),cellsBox(8,9,4,5,7,15,2),cellsBox(3,6,3,6,16,19,2),cellsBox(3,6,6,6,18,18,1),[[4,6,18,2],[5,6,18,2]])}
+,
  steve:function(){return cellsBox(2,3,3,3,0,2,4).concat(cellsBox(2,3,3,3,3,5,3),cellsBox(1,1,3,3,3,5,1),cellsBox(4,4,3,3,3,5,1),cellsBox(2,3,2,3,6,6,1),cellsBox(2,3,2,3,7,7,2))},
  creeper:function(){return cellsBox(2,3,2,3,0,0,3).concat(cellsBox(2,3,2,3,1,3,3),cellsBox(2,3,2,3,4,5,3),[[2,2,5,2],[3,2,5,2]])},
  sword:function(){return[[1,1,0,2]].concat(cellsBox(0,2,1,1,1,1,5),cellsBox(1,1,1,1,2,6,1))},
@@ -1086,22 +1160,22 @@ var TPL={
  shield:function(){var r=cellsBox(1,4,0,4,0,0,4).filter(function(q){return !(q[1]===4&&(q[0]===1||q[0]===4))});return r.concat(cellsBox(2,3,1,3,1,1,1))}
 };
 var COLL=[
- {id:'steve',t:'Steve — ludzik z Minecrafta',n:6,h:8,s:8,tpl:'steve',d:'Głowa, tułów, ręce i nogi. Zacznij od wzoru i zmień go po swojemu.'},
+ {id:'steve',t:'Ludzik — wersja prosta',n:6,h:8,s:8,tpl:'steve',d:'Głowa, tułów, ręce i nogi z dużych klocków. Dobry na pierwszy raz.'},
+ {id:'steve2',t:'Ludzik — wersja szczegółowa',n:12,h:20,s:6,tpl:'steve2',d:'Ta sama postać na drobniejszej siatce: twarz, włosy, rękawy, pasek i buty. Dla tych, którym duże klocki już nie wystarczają.'},
  {id:'sword',t:'Miecz',n:4,h:7,s:8,tpl:'sword',d:'Rękojeść, gałka i ostrze. Ile bloków ma mieć ostrze?'},
  {id:'pick',t:'Kilof',n:5,h:6,s:8,tpl:'pickaxe',d:'Trzonek i głowica. Czy trzonek utrzyma głowicę?'},
  {id:'shield',t:'Tarcza',n:6,h:2,s:8,tpl:'shield',d:'Płaska tarcza z godłem. Dodaj własny wzór z bloków.'},
- {id:'armor',t:'Zbroja dla Steve\'a',n:6,h:8,s:8,tpl:'steve',d:'Dodaj do Steve\'a hełm, napierśnik i buty z dodatkowych bloków.'},
- {id:'creeper',t:'Creeper',n:6,h:6,s:8,tpl:'creeper',d:'Zielony potwór na czterech nogach. Popraw mu twarz i nogi.'},
- {id:'skeleton',t:'Szkielet',n:6,h:8,s:8,tpl:'steve',d:'Zacznij od Steve\'a i zrób go chudszym: usuń bloki z tułowia i nóg.'},
- {id:'zombie',t:'Zombie',n:6,h:8,s:8,tpl:'steve',d:'Zombie chodzi z rękami do przodu. Przesuń ręce Steve\'a do przodu.'},
- {id:'spider',t:'Pająk',n:8,h:3,s:6,tpl:null,d:'Szeroki korpus i osiem nóg. Pamiętaj, żeby nogi były połączone z ciałem.'},
- {id:'ender',t:'Enderman',n:6,h:12,s:6,tpl:null,d:'Bardzo wysoki i chudy. Ile bloków wysokości potrzebujesz?'}];
+ {id:'creeper',t:'Zielony skoczek',n:8,h:18,s:7,tpl:'creeper2',d:'Cztery nogi, wysoki korpus i wielka głowa z twarzą. Zmień mu minę.'},
+ {id:'skeleton',t:'Kościotrup',n:12,h:20,s:6,tpl:'skeleton2',d:'Chude ręce i nogi, żebra i czaszka z oczodołami. Dodaj mu łuk albo czapkę.'},
+ {id:'zombie',t:'Zombiak',n:12,h:20,s:6,tpl:'zombie2',d:'Zielona skóra i ręce wyciągnięte do przodu. Popraw mu twarz i ubranie.'},
+ {id:'spider',t:'Pająk',n:12,h:6,s:8,tpl:'spider2',d:'Odwłok, głowotułów, czerwone oczy i osiem nóg. Sprawdź, czy każda noga trzyma się ciała.'},
+ {id:'ender',t:'Cień',n:10,h:20,s:6,tpl:'ender2',d:'Bardzo wysoki i chudy, ze świecącymi oczami. Najtrudniejszy do wydrukowania — sprawdź, czy nogi nie są za cienkie.'}];
 function bsetDefault(){return P().kid?{n:4,h:3,s:12}:{n:6,h:5,s:10}}
 function d3(){var p=P();if(!p.designs)p.designs=[];if(!p.printq)p.printq=[];if(!p.proj)p.proj={};return p}
 function stageOf(id){for(var i=0;i<COLL.length;i++)if(COLL[i].id===id)return COLL[i];return null}
 function designFor(id){var p=d3(),r=null;p.designs.forEach(function(d,i){if(d.stage===id&&/[1-9]/.test(d.c))r={d:d,i:i}});return r}
 function printItem(idx){var r=null;d3().printq.forEach(function(x){if(x.di===idx)r=x});return r}
-var SHOP={steve:{price:8,kid:'c:k1',adult:'c:o1'},sword:{price:6,kid:'c:k1',adult:'c:o1'},pick:{price:6,kid:'c:k2',adult:'c:o2'},shield:{price:6,kid:'c:k2',adult:'c:o3'},armor:{price:10,kid:'c:k3',adult:'c:o3'},creeper:{price:10,kid:'c:k3',adult:'c:o4'},skeleton:{price:12,kid:'c:k4',adult:'c:o5'},zombie:{price:12,kid:'c:k4',adult:'c:o5'},spider:{price:15,kid:'c:k5',adult:'c:o6'},ender:{price:18,kid:'c:k5',adult:'c:o6'}};
+var SHOP={steve:{price:8,kid:'c:k1',adult:'c:o1'},steve2:{price:14,kid:'c:k3',adult:'c:o3'},sword:{price:6,kid:'c:k1',adult:'c:o1'},pick:{price:6,kid:'c:k2',adult:'c:o2'},shield:{price:6,kid:'c:k2',adult:'c:o3'},creeper:{price:10,kid:'c:k3',adult:'c:o4'},skeleton:{price:12,kid:'c:k4',adult:'c:o5'},zombie:{price:12,kid:'c:k4',adult:'c:o5'},spider:{price:15,kid:'c:k5',adult:'c:o6'},ender:{price:18,kid:'c:k5',adult:'c:o6'}};
 function shopReq(id){var k=P().kid?SHOP[id].kid:SHOP[id].adult;return SK[k]||null}
 function owned(id){var sh=P().shop||{};return sh[id]!=null||!!designFor(id)}
 var THUMBS={};
@@ -1138,7 +1212,7 @@ function freezeBox(){var t=tokensInfo(),sk=streak(),today=dstr(new Date()),has=!
   return'<div class="card"><div class="lab">Zamrożenie serii</div><div class="hint">Jeśli jednego dnia nie da się poćwiczyć, zamroź ten dzień za 1 żeton — seria nie przepadnie.</div>'+
    '<div class="frz" style="margin-top:10px"><b>🔥 '+sk+'</b> <small>· zamrożone dni: '+frzN()+'</small>'+
    (dn?'<span class="hint" style="margin:0">Dziś już ćwiczysz — zamrażanie niepotrzebne.</span>':has?'<span class="hint" style="margin:0">Dziś zamrożone ❄️</span>':'<button class="btn alt" data-act="freeze"'+(t.avail<1?' disabled':'')+'>❄️ Zamroź dziś (1 żeton)</button>')+'</div></div>'}
-function agePick(){var L=lvl();return'<span class="agebadge">wersja dla '+L+' lat</span> '+[6,7,8].map(function(a){return a===L?'':'<button class="link" data-act="setlvl" data-a="'+a+'">'+a+'</button>'}).join(' ')}
+function agePick(){var L=lvl();return'<span class="agebadge">wersja dla '+L+' lat</span> <button class="link" data-act="settings">zmień w ustawieniach</button>'}
 function tokChip(){if(isCode(D.subject)||D.subject==='3d')return'';var t=tokensInfo();return'<div class="tokchip"><span class="coin"></span><b>'+t.avail+'</b> '+pl3(t.avail,['żeton','żetony','żetonów'])+' <small>· następny za '+t.next+' '+pl3(t.next,['gwiazdkę','gwiazdki','gwiazdek'])+'</small></div>'}
 function threeDHome(h){var p=d3(),t=tokensInfo();
   h+=tokenBar();
@@ -1236,6 +1310,7 @@ function buildView(){var g=BLD,st=bstats(g),cells='',mm=function(v){return v*g.s
     '<div class="row" style="margin-top:0"><button class="btn alt" data-act="wsym" aria-pressed="'+g.sym+'" style="padding:8px 14px;font-size:15px">Symetria: '+(g.sym?'włączona':'wyłączona')+'</button><button class="btn alt" data-act="wundo" style="padding:8px 14px;font-size:15px"'+(g.undo.length?'':' disabled')+'>Cofnij</button></div>'+warns+
     '<div class="hint" style="margin-top:10px">Bloków: <b>'+st.cnt+'</b>'+(st.cnt?' · rozmiar: <b>'+mm(st.w)+' × '+mm(st.d)+' × '+mm(st.hh)+' mm</b> · filament: ok. <b>'+st.grams+' g</b> (orientacyjnie, z zapasem na zmiany koloru) · kolory: <b>'+st.colors.length+'</b>':'')+'</div>'+
     (st.colors.length>4?'':'')+
+    '<div class="lab">Siatka (im większa, tym więcej szczegółów)</div><div class="seg" style="margin-top:6px">'+[[6,8,'prosta'],[8,12,'średnia'],[12,20,'szczegółowa'],[16,24,'dla zaawansowanych']].map(function(o){return'<label><input type="radio" name="bg" data-act="wgrid" data-n="'+o[0]+'" data-h="'+o[1]+'"'+((g.n===o[0]&&g.h===o[1])?' checked':'')+'> '+o[0]+'×'+o[0]+'×'+o[1]+' <small>'+o[2]+'</small></label>'}).join('')+'</div>'+
     '<div class="lab">Wielkość jednego bloku</div><div class="seg" style="margin-top:6px">'+[4,5,6,8,10,12,15].map(function(s){return'<label><input type="radio" name="bs" data-act="wsize" data-s="'+s+'"'+(g.s===s?' checked':'')+'> '+s+' mm</label>'}).join('')+'</div>'+
     '<div class="row"><button class="btn" data-act="wsave">Zapisz</button><button class="btn alt" data-act="wexp"'+(st.cnt?'':' disabled')+'>Pobierz do druku</button><button class="btn alt" data-act="wclear">Wyczyść</button></div>'+
     (st.colors.length>1?'<div class="note">Model ma <b>'+st.colors.length+' kolory</b>. Dostaniesz osobny plik STL dla każdego koloru i jeden plik z całością. W Bambu Studio zaimportuj pliki kolorów naraz (jeśli program zapyta, wczytaj jako jeden obiekt z wieloma częściami) i przypisz każdej części filament z AMS.</div>':'')+
@@ -1260,13 +1335,14 @@ function redirectUrl(){return location.origin+location.pathname}
 function tr(m){m=String(m||'');var map=[['Invalid login credentials','Nieprawidłowy e-mail lub hasło.'],['Email not confirmed','Potwierdź adres e-mail: kliknij link w wiadomości od nas.'],['User already registered','Konto z tym adresem e-mail już istnieje.'],['Password should be at least','Hasło jest za krótkie (minimum 8 znaków).'],['rate limit','Za dużo prób. Poczekaj chwilę i spróbuj ponownie.'],['Za mało kredytów','Za mało kredytów.'],['same as the old','Nowe hasło musi być inne niż poprzednie.']];for(var i=0;i<map.length;i++)if(m.indexOf(map[i][0])>-1)return map[i][1];return m||'Coś poszło nie tak. Spróbuj ponownie.'}
 function fail(m){AUTH.err=m;AUTH.info='';AUTH.busy=false;render()}
 function normState(s){if(!s||!s.profiles||!s.profiles.length)return null;if(!s.custom)s.custom=[];if(s.profiles[1]&&s.profiles[1].kid===undefined)s.profiles[1].kid=true;return s}
+function applyAge(){if(!AUTH.age)return;var pr=P();pr.lvl=AUTH.age>8?8:AUTH.age;pr.kid=(pr.lvl===6);save();buildUnits()}
 function applyRemote(st){var n=normState(st);
   if(!n){var legacy=null;try{legacy=normState(JSON.parse(localStorage.getItem(KEY)))}catch(e){}n=legacy||blank();D=n;save();syncNow()}else D=n;
   D=n;buildUnits();S=null;BLD=null;if(D.subject&&!subjAllowed(D.subject))D.subject=null}
 function loadAccount(user){var c=sbc();AUTH.user=user;AUTH.busy=true;
   return Promise.all([c.from('profiles').select('*').eq('id',user.id).single(),c.from('modules').select('*').order('sort'),c.from('module_access').select('module_id').eq('user_id',user.id),c.from('app_state').select('state').eq('user_id',user.id).maybeSingle()]).then(function(rs){
     AUTH.profile=rs[0].data||{id:user.id,full_name:'',email:user.email||'',role:'user',credits:0};AUTH.modDefs=rs[1].data||[];AUTH.mods={};(rs[2].data||[]).forEach(function(r){AUTH.mods[r.module_id]=1});
-    applyRemote(rs[3].data&&rs[3].data.state);AUTH.busy=false;AUTH.err='';view='home';render()},function(e){fail(tr(e&&e.message))})}
+    applyRemote(rs[3].data&&rs[3].data.state);applyAge();AUTH.busy=false;AUTH.err='';view='home';render()},function(e){fail(tr(e&&e.message))})}
 function refreshAccount(){var c=sbc(),u=AUTH.user;return Promise.all([c.from('profiles').select('*').eq('id',u.id).single(),c.from('module_access').select('module_id').eq('user_id',u.id),c.from('modules').select('*').order('sort')]).then(function(rs){if(rs[0].data)AUTH.profile=rs[0].data;AUTH.mods={};(rs[1].data||[]).forEach(function(r){AUTH.mods[r.module_id]=1});if(rs[2].data)AUTH.modDefs=rs[2].data})}
 function queueSync(){clearTimeout(syncTimer);syncTimer=setTimeout(syncNow,1200)}
 function syncNow(){clearTimeout(syncTimer);if(!AUTH.on||!AUTH.user)return Promise.resolve();var c=sbc();
@@ -1298,6 +1374,7 @@ function authView(){var m=AUTH.mode||'in',T={in:'Zaloguj się',up:'Załóż kont
   if(m==='up'&&!AUTH.nomail)f+='<label for="a_name">Imię i nazwisko</label><input type="text" id="a_name" autocomplete="name" style="margin:4px 0 10px">';
   if(m!=='new'&&!(m==='up'&&AUTH.nomail))f+='<label for="a_email">'+(m==='in'?'Adres e-mail lub login (samo imię)':'Adres e-mail')+'</label><input type="text" id="a_email" inputmode="email" autocapitalize="off" autocomplete="email" style="margin:4px 0 10px">';
   if(m==='in')f+=pwField('a_pw','Hasło','current-password');
+  if(m==='up')f+='<label for="a_age">Wiek ucznia</label><div class="seg" style="margin:4px 0 10px">'+[6,7,8,9].map(function(a){return'<label><input type="radio" name="a_age" data-act="aage" data-a="'+a+'"'+((AUTH.age||8)===a?' checked':'')+'> '+a+' lat</label>'}).join('')+'</div>';
   if(m==='up')f+=pwField('a_pw','Hasło (min. 8 znaków)','new-password')+pwField('a_pw2','Powtórz hasło','new-password')+'<div class="chk"><input type="checkbox" id="a_ok"><label for="a_ok">Zgadzam się na przechowywanie mojego imienia, nazwiska i adresu e-mail w celu prowadzenia konta.</label></div>';
   if(m==='new')f+=pwField('a_pw','Nowe hasło (min. 8 znaków)','new-password')+pwField('a_pw2','Powtórz nowe hasło','new-password');
   var btn={in:'Zaloguj',up:'Załóż konto',reset:'Wyślij link do resetu','new':'Zapisz hasło'}[m];
@@ -1586,7 +1663,7 @@ function parseImport(t,swap,dflt){var out=[],bad=0,cur=dflt||'M';
     var a=m[0].trim(),b=m.slice(1).join(' ').trim();out.push(swap?{en:b,pl:a,l:cur}:{en:a,pl:b,l:cur})});return{out:out,bad:bad}}
 function settings(){
   return header()+'<h2 style="margin-bottom:6px">Ustawienia</h2>'+(msg?'<div class="fb ok">'+esc(msg)+'</div>':'')+
-  '<div class="sec"><h3>Imiona</h3>'+D.profiles.map(function(p,i){return'<div style="margin-bottom:8px"><input type="text" id="nm'+i+'" data-name="'+i+'" value="'+esc(p.name)+'" aria-label="Imię '+(i+1)+'" maxlength="16"><div class="chk"><input type="checkbox" id="kid'+i+'" data-act="kid" data-i="'+i+'"'+(p.kid?' checked':'')+'><label for="kid'+i+'">Wersja dla młodszego dziecka (6 lat)</label></div></div>'}).join('')+'</div>'+
+  '<div class="sec"><h3>Imiona</h3>'+D.profiles.map(function(p,i){return'<div style="margin-bottom:8px"><input type="text" id="nm'+i+'" data-name="'+i+'" value="'+esc(p.name)+'" aria-label="Imię '+(i+1)+'" maxlength="16"><div class="seg" style="margin-top:6px">'+[6,7,8].map(function(a){return'<label><input type="radio" name="lv'+i+'" data-act="plvl" data-i="'+i+'" data-a="'+a+'"'+(((p.lvl||(p.kid?6:8))===a)?' checked':'')+'> '+a+' lat</label>'}).join('')+'</div></div>'}).join('')+'</div>'+
   '<div class="sec"><h3>Dzienny cel</h3><div class="seg">'+[10,20,30,50].map(function(n){return'<label><input type="radio" name="goal" data-act="goal" data-n="'+n+'"'+((D.goal||20)===n?' checked':'')+'> '+n+' zadań</label>'}).join('')+'</div></div>'+
   '<div class="sec"><h3>Mikrofon</h3><div class="chk"><input type="checkbox" id="micck" data-act="micon"'+(D.micOff?'':' checked')+'><label for="micck">Próbuj rozpoznawania mowy w aplikacji</label></div><div class="hint">Gdy przeglądarka blokuje mikrofon, zadania „Mów” działają przez dyktowanie z klawiatury.</div></div>'+
   '<div class="sec"><h3>Tryb testowy (dla rodzica)</h3><div class="hint">Osobny profil-piaskownica: zapas żetonów, wszystkie sekcje otwarte i bez limitu 3 poziomów dziennie. Postępy dzieci zostają nietknięte. Zamówienia wydruku i panel administratora działają dopiero po podłączeniu kont online.</div>'+
@@ -1602,11 +1679,12 @@ function settings(){
   '<div class="sec"><h3>Kopia postępów</h3><div class="hint">Przenieś postępy obu chłopców między wersjami aplikacji (np. z Claude na stronę GitHub). W starej wersji kliknij „Utwórz kopię” i skopiuj tekst. W nowej wklej go poniżej i kliknij „Wczytaj”.</div><div class="row" style="margin-top:0"><button class="btn alt" data-act="bkexp">Kopia obu dzieci</button>'+D.profiles.map(function(p,i){return'<button class="btn alt" data-act="bkone" data-i="'+i+'">Tylko: '+esc(p.name)+'</button>'}).join('')+'</div><div class="hint">Kopia „tylko jednego dziecka” jest do osobnego konta: po wczytaniu konto ma tylko ten jeden profil.</div>'+(BKTXT?'<textarea readonly id="bkout" aria-label="Kopia postępów" style="min-height:90px;font-family:monospace;font-size:11px;margin-top:8px">'+esc(BKTXT)+'</textarea>':'')+'<textarea id="bkin" aria-label="Wklej kopię postępów" placeholder="Wklej tutaj kopię z drugiej wersji" style="min-height:90px;font-family:monospace;font-size:11px;margin-top:8px"></textarea><div class="row" style="margin-top:8px"><button class="btn alt" data-act="bkimp">Wczytaj (zastępuje obecne postępy)</button></div></div>'+
   '<div class="sec"><h3>Postępy</h3><button class="btn alt" data-act="reset">'+(confirmReset?'Na pewno? Kliknij jeszcze raz':'Wyzeruj postępy: '+esc(P().name))+'</button></div>'+
   '<div class="row"><button class="btn" data-act="home">Gotowe</button></div><div class="note">Postępy zapisują się w przeglądarce, na tym urządzeniu. Na telefonie i komputerze są osobne.</div>'}
+var lastView=null;
 function render(){var app=document.getElementById('app');
   app.innerHTML=view==='auth'?authView():view==='admin'?adminView():view==='unlock'?unlockView():view==='orders'?ordersView():view==='play'?play():view==='result'?result():view==='settings'?settings():view==='badges'?badgesView():view==='test'?testView():view==='build'?buildView():home();
   if(view==='play'&&S&&S.phase==='ask')sayLab();
   var a=document.getElementById('ans');if(a&&!a.disabled)a.focus();else{var n=document.getElementById('nx');if(n&&view==='play')n.focus()}
-  window.scrollTo(0,0)}
+  if(view!==lastView||view==='play'){window.scrollTo(0,0)}lastView=view}
 
 /* ---------- events ---------- */
 document.addEventListener('input',function(e){if(e.target.getAttribute&&e.target.getAttribute('data-dname')&&BLD){BLD.name=e.target.value||'Mój projekt';return}var i=e.target.getAttribute&&e.target.getAttribute('data-name');if(i!==null&&i!==undefined){D.profiles[+i].name=e.target.value||'Syn '+(+i+1);save()}});
@@ -1626,6 +1704,8 @@ document.addEventListener('click',function(e){var b=e.target.closest('[data-act]
   else if(a==='jump'){var js=SEC.filter(function(z){return z.subj==='en'&&z.g===b.dataset.k})[0],el=js&&document.getElementById('sec_'+js.key);if(el&&el.scrollIntoView)el.scrollIntoView({behavior:'smooth',block:'start'})}
   else if(a==='say'){speak(b.dataset.t,b.dataset.l)}
   else if(a==='relab'){sayLab(true)}
+  else if(a==='aage'){AUTH.age=+b.dataset.a;render()}
+  else if(a==='plvl'){var pi=+b.dataset.i,pv=+b.dataset.a;D.profiles[pi].lvl=pv;D.profiles[pi].kid=(pv===6);save();if(pi===D.active){buildUnits();if(!subjAllowed(D.subject))D.subject=null}msg='Zapisane: '+D.profiles[pi].name+' — wersja dla '+pv+' lat.';render()}
   else if(a==='badges'){view='badges';msg='';render()}
   else if(a==='mktest'){var ti=testIdx();
     if(ti<0){var np=newProfile('Test (piaskownica)',false);np.test=true;np.tbonus=50;SEC.forEach(function(s){np.open[s.key]=1});D.profiles.push(np);ti=D.profiles.length-1}
@@ -1668,6 +1748,9 @@ document.addEventListener('click',function(e){var b=e.target.closest('[data-act]
   else if(a==='wlayer'){BLD.z=+b.dataset.z;render()}
   else if(a==='wclear'){BLD.undo.push(BLD.c.slice());BLD.c=BLD.c.map(function(){return 0});render()}
   else if(a==='wsize'){BLD.s=+b.dataset.s;render()}
+  else if(a==='wgrid'){var gn=+b.dataset.n,gh=+b.dataset.h,og=BLD,nc=new Array(gn*gn*gh).fill(0);
+    for(var gz=0;gz<Math.min(gh,og.h);gz++)for(var gy=0;gy<Math.min(gn,og.n);gy++)for(var gx=0;gx<Math.min(gn,og.n);gx++)nc[(gz*gn+gy)*gn+gx]=og.c[(gz*og.n+gy)*og.n+gx];
+    og.undo.push(og.c.slice());BLD.n=gn;BLD.h=gh;BLD.c=nc;if(BLD.z>=gh)BLD.z=gh-1;render()}
   else if(a==='wpreset'){var pn=+b.dataset.n,ph=+b.dataset.h;BLD.n=pn;BLD.h=ph;BLD.c=new Array(pn*pn*ph).fill(0);BLD.z=0;BLD.undo=[];render()}
   else if(a==='wsave'){bsave();render()}
   else if(a==='wshow'){BLD.show=!BLD.show;render()}
