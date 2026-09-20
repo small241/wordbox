@@ -152,6 +152,10 @@ label{font-weight:800;font-size:15px}
 .badge{display:inline-block;margin-top:6px;background:var(--accent);color:var(--accent-ink);border-radius:999px;padding:3px 10px;font-weight:800;font-size:13px}
 .exam{background:var(--surface);border:2px solid var(--accent);border-radius:18px;padding:14px 16px;margin-bottom:12px}.exam h3{font-size:21px}
 .kemo{font-size:56px;line-height:1;padding:10px}.kl{font-family:var(--display);font-size:40px}.kemo2{font-size:34px;line-height:1.1}.eq.emo{font-size:clamp(26px,7vw,40px)}.swatch.sm{width:56px;height:56px}.bignum.sm{font-size:48px}.opts .kemo .swatch{width:56px;height:56px}
+.gridbox{display:grid;gap:4px;max-width:320px;margin:12px auto}.gc{aspect-ratio:1;display:grid;place-items:center;font-size:clamp(20px,6vw,30px);background:var(--bg);border:2px solid var(--line);border-radius:10px;position:relative}.gc.wall{background:var(--line)}.gc.target{border:3px dashed var(--accent)}.gc.placed{background:var(--accent)}.dirA{position:absolute;right:3px;bottom:0;font-size:14px;font-style:normal;color:var(--sky)}
+.prog{display:flex;flex-wrap:wrap;gap:6px;min-height:52px;padding:8px;border:2px dashed var(--line);border-radius:12px;margin:12px 0;align-items:center}.chipb{background:var(--sky);color:#fff;border:0;border-radius:10px;padding:8px 12px;font-weight:800}.chipb.op,.chipb.cl{background:var(--plum)}.palette{display:flex;flex-wrap:wrap;gap:8px}.pal{background:var(--surface);border:2px solid var(--line);border-radius:12px;padding:10px 14px;font-weight:800;font-size:18px;box-shadow:var(--shadow)}.pal.op,.pal.cl{border-color:var(--plum);color:var(--plum)}.pal[disabled],.chipb[disabled]{opacity:.5}
+pre.code{background:#111a33;color:#e8eeff;border-radius:12px;padding:14px;font-family:Consolas,Menlo,monospace;font-size:16px;line-height:1.5;overflow-x:auto;margin:10px 0;white-space:pre}
+.tokbar{display:flex;align-items:center;gap:8px;background:var(--surface);border:2px solid var(--line);border-radius:14px;padding:10px 14px;margin-bottom:12px;font-size:18px}.tokbar small{margin-left:auto;color:var(--muted);font-weight:700;font-size:13px}.coin{width:22px;height:22px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#ffe27a,#f2a900);border:2px solid #c88400;display:inline-block}
 .swatch{display:inline-block;width:110px;height:110px;border-radius:50%;border:4px solid var(--line);vertical-align:middle}.nwp .swatch{width:44px;height:44px;border-width:3px}
 </style>
 <div class="wrap"><div id="app"></div></div>
@@ -292,6 +296,7 @@ function buildSections(){
   U.filter(function(u){return u.sec==='x'}).forEach(function(u){mkSec('x',[{id:u.k,base:u,words:u.words}],u.parent)});
   buildMath();
   buildKid();
+  buildCode();
 }
 var MATH_SECS=[{key:'m:dig',title:'Liczby jednocyfrowe',sub:'Cyfry 0–9, liczby przed i po',topic:'dig'},{key:'m:add',title:'Dodawanie do 10',sub:'Sumy w zakresie 10',topic:'add'},{key:'m:sad',title:'Składniki i suma',sub:'3 + 4 = 7',topic:'sad'},{key:'m:com',title:'Przemienność dodawania',sub:'3 + 4 = 4 + 3',topic:'com'},{key:'m:sub',title:'Odejmowanie do 10',sub:'Różnice w zakresie 10',topic:'sub'},{key:'m:sbn',title:'Odjemna, odjemnik, różnica',sub:'7 − 3 = 4',topic:'sbn'},{key:'m:unk',title:'Działania z niewiadomą',sub:'3 + □ = 7',topic:'unk'},{key:'m:cmp',title:'Znaki <, > i =',sub:'Porównywanie liczb i działań',topic:'cmp'},{key:'m:mix',title:'Powtórka przed kartkówką',sub:'Wszystkie tematy z kartkówki razem',topic:'mix'},{key:'m:two',title:'Liczby dwucyfrowe',sub:'Dziesiątki i jedności, 10–99',topic:'two'}];
 function buildMath(){MATH_SECS.forEach(function(m){var s={subj:'math',key:m.key,g:'m',title:m.title,sub:m.sub,topic:m.topic,parts:[],words:[],sents:[],lessons:[],chunks:[],n:5,free:true,parent:null};SEC.push(s);SK[s.key]=s})}
@@ -340,6 +345,19 @@ function buildKid(){
     if(kw.length){var nch=Math.max(1,Math.ceil(kw.length/3)),base=Math.floor(kw.length/nch),extra=kw.length%nch,pos=0;for(var i=0;i<nch;i++){var sz=base+(i<extra?1:0);chunks.push(kw.slice(pos,pos+sz));pos+=sz}n=chunks.length+1}
     var s={subj:d.subj,key:d.key,g:'k',kid:true,title:d.title,sub:d.sub,lang:d.lang,topic:d.topic,parts:[],words:[],kw:kw,sents:[],lessons:[],chunks:chunks,n:n,free:true,parent:null};
     SEC.push(s);SK[s.key]=s})}
+var CODE_DEF=[
+{subj:'kcode',key:'c:k1',title:'Kolejność kroków',sub:'Rano, kanapka, Minecraft',topic:'seq'},
+{subj:'kcode',key:'c:k2',title:'Robot: strzałki',sub:'Doprowadź robota do gwiazdki',topic:'abs'},
+{subj:'kcode',key:'c:k3',title:'Powtarzamy',sub:'Jeden klocek zamiast trzech',topic:'cnt'},
+{subj:'kcode',key:'c:k4',title:'Znajdź błąd',sub:'Napraw program',topic:'dbg'},
+{subj:'kcode',key:'c:k5',title:'Buduj jak w Minecrafcie',sub:'Postaw bloki',topic:'plc'},
+{subj:'code',key:'c:o1',title:'Robot: pętle',sub:'Krok, obrót, powtórz, jeśli',topic:'dir'},
+{subj:'code',key:'c:o2',title:'Zdarzenia',sub:'Gdy gracz dotknie...',topic:'evt'},
+{subj:'code',key:'c:o3',title:'Zmienne',sub:'punkty = punkty + 1',topic:'var'},
+{subj:'code',key:'c:o4',title:'Warunki',sub:'if ... then ... else',topic:'cond'},
+{subj:'code',key:'c:o5',title:'Pętle i funkcje',sub:'Powtórz N razy',topic:'loop'},
+{subj:'code',key:'c:o6',title:'Lua i MakeCode',sub:'Roblox Studio i Minecraft Education',topic:'lua'}];
+function buildCode(){CODE_DEF.forEach(function(d){var s={subj:d.subj,key:d.key,g:'k',kid:true,title:d.title,sub:d.sub,topic:d.topic,parts:[],words:[],kw:[],sents:[],lessons:[],chunks:[],n:3,free:true,parent:null};SEC.push(s);SK[s.key]=s})}
 buildUnits();
 function nSecs(sj){sj=sj||'en';return SEC.filter(function(s){return s.g!=='x'&&s.subj===sj})}
 function secNo(s){return nSecs(s.subj).indexOf(s)+1}
@@ -550,8 +568,8 @@ function eqBig(t,emo){return'<div class="eq'+(emo?' emo':'')+'">'+esc(t).replace
 function mathPlay(q){
   var fbk=S.phase==='fb',f=fbk?fb(S.ok,q.expl||String(q.ans),null):'';
   if(q.t==='mintro')return'<div class="card"><div class="lab">Przypomnij sobie</div><h2 style="font-size:26px;margin:6px 0 8px">'+esc(q.title)+'</h2><div class="mintro">'+q.html+'</div><div class="row"><button class="btn" data-act="next" id="nx">Zaczynamy</button></div></div>';
-  if(q.t==='nin')return'<div class="card"><div class="lab">'+esc(q.lab||'Uzupełnij')+'</div>'+eqBig(q.text,q.emo)+'<div style="margin-top:8px"><input type="text" class="numin" inputmode="numeric" pattern="[0-9]*" id="ans" autocomplete="off" aria-label="Odpowiedź"'+(fbk?' disabled value="'+esc(S.typed||'')+'"':'')+'></div>'+(fbk?'':'<div class="row" style="justify-content:center"><button class="btn" data-act="check">Sprawdź</button></div>')+f+'</div>';
-  if(q.t==='nmc'||q.t==='nname'){var head=q.t==='nname'?'<div class="eq">'+q.eq+'</div>':(q.text?eqBig(q.text,q.emo):'');
+  if(q.t==='nin')return'<div class="card"><div class="lab">'+esc(q.lab||'Uzupełnij')+'</div>'+codeBlk(q)+eqBig(q.text,q.emo)+'<div style="margin-top:8px"><input type="text" class="numin" inputmode="numeric" pattern="[0-9]*" id="ans" autocomplete="off" aria-label="Odpowiedź"'+(fbk?' disabled value="'+esc(S.typed||'')+'"':'')+'></div>'+(fbk?'':'<div class="row" style="justify-content:center"><button class="btn" data-act="check">Sprawdź</button></div>')+f+'</div>';
+  if(q.t==='nmc'||q.t==='nname'){var head=codeBlk(q)+(q.t==='nname'?'<div class="eq">'+q.eq+'</div>':(q.text?eqBig(q.text,q.emo):''));
     return'<div class="card"><div class="lab">'+esc(q.lab||'Wybierz')+'</div>'+head+'<div class="opts">'+q.opts.map(function(o,k){var c='';if(fbk){if(o===q.ans)c=' ok';else if(q.chosen===k)c=' bad'}return'<button class="opt'+c+'" data-act="nmo" data-k="'+k+'"'+(fbk?' disabled':'')+'>'+esc(String(o))+'</button>'}).join('')+'</div>'+f+'</div>'}
   if(q.t==='ncmp'){return'<div class="card"><div class="lab">'+esc(q.lab)+'</div><div class="eq'+(q.emo?' emo':'')+'">'+esc(q.l)+' <span class="qb">'+(fbk?esc(q.ans):'?')+'</span> '+esc(q.r)+'</div><div class="signs">'+['<','=','>'].map(function(s){var c='';if(fbk){if(s===q.ans)c=' ok';else if(q.chosen===s)c=' bad'}return'<button class="opt'+c+'" data-act="ncmpo" data-v="'+s+'"'+(fbk?' disabled':'')+'>'+esc(s)+'</button>'}).join('')+'</div>'+f+'</div>'}
   if(q.t==='ntap'){var cls={};if(fbk){q.ans.forEach(function(i){cls[i]='ok'});if(q.chosen!=null&&q.ans.indexOf(q.chosen)<0)cls[q.chosen]='bad'}
@@ -564,7 +582,7 @@ function examBanner(subj){var es=exams().filter(function(e){return !subj||e.x.su
 function subjectsView(){if(P().kid)return kidSubjects();var es=exams(),mb=es.filter(function(e){return e.x.subj==='math'})[0],eb=es.filter(function(e){return e.x.subj==='en'})[0];
   var badge=function(e){return e?'<span class="badge">'+(e.days===0?'Dziś':e.days===1?'Jutro':'Za '+e.days+' dni')+': '+esc(e.x.short)+'</span>':''};
   return header()+'<div class="lab" style="margin-top:6px">Cześć, '+esc(P().name)+'!</div><h2 style="font-size:32px;margin-bottom:14px">Czego się dziś uczysz?</h2><div class="subjects"><button class="subj-card" data-act="subject" data-s="en"><span class="si" style="background:var(--sky)">Aa</span><span><b>Angielski</b><small>Lekcje z zeszytu, słówka, zdania, mówienie</small>'+badge(eb)+'</span></button>'+
-  '<button class="subj-card" data-act="subject" data-s="math"><span class="si" style="background:var(--accent)">+−</span><span><b>Matematyka</b><small>Klasa 2 · dodawanie i odejmowanie do 10, znaki, niewiadome</small>'+badge(mb)+'</span></button></div>'}
+  '<button class="subj-card" data-act="subject" data-s="math"><span class="si" style="background:var(--accent)">+−</span><span><b>Matematyka</b><small>Klasa 2 · dodawanie i odejmowanie do 10, znaki, niewiadome</small>'+badge(mb)+'</span></button>'+CODECARD.replace('CODESUBJ','code')+'</div>'}
 function mathHome(h){
   h+=examBanner('math');
   if(D.tab==='ex'){
@@ -598,6 +616,7 @@ function kq(t,w,sec,group){
   else if(t==='rpairs'){var ws=group||[w];q.ws=ws;q.left=shuffle(ws);q.right=shuffle(ws);q.sel=null;q.done={};q.bad={};q.first={};q.mist=0}
   return q}
 function kidQs(sec,j){
+  if(isCode(sec.subj))return codeQs(sec,j);
   if(sec.subj==='kmath')return kmathQs(sec,j);
   var fin=j===sec.n-1,ch=sec.chunks,focus=fin?sec.kw:ch[j],earlier=fin?[]:[].concat.apply([],ch.slice(0,j)),T=fin?KHARD:(j===0?KEASY:KMID);
   var ws=[],bag=[];while(ws.length<8){if(!bag.length)bag=shuffle(focus);ws.push(bag.pop())}
@@ -660,22 +679,213 @@ function speak(t,lang){if(!SPK)return;try{var lg=SPKLANG[lang]||lang||'en-US',pr
   var vs=speechSynthesis.getVoices();if(!vcache[lg])vcache[lg]=vs.filter(function(v){return v.lang.replace('_','-').toLowerCase()===lg.toLowerCase()})[0]||vs.filter(function(v){return v.lang.toLowerCase().indexOf(pre)===0})[0]||null;
   if(vcache[lg])u.voice=vcache[lg];speechSynthesis.speak(u)}catch(e){}}
 function sp(t,c,l){return SPK?'<button class="sp'+(c?' '+c:'')+'" data-act="say" data-t="'+esc(t)+'"'+(l?' data-l="'+l+'"':'')+' aria-label="Posłuchaj">'+ICON.spk+'</button>':''}
-function subjAllowed(s){return P().kid?isKidSubj(s):(s==='en'||s==='math')}
-function subjName(s){return {en:'Angielski',math:'Matematyka',ken:'Angielski',kmath:'Matematyka',kread:'Czytanie i pisanie'}[s]||''}
+function subjAllowed(s){return P().kid?(isKidSubj(s)||s==='kcode'):(s==='en'||s==='math'||s==='code')}
+function subjName(s){return {en:'Angielski',math:'Matematyka',ken:'Angielski',kmath:'Matematyka',kread:'Czytanie i pisanie',code:'Programowanie',kcode:'Programowanie'}[s]||''}
 function kidSubjects(){return header()+'<div class="lab" style="margin-top:6px">Cześć, '+esc(P().name)+'!</div><h2 style="font-size:32px;margin-bottom:14px">Czego się dziś uczysz?</h2><div class="subjects">'+
   '<button class="subj-card" data-act="subject" data-s="kread"><span class="si" style="background:var(--teal)">Aa</span><span><b>Czytanie i pisanie</b><small>Litery, sylaby, słowa po polsku i angielsku</small></span></button>'+
   '<button class="subj-card" data-act="subject" data-s="kmath"><span class="si" style="background:var(--accent)">1 2</span><span><b>Matematyka</b><small>Liczenie, cyfry, dodawanie i odejmowanie do 10</small></span></button>'+
-  '<button class="subj-card" data-act="subject" data-s="ken"><span class="si" style="background:var(--sky)">Hi</span><span><b>Angielski</b><small>Kolory, liczby, zwierzęta, rodzina</small></span></button></div>'}
+  '<button class="subj-card" data-act="subject" data-s="ken"><span class="si" style="background:var(--sky)">Hi</span><span><b>Angielski</b><small>Kolory, liczby, zwierzęta, rodzina</small></span></button>'+CODECARD.replace('CODESUBJ','kcode')+'</div>'}
 function kidHome(h){var nl=nextLesson(D.subject);
   h+=nl?'<div class="cont"><div><div class="lab">Dalej</div><h3>'+esc(secTitle(nl.s))+' · '+(nl.j===nl.s.n-1?'Test sekcji':'Lekcja '+(nl.j+1))+'</h3></div><button class="btn" data-act="lesson" data-k="'+esc(nl.s.key)+'" data-j="'+nl.j+'">Start</button></div>':'<div class="cont"><div><div class="lab">Wszystko zaliczone</div><h3>Brawo!</h3></div></div>';
   h+=nSecs(D.subject).map(secCard).join('');msg='';return h+'<button class="link" data-act="settings">Ustawienia</button>'}
+
+/* ---------- programowanie ---------- */
+function isCode(s){return s==='code'||s==='kcode'}
+function starsTotal(){var t=0,p=P().sec;Object.keys(p).forEach(function(k){if(k.indexOf('c:')===0)return;(p[k]||[]).forEach(function(x){t+=x||0})});return t}
+function tokensInfo(){var st=starsTotal(),earned=Math.floor(st/3),used=Object.keys(P().cunlock||{}).length;return{earned:earned,used:used,avail:Math.max(0,earned-used),next:3-st%3}}
+function codeGate(s,j){var p=P();p.cunlock=p.cunlock||{};var key=s.key+'#'+j;if(p.cunlock[key])return true;
+  var t=tokensInfo();if(t.avail<1){msg='Potrzebujesz żetonu. Zdobądź jeszcze '+t.next+' '+pl3(t.next,['gwiazdkę','gwiazdki','gwiazdek'])+' w lekcjach angielskiego, matematyki lub czytania.';return false}
+  var d=dstr(new Date()),cd=(p.cday&&p.cday.d===d)?p.cday:{d:d,n:0};if(cd.n>=3){msg='Na dziś wystarczy programowania: 3 nowe poziomy dziennie. Wróć jutro!';return false}
+  cd.n++;p.cday=cd;p.cunlock[key]=1;save();return true}
+function tokenBar(){var t=tokensInfo();return'<div class="tokbar"><span class="coin"></span><b>'+t.avail+'</b> '+pl3(t.avail,['żeton','żetony','żetonów'])+'<small>Następny za '+t.next+' '+pl3(t.next,['gwiazdkę','gwiazdki','gwiazdek'])+'</small></div>'}
+function codeBlk(q){return q.code?'<pre class="code">'+esc(q.code)+'</pre>':''}
+var CINTRO={
+ seq:['Kolejność kroków','Program to <b>kolejne kroki</b>. Komputer robi je po kolei, tak jak my: najpierw wstajemy, potem myjemy zęby.'],
+ abs:['Robot i strzałki','Robot rozumie strzałki: <b>↑</b> w górę, <b>↓</b> w dół, <b>←</b> w lewo, <b>→</b> w prawo. Ułóż program i naciśnij <b>Uruchom</b>.'],
+ cnt:['Powtarzamy','Zamiast trzech strzałek <b>→ → →</b> możesz użyć jednego klocka <b>→×3</b>. To się nazywa powtarzanie.'],
+ dbg:['Szukamy błędów','Czasem program ma <b>błąd</b>. Uruchom go, zobacz, co jest nie tak, i napraw. Kliknij klocek, żeby go usunąć.'],
+ plc:['Budujemy jak w Minecrafcie','Robot idzie i stawia bloki. Klocek <b>Postaw blok</b> stawia blok tam, gdzie stoi robot. Postaw bloki na zaznaczonych polach.'],
+ dir:['Robot z przodem i tyłem','Robot jest zwrócony w prawo. <b>Krok</b> idzie do przodu, <b>↺ ↻</b> obracają go. <b>Powtórz N×</b> robi coś kilka razy, pamiętaj o klocku <b>koniec</b>.'],
+ evt:['Zdarzenia','<b>Zdarzenie</b> uruchamia kod, np. „gdy gracz dotknie monety”. Tak działają gry w Minecrafcie i Roblox.'],
+ var:['Zmienne','<b>Zmienna</b> to pudełko na liczbę, np. <b>punkty</b>. Możemy ją zmieniać: <b>punkty = punkty + 1</b>.'],
+ cond:['Warunki','<b>Jeśli</b> coś jest prawdą, kod robi jedno, <b>w przeciwnym razie</b> drugie. Porównujemy liczbami: &gt;, &lt;, =.'],
+ loop:['Pętle i funkcje','<b>Pętla</b> powtarza kod. <b>Funkcja</b> to własny klocek, który możesz wywołać wiele razy.'],
+ lua:['Lua i MakeCode','W Roblox Studio piszemy w języku <b>Lua</b>, w Minecraft Education w <b>MakeCode</b>. Czytaj fragmenty i powiedz, co zrobią.']};
+/* --- siatka robota --- */
+var DIRS={U:[0,-1],D:[0,1],L:[-1,0],R:[1,0]},DORD=['R','D','L','U'],OPP={U:'D',D:'U',L:'R',R:'L'};
+function gWall(g,x,y){return x<0||y<0||x>=g.n||y>=g.n||g.walls.some(function(w){return w.x===x&&w.y===y})}
+function parseProg(tok){var pos=0;
+  function block(top){var out=[];while(pos<tok.length){var t=tok[pos];if(t===']'){if(top)return null;pos++;return out}
+    if(/^\[\d$/.test(t)||t==='IFW['){pos++;var body=block(false);if(body===null)return null;out.push({k:t==='IFW['?'if':'rep',n:t==='IFW['?0:+t.slice(1),b:body});continue}
+    out.push({k:'a',t:t});pos++}
+    return top?out:null}
+  return block(true)}
+function gSim(g,tok){var tree=parseProg(tok);if(!tree)return{err:'Sprawdź klocki: każde „Powtórz” lub „Jeśli” musi mieć klocek koniec.'};
+  var st={x:g.sx,y:g.sy,d:0,got:{},placed:{},frames:[],crash:false,steps:0,turned:0};
+  function snap(m){st.frames.push({x:st.x,y:st.y,d:st.d,got:Object.assign({},st.got),placed:Object.assign({},st.placed),msg:m||''})}
+  function mv(v){var nx=st.x+v[0],ny=st.y+v[1];if(gWall(g,nx,ny)){st.crash=true;snap('bum');return}st.x=nx;st.y=ny;g.goals.forEach(function(q){if(q.x===nx&&q.y===ny)st.got[nx+','+ny]=1});snap()}
+  function act(t){if(st.crash||st.steps>400)return;st.steps++;
+    if(t==='B'){st.placed[st.x+','+st.y]=1;snap();return}
+    if(g.mode==='abs'){var m=/^([UDLR])(\d)?$/.exec(t);if(m){var n=m[2]?+m[2]:1;for(var i=0;i<n&&!st.crash;i++)mv(DIRS[m[1]])}return}
+    if(t==='F')mv(DIRS[DORD[st.d]]);else if(t==='TR'){st.d=(st.d+1)%4;snap()}else if(t==='TL'){st.d=(st.d+3)%4;snap()}}
+  function run(b){b.forEach(function(n){if(st.crash)return;if(n.k==='a')act(n.t);else if(n.k==='rep'){for(var i=0;i<n.n;i++)run(n.b)}else{var v=DIRS[DORD[st.d]];if(gWall(g,st.x+v[0],st.y+v[1])){st.turned++;run(n.b)}}})}
+  snap();run(tree);
+  var ok=!st.crash&&g.goals.every(function(q){return st.got[q.x+','+q.y]});
+  if(g.pcells){ok=ok&&g.pcells.every(function(c){return st.placed[c.x+','+c.y]})&&Object.keys(st.placed).length===g.pcells.length}
+  return{ok:ok,frames:st.frames,crash:st.crash,turned:st.turned}}
+function genAbs(d,o){o=o||{};
+  for(var at=0;at<300;at++){
+    var n=d<.35?3:d<.75?4:5,sx=ri(0,n-1),sy=ri(0,n-1),x=sx,y=sy,path=[{x:x,y:y}],sol=[],segs=ri(2,d<.4?2:3),last='',ok=true;
+    for(var s=0;s<segs;s++){var dirs=shuffle(['U','D','L','R']).filter(function(dd){return dd!==last&&OPP[dd]!==last}),placed=false;
+      for(var di=0;di<dirs.length&&!placed;di++){var dd=dirs[di],v=DIRS[dd],mx=0;while(mx<3&&x+v[0]*(mx+1)>=0&&x+v[0]*(mx+1)<n&&y+v[1]*(mx+1)>=0&&y+v[1]*(mx+1)<n)mx++;
+        if(mx<1)continue;var L=o.counts?ri(Math.min(2,mx),mx):ri(1,Math.min(mx,d<.4?2:3));
+        for(var i=0;i<L;i++){x+=v[0];y+=v[1];path.push({x:x,y:y})}
+        if(o.counts&&L>=2)sol.push(dd+L);else for(var k=0;k<L;k++)sol.push(dd);
+        last=dd;placed=true}
+      if(!placed){ok=false;break}}
+    if(!ok||path.length<3)continue;if(o.counts&&!sol.some(function(t){return t.length>1}))continue;
+    var goal=path[path.length-1];if(goal.x===sx&&goal.y===sy)continue;
+    var walls=[];if(o.walls){var tries=0,nw=ri(1,d<.6?2:3);while(walls.length<nw&&tries++<40){var wx=ri(0,n-1),wy=ri(0,n-1);if(!path.some(function(p){return p.x===wx&&p.y===wy})&&!walls.some(function(w){return w.x===wx&&w.y===wy}))walls.push({x:wx,y:wy})}}
+    var g={n:n,sx:sx,sy:sy,goals:[goal],walls:walls,mode:'abs'};
+    if(!gSim(g,sol).ok)continue;
+    var pal=['U','D','L','R'];if(o.counts)['U2','U3','D2','D3','L2','L3','R2','R3'].forEach(function(t){pal.push(t)});
+    return{t:'cgrid',lab:'Doprowadź robota do gwiazdki',g:g,pal:pal,sol:sol,prog:[],status:'edit',fi:-1,tries:0,msg:''}}
+  return null}
+function genPlace(d){
+  for(var at=0;at<300;at++){
+    var n=d<.5?3:4,sx=0,sy=ri(0,n-1),x=sx,y=sy,path=[{x:x,y:y}],sol=[],dirs=['R','D','U'],cur='R';
+    // snake: go right along the row, sometimes step down/up
+    var steps=ri(3,n+1);for(var i=0;i<steps;i++){var dd=(i%2===0)?'R':(y>0&&Math.random()<.5?'U':(y<n-1?'D':'U'));var v=DIRS[dd];if(x+v[0]<0||x+v[0]>=n||y+v[1]<0||y+v[1]>=n)continue;x+=v[0];y+=v[1];path.push({x:x,y:y});sol.push(dd)}
+    if(sol.length<3)continue;
+    var np=ri(2,Math.min(3,path.length-1)),idx=shuffle(path.map(function(p,i){return i}).filter(function(i){return i>0})).slice(0,np).sort(function(a,b){return a-b}),pc=[],prog=[];
+    var pi=0;for(var s=0;s<path.length;s++){if(s>0)prog.push(sol[s-1]);if(idx.indexOf(s)>-1){prog.push('B');pc.push({x:path[s].x,y:path[s].y})}}
+    var uniq={};pc.forEach(function(c){uniq[c.x+','+c.y]=1});if(Object.keys(uniq).length!==pc.length)continue;
+    var g={n:n,sx:sx,sy:sy,goals:[],walls:[],mode:'abs',pcells:pc};
+    if(!gSim(g,prog).ok)continue;
+    return{t:'cgrid',lab:'Postaw bloki na zaznaczonych polach',g:g,pal:['U','D','L','R','B'],sol:prog,prog:[],status:'edit',fi:-1,tries:0,msg:''}}
+  return null}
+function genDebug(d){
+  for(var at=0;at<200;at++){var q=genAbs(d,{walls:d>.4});if(!q)continue;var sol=q.sol,bug;
+    var m=Math.floor(Math.random()*3),i=Math.floor(Math.random()*sol.length);
+    if(m===0)bug=sol.slice(0,i).concat(sol.slice(i+1));
+    else if(m===1){var t=sol[i],alt=shuffle(['U','D','L','R']).filter(function(x){return x!==t.charAt(0)})[0];bug=sol.slice();bug[i]=alt+t.slice(1)}
+    else{bug=sol.slice();bug.splice(i,0,pickOne(['U','D','L','R']))}
+    if(bug.length&&!gSim(q.g,bug).ok){q.prog=bug.slice();q.lab='Napraw program: robot ma dojść do gwiazdki';q.bug=true;return q}}
+  return genAbs(d,{})}
+function genDir(d){
+  var loops=d>.35,ifw=d>.8;
+  for(var at=0;at<400;at++){
+    var n=d<.4?4:5,g={n:n,sx:ri(0,1),sy:ri(0,n-1),goals:[],walls:[],mode:'dir'},sol=[],pal=['F','TL','TR'];
+    if(loops)pal=pal.concat(['[2','[3','[4',']']);if(ifw)pal.push('IFW[');
+    var kind=ifw&&Math.random()<.5?2:(loops?1:0);
+    if(kind===0){var len=ri(3,d<.2?4:6);for(var i=0;i<len;i++)sol.push(pickOne(['F','F','F','TR','TL']))}
+    else if(kind===1){var chunks=ri(2,3);for(var c=0;c<chunks;c++){if(Math.random()<.6){var a=ri(2,3);sol.push('['+a,'F',']')}else if(Math.random()<.5){var k=ri(2,3);sol.push('['+k,'F','TR',']')}else sol.push(pickOne(['TR','TL']),'F')}}
+    else{var nw=ri(2,4);for(var w=0;w<nw;w++){var wx=ri(1,n-1),wy=ri(0,n-1);if(!(wx===g.sx&&wy===g.sy)&&!g.walls.some(function(z){return z.x===wx&&z.y===wy}))g.walls.push({x:wx,y:wy})}
+      sol=['['+ri(3,4),'IFW[','TR',']','F',']']}
+    var probe={n:n,sx:g.sx,sy:g.sy,goals:[],walls:g.walls,mode:'dir'},r=gSim(probe,sol);
+    if(r.err||r.crash)continue;var fr=r.frames,end=fr[fr.length-1];if(end.x===g.sx&&end.y===g.sy)continue;
+    if(kind===2&&!r.turned)continue;
+    if(kind===0&&sol.length<3)continue;
+    g.goals=[{x:end.x,y:end.y}];
+    if(kind!==2&&Math.random()<.5){var mid=fr[Math.floor(fr.length/2)];if(!(mid.x===end.x&&mid.y===end.y)&&!(mid.x===g.sx&&mid.y===g.sy))g.goals.push({x:mid.x,y:mid.y})}
+    if(kind!==2&&d>.6){var tries=0,nw2=ri(1,3);while(g.walls.length<nw2&&tries++<40){var ax=ri(0,n-1),ay=ri(0,n-1);if(!fr.some(function(f){return f.x===ax&&f.y===ay})&&!(ax===g.sx&&ay===g.sy))g.walls.push({x:ax,y:ay})}}
+    var chk=gSim(g,sol);if(!chk.ok)continue;
+    return{t:'cgrid',lab:'Zaprogramuj robota. Jest zwrócony w prawo →',g:g,pal:pal,sol:sol,prog:[],status:'edit',fi:-1,tries:0,msg:''}}
+  return null}
+var ROUT=[['Poranek',['Wstań z łóżka','Umyj zęby','Ubierz się','Zjedz śniadanie','Idź do szkoły']],['Kanapka',['Weź chleb','Posmaruj masłem','Połóż ser','Przykryj drugą kromką','Zjedz kanapkę']],['Kwiatek',['Wykop dołek','Włóż nasionko','Przykryj ziemią','Podlej wodą','Poczekaj aż urośnie']],['Mycie rąk',['Odkręć wodę','Namydl ręce','Spłucz mydło','Wytrzyj ręce']],['Minecraft: dom',['Zbierz drewno','Zrób deski','Postaw ściany','Połóż dach','Wejdź do domu']],['Minecraft: miecz',['Zbierz patyk','Zbierz kamień','Otwórz stół rzemieślniczy','Złóż miecz']],['Sok',['Weź pomarańczę','Przekrój ją','Wyciśnij sok','Wlej do szklanki']],['Zabawa w chowanego',['Policz do dziesięciu','Otwórz oczy','Szukaj kolegów','Znajdź wszystkich']]];
+function genSeq(used){var c=ROUT.filter(function(r){return used.indexOf(r[0])<0});if(!c.length)c=ROUT;var r=pickOne(c);used.push(r[0]);
+  var tiles=shuffle(r[1].map(function(t){return t})).map(function(t,i){return{id:i,t:t}});
+  return{t:'cseq',lab:'Ułóż w dobrej kolejności: '+r[0],target:r[1],tiles:tiles,sel:[]}}
+/* --- czytanie kodu --- */
+function nq(lab,code,ans,expl,hi){var q={t:'nmc',lab:lab,code:code,text:'',ans:ans,expl:expl};q.opts=numOpts(ans,0,Math.max(hi||10,ans+3));return q}
+function sq(lab,code,ans,wrong,expl){var o=[ans].concat(wrong);return{t:'nmc',lab:lab,code:code,text:'',ans:ans,opts:shuffle(o),expl:expl}}
+function qEvt(d){var v=ri(0,3);
+  if(v===0){var k=ri(2,5),by=d<.5?1:pickOne([1,2,5]);return nq('Gracz dotknął monety '+k+' '+pl3(k,['raz','razy','razy'])+'. Ile ma punktów?','punkty = 0\ngdy gracz dotknie monety:\n  punkty = punkty + '+by,k*by,'Każde dotknięcie dodaje '+by+': '+k+' × '+by+' = '+k*by,30)}
+  if(v===1){var l=ri(3,5),t=ri(1,l-1);return nq('Gracz dotknął lawy '+t+' '+pl3(t,['raz','razy','razy'])+'. Ile ma życia?','życie = '+l+'\ngdy gracz dotknie lawy:\n  życie = życie - 1',l-t,l+' − '+t+' = '+(l-t),10)}
+  if(v===2){var ev=[['gdy kliknięto przycisk:\n  otwórz drzwi','Kiedy otworzą się drzwi?','Gdy ktoś kliknie przycisk'],['gdy naciśniesz spację:\n  skocz','Kiedy postać skoczy?','Gdy naciśniesz spację'],['gdy zacznie się gra:\n  pokaż napis "Start"','Kiedy pojawi się napis?','Gdy zacznie się gra'],['gdy gracz dotknie diamentu:\n  zagraj dźwięk','Kiedy zagra dźwięk?','Gdy gracz dotknie diamentu']],e=pickOne(ev),wr=['Gdy zgaśnie światło','Gdy skończy się czas','Nigdy','Od razu po włączeniu komputera'].filter(function(x){return x!==e[2]});
+    return sq(e[1],e[0],e[2],shuffle(wr).slice(0,3),e[2])}
+  var s=ri(1,3),c=ri(2,4);return nq('Ile monet ma gracz po '+c+' dotknięciach?','monety = '+s+'\ngdy gracz dotknie monety:\n  monety = monety + 1',s+c,s+' + '+c+' = '+(s+c),12)}
+function qVar(d){var v=pickOne(d<.4?[0,1]:d<.75?[0,1,2]:[1,2,3]);
+  if(v===0){var a=ri(1,6),b=ri(1,4);return nq('Co pokaże program?','punkty = '+a+'\npunkty = punkty + '+b+'\npokaż punkty',a+b,a+' + '+b+' = '+(a+b),12)}
+  if(v===1){var a2=ri(5,9),b2=ri(1,4);return nq('Co pokaże program?','życie = '+a2+'\nżycie = życie - '+b2+'\npokaż życie',a2-b2,a2+' − '+b2+' = '+(a2-b2),12)}
+  if(v===2){var x=ri(1,6),y=ri(1,6);return nq('Co pokaże program?','x = '+x+'\ny = '+y+'\npokaż x + y',x+y,x+' + '+y+' = '+(x+y),14)}
+  var a3=ri(1,4),b3=ri(1,3),c3=ri(1,3);return nq('Co pokaże program?','punkty = '+a3+'\npunkty = punkty + '+b3+'\npunkty = punkty + '+c3+'\npokaż punkty',a3+b3+c3,a3+' + '+b3+' + '+c3+' = '+(a3+b3+c3),14)}
+function qCond(d){var v=pickOne(d<.5?[0,1]:[0,1,2]);
+  if(v===0){var l=ri(1,5),t=ri(1,4),res=l>t?'Żyjesz':'Koniec gry';return sq('Co pokaże program?','życie = '+l+'\nif życie > '+t+' then\n  pokaż "Żyjesz"\nelse\n  pokaż "Koniec gry"',res,[l>t?'Koniec gry':'Żyjesz','Nic','Błąd'],l+(l>t?' > ':' ≤ ')+t+', więc: '+res)}
+  if(v===1){var m=ri(2,8),need=ri(3,6),ok=m>=need,r2=ok?'Kupujesz miecz':'Za mało monet';return sq('Co pokaże program?','monety = '+m+'\nif monety >= '+need+' then\n  pokaż "Kupujesz miecz"\nelse\n  pokaż "Za mało monet"',r2,[ok?'Za mało monet':'Kupujesz miecz','Nic','Błąd'],m+(ok?' ≥ ':' < ')+need+', więc: '+r2)}
+  var key=ri(0,1),co=ri(1,4),res3=(key===1&&co>2)?'Drzwi otwarte':'Drzwi zamknięte';return sq('Co pokaże program?','klucz = '+key+'\nmonety = '+co+'\nif klucz == 1 and monety > 2 then\n  pokaż "Drzwi otwarte"\nelse\n  pokaż "Drzwi zamknięte"',res3,[res3==='Drzwi otwarte'?'Drzwi zamknięte':'Drzwi otwarte','Nic','Błąd'],'klucz = '+key+', monety = '+co+' → '+res3)}
+function qLoop(d){var v=pickOne(d<.4?[0,1]:d<.75?[0,1,2]:[1,2,3]);
+  if(v===0){var n=ri(2,6);return nq('Ile razy program powie „Cześć”?','powtórz '+n+' razy:\n  powiedz "Cześć"',n,String(n),10)}
+  if(v===1){var n2=ri(2,4),b=ri(2,3);return nq('Ile kroków zrobi robot?','powtórz '+n2+' razy:\n  krok naprzód\n'+(b===3?'  krok naprzód\n  krok naprzód':'  krok naprzód'),n2*b,n2+' × '+b+' = '+n2*b,14)}
+  if(v===2){var k=ri(2,4);return nq('Ile razy postać klaśnie?','funkcja radość():\n  podskocz\n  klaśnij\nradość()\nradość()'+(k>2?'\nradość()':'')+(k>3?'\nradość()':''),k,'Funkcja została wywołana '+k+' razy',8)}
+  var a=ri(2,3),bb=ri(2,3);return nq('Ile razy programista napisze „hop”?','powtórz '+a+' razy:\n  powtórz '+bb+' razy:\n    powiedz "hop"',a*bb,a+' × '+bb+' = '+a*bb,12)}
+function qLua(d){var v=ri(0,6);
+  if(v===0){var w=pickOne(['Hello','Roblox','Minecraft','Start']);return sq('Co wypisze ten kod (Lua)?','print("'+w+'")',w,shuffle(['Hello','Roblox','Minecraft','Start','print']).filter(function(x){return x!==w}).slice(0,3),'print wypisuje tekst: '+w)}
+  if(v===1){var a=ri(2,6),b=ri(1,4);return nq('Co wypisze ten kod (Lua)?','local x = '+a+'\nprint(x + '+b+')',a+b,a+' + '+b+' = '+(a+b),12)}
+  if(v===2){var n=ri(2,5);return nq('Ile liczb wypisze ten kod (Lua)?','for i = 1, '+n+' do\n  print(i)\nend',n,'Pętla od 1 do '+n+' wypisze '+n+' liczb',8)}
+  if(v===3){var s=ri(5,15),win=s>10?'Win':'Try';return sq('Co wypisze ten kod (Lua)?','local score = '+s+'\nif score > 10 then\n  print("Win")\nelse\n  print("Try")\nend',win,[win==='Win'?'Try':'Win','Nic','Błąd'],s+(s>10?' > ':' ≤ ')+'10, więc: '+win)}
+  if(v===4){var a2=ri(1,4),b2=ri(1,4);return nq('Ile kroków w sumie przejdzie agent w Minecraft?','agent.move(FORWARD, '+a2+')\nagent.turn(RIGHT)\nagent.move(FORWARD, '+b2+')',a2+b2,a2+' + '+b2+' = '+(a2+b2),10)}
+  if(v===5){var n3=ri(2,5);return nq('Ile bloków postawi agent w Minecraft?','for (let i = 0; i < '+n3+'; i++) {\n  agent.place(FORWARD)\n}',n3,'Pętla wykona się '+n3+' razy',8)}
+  return sq('Kiedy pojawi się napis „Ouch”? (Roblox)','part.Touched:Connect(function()\n  print("Ouch")\nend)','Gdy ktoś dotknie części',['Na początku gry','Gdy skończy się czas','Nigdy'],'Touched to zdarzenie: uruchamia się przy dotknięciu')}
+var CTOP={evt:qEvt,var:qVar,cond:qCond,loop:qLoop,lua:qLua};
+function codeQs(sec,j){
+  var fin=j===sec.n-1,d=[.15,.5,.9][j]||.9,tp=sec.topic,qs=[],seen={},used=[];
+  function gen(f,dv){for(var t=0;t<30;t++){var q=f(Math.max(0,Math.min(1,dv+(Math.random()-.5)*.15))),k=(q.code||q.lab)+(q.text||'');if(!seen[k]){seen[k]=1;return q}}return f(dv)}
+  var N=6,i;
+  if(tp==='seq'){for(i=0;i<N;i++)qs.push(genSeq(used))}
+  else if(tp==='abs'){for(i=0;i<N;i++)qs.push(genAbs(Math.min(1,d+i*.03),{walls:d>.3}))}
+  else if(tp==='cnt'){for(i=0;i<N;i++)qs.push(genAbs(Math.min(1,d+i*.03),{counts:true,walls:d>.4}))}
+  else if(tp==='dbg'){for(i=0;i<N;i++)qs.push(genDebug(Math.min(1,d+i*.03)))}
+  else if(tp==='plc'){for(i=0;i<N;i++)qs.push(genPlace(Math.min(1,d+i*.03)))}
+  else if(tp==='dir'){for(i=0;i<N;i++)qs.push(genDir(Math.min(1,d+i*.03)))}
+  else{for(i=0;i<N;i++)qs.push(gen(CTOP[tp],d))}
+  qs=qs.filter(Boolean);
+  if(j===0&&CINTRO[tp])qs.unshift({t:'mintro',title:CINTRO[tp][0],html:CINTRO[tp][1]});
+  return qs}
+/* --- rysowanie i sterowanie --- */
+var TLAB={U:'↑',D:'↓',L:'←',R:'→',F:'Krok',TL:'↺',TR:'↻','[2':'Powtórz 2×','[3':'Powtórz 3×','[4':'Powtórz 4×',']':'koniec','IFW[':'Jeśli ściana',B:'Postaw blok'};
+function tlab(t){if(TLAB[t])return TLAB[t];var m=/^([UDLR])(\d)$/.exec(t);return m?TLAB[m[1]]+'×'+m[2]:t}
+var codeTimer=null;
+function gridHtml(q){var g=q.g,fr=q.fi>=0&&q.frames?q.frames[q.fi]:{x:g.sx,y:g.sy,d:0,got:{},placed:{}},cells='';
+  var arrows=['▶','▼','◀','▲'];
+  for(var y=0;y<g.n;y++)for(var x=0;x<g.n;x++){
+    var cls='gc',ct='',key=x+','+y,isW=g.walls.some(function(w){return w.x===x&&w.y===y}),isG=g.goals.some(function(w){return w.x===x&&w.y===y}),isP=g.pcells&&g.pcells.some(function(w){return w.x===x&&w.y===y});
+    if(isW){cls+=' wall';ct='🧱'}
+    if(isP){cls+=' target'}
+    if(fr.placed&&fr.placed[key]){cls+=' placed'}
+    if(isG&&!fr.got[key])ct='⭐';
+    if(fr.x===x&&fr.y===y){ct='🤖'+(g.mode==='dir'?'<i class="dirA">'+arrows[fr.d]+'</i>':'')}
+    cells+='<div class="'+cls+'">'+ct+'</div>'}
+  return'<div class="gridbox" style="grid-template-columns:repeat('+g.n+',1fr)">'+cells+'</div>'}
+function codePlay(q){
+  var fbk=S.phase==='fb',f=fbk?fb(S.ok,q.t==='cseq'?q.target.join(' → '):(q.sol||[]).map(tlab).join(' '),null):'';
+  if(q.t==='cseq'){var used={};q.sel.forEach(function(id){used[id]=1});var cls=fbk?(S.ok?' ok':' bad'):'';
+    return'<div class="card"><div class="lab">'+esc(q.lab)+'</div><div class="line'+cls+'">'+q.sel.map(function(id){return'<button class="tl" data-act="tile" data-id="'+id+'"'+(fbk?' disabled':'')+'>'+esc(q.tiles[id].t)+'</button>'}).join('')+'</div><div class="bank">'+q.tiles.map(function(t){return'<button class="tl'+(used[t.id]?' used':'')+'" data-act="tile" data-id="'+t.id+'"'+(fbk||used[t.id]?' disabled':'')+'>'+esc(t.t)+'</button>'}).join('')+'</div>'+(fbk?f:'<div class="row"><button class="btn" data-act="checkc"'+(q.sel.length?'':' disabled')+'>Sprawdź</button></div>')+'</div>'}
+  var run=q.status==='run',dis=(run||fbk)?' disabled':'';
+  return'<div class="card"><div class="lab">'+esc(q.lab)+'</div>'+gridHtml(q)+
+    '<div class="prog">'+(q.prog.length?q.prog.map(function(t,i){return'<button class="chipb'+(/^\[|^IFW/.test(t)?' op':t===']'?' cl':'')+'" data-act="cdel" data-i="'+i+'"'+dis+' aria-label="Usuń klocek">'+esc(tlab(t))+'</button>'}).join(''):'<span class="hintline">Tu pojawi się twój program</span>')+'</div>'+
+    (q.msg&&!fbk?'<div class="fb bad">'+esc(q.msg)+'</div>':'')+
+    '<div class="palette">'+q.pal.map(function(t){return'<button class="pal'+(/^\[|^IFW/.test(t)?' op':t===']'?' cl':'')+'" data-act="cadd" data-t="'+t+'"'+dis+'>'+esc(tlab(t))+'</button>'}).join('')+'</div>'+
+    (fbk?f:'<div class="row"><button class="btn" data-act="crun"'+(q.prog.length&&!run?'':' disabled')+'>▶ Uruchom</button><button class="btn alt" data-act="cundo"'+dis+'>⌫</button><button class="btn alt" data-act="cclear"'+dis+'>Wyczyść</button>'+(q.tries>=2&&!q.hint?'<button class="btn alt" data-act="csol">Pokaż rozwiązanie</button>':'')+'<button class="btn alt" data-act="skip"'+dis+'>Nie wiem</button></div>')+'</div>'}
+function cEdit(q){q.fi=-1;q.msg='';q.status='edit'}
+function runProg(q){var r=gSim(q.g,q.prog);if(r.err){q.msg=r.err;render();return}q.frames=r.frames;q.res=r;q.fi=0;q.status='run';q.msg='';render();animProg(q)}
+function animProg(q){clearTimeout(codeTimer);codeTimer=setTimeout(function(){if(!S||S.qs[S.i]!==q||view!=='play')return;
+  if(q.fi>=q.frames.length-1){q.tries++;if(q.res.ok){q.status='ok';done(!q.hint,null)}else{q.status='edit';q.msg=q.res.crash?'Ojej, robot uderzył w przeszkodę albo wyszedł poza planszę. Zmień program.':'Robot nie doszedł do celu. Zmień program i spróbuj jeszcze raz.';render()}return}
+  q.fi++;render();animProg(q)},420)}
+function checkCseq(){var q=S.qs[S.i];if(!q.sel.length)return;var got=q.sel.map(function(id){return q.tiles[id].t}).join('|');done(got===q.target.join('|'),null)}
+function codeSubjects(){return''}
+function codeHome(h){var nl=nextLesson(D.subject);
+  h+=tokenBar();if(msg)h+='<div class="fb bad">'+esc(msg)+'</div>';
+  h+=nl?'<div class="cont"><div><div class="lab">Dalej</div><h3>'+esc(secTitle(nl.s))+' · '+(nl.j===nl.s.n-1?'Test sekcji':'Lekcja '+(nl.j+1))+'</h3></div><button class="btn" data-act="lesson" data-k="'+esc(nl.s.key)+'" data-j="'+nl.j+'">Start</button></div>':'<div class="cont"><div><div class="lab">Wszystko zaliczone</div><h3>Brawo!</h3></div></div>';
+  h+=nSecs(D.subject).map(secCard).join('');msg='';return h+'<button class="link" data-act="settings">Ustawienia</button>'}
+var CODECARD='<button class="subj-card" data-act="subject" data-s="'+'CODESUBJ'+'"><span class="si" style="background:var(--plum)">{ }</span><span><b>Programowanie</b><small>Nagroda za gwiazdki: łamigłówki z robotem, klockami i kodem</small></span></button>';
 
 /* ---------- sessions ---------- */
 var S=null,view='home',msg='',confirmReset=false,setup=null;
 function begin(kind,qs,extra){S={kind:kind,qs:qs,i:0,score:0,xp:0,phase:'ask',log:[],tries:0,heard:'',err:''};for(var k in extra||{})S[k]=extra[k];view='play';render();autoSay()}
 function scoredN(){return S.qs.filter(function(q){return q.t!=='intro'&&q.t!=='mintro'&&q.t!=='rintro'}).length}
 function autoSay(){var q=S.qs[S.i];if(q&&(q.t==='listen'||(q.t==='build'&&q.dir==='listen')))speak(q.t==='listen'?q.w.en:clean(q.s.en));else if(q&&q.t==='rlpick')speak(q.w.txt,q.w.lang)}
-function startLesson(k,j){var s=SK[k];if(!s||!lessonOpen(s,j))return;POOLMODE='path';P().last=k;save();begin('level',s.kid?kidQs(s,j):s.subj==='math'?mathQs(s,j):lessonQs(s,j),{s:s,j:j})}
+function startLesson(k,j){var s=SK[k];if(!s||!lessonOpen(s,j))return;if(isCode(s.subj)&&!codeGate(s,j)){view='home';render();return}POOLMODE='path';P().last=k;save();begin('level',s.kid?kidQs(s,j):s.subj==='math'?mathQs(s,j):lessonQs(s,j),{s:s,j:j})}
 function startReview(){POOLMODE='all';var pool=knownAll().filter(function(w){return P().stats[w.en]});if(pool.length<4)pool=knownAll();
   var w=pool.slice().sort(function(a,b){return box(a)-box(b)}).slice(0,Math.min(pool.length,25));
   var qs=seq(w,10).map(function(x,k){return mk(['mc','write','pic','listen','speak'][k%5],x)});
@@ -751,11 +961,12 @@ function secCard(s){
   var nodes='';for(var i=0;i<s.n;i++){var fin=i===s.n-1,can=i===0||st[i-1]>0,cls=st[i]?'done':i===cur?'cur':can?'open':'lock',inner=st[i]?'★'.repeat(st[i]):(fin?'🏆':(i+1));
     nodes+='<div class="pn" style="transform:translateX('+OFF[i%OFF.length]+'px)"><button class="node '+cls+(fin?' fin':'')+'" data-act="lesson" data-k="'+esc(s.key)+'" data-j="'+i+'"'+(can?'':' disabled')+' aria-label="'+(fin?'Test sekcji':'Lekcja '+(i+1))+(st[i]?', gwiazdki: '+st[i]:'')+'"><span class="nc">'+inner+'</span><span class="nl">'+(i===cur?'Start':fin?'Test sekcji':'Lekcja '+(i+1))+'</span></button></div>'}
   return'<section class="unit" id="sec_'+esc(s.key)+'">'+head+'<div class="pathcol">'+nodes+'</div>'+(done?'<div class="fb ok" style="margin-top:10px">Sekcja ukończona! ✓</div>':'')+'</section>'}
-function hello(){var sk=streak();return header()+'<div class="subjbar"><button class="link" data-act="subjects">‹ Przedmioty</button> · <b>'+subjName(D.subject)+'</b></div>'+(isKidSubj(D.subject)?'':tabs())+'<div class="hello"><div><div class="lab">Cześć,</div><h2>'+esc(P().name)+'!</h2></div><div class="stats"><div class="streak" title="Seria dni">'+(sk?'🔥 '+sk+(sk===1?' dzień':' dni'):'Zacznij serię!')+'</div>'+ring()+'</div></div>'}
+function hello(){var sk=streak();return header()+'<div class="subjbar"><button class="link" data-act="subjects">‹ Przedmioty</button> · <b>'+subjName(D.subject)+'</b></div>'+(isKidSubj(D.subject)||isCode(D.subject)?'':tabs())+'<div class="hello"><div><div class="lab">Cześć,</div><h2>'+esc(P().name)+'!</h2></div><div class="stats"><div class="streak" title="Seria dni">'+(sk?'🔥 '+sk+(sk===1?' dzień':' dni'):'Zacznij serię!')+'</div>'+ring()+'</div></div>'}
 function tabs(){return'<div class="tabs" role="tablist"><button role="tab" aria-selected="'+(D.tab!=='ex')+'" data-act="tab" data-t="path">Ścieżka</button><button role="tab" aria-selected="'+(D.tab==='ex')+'" data-act="tab" data-t="ex">Ćwiczenia</button></div>'}
 function home(){
   if(!D.subject||!subjAllowed(D.subject))return subjectsView();
   var h=hello();
+  if(isCode(D.subject))return codeHome(h);
   if(isKidSubj(D.subject))return kidHome(h);
   if(D.subject==='math')return mathHome(h);
   if(D.tab==='ex'){
@@ -790,6 +1001,7 @@ function play(){
   var w=q.w;
   if(q.t.charAt(0)==='n'||q.t==='mintro'){body=mathPlay(q)}
   else if(q.t.charAt(0)==='r'){body=kidPlay(q)}
+  else if(q.t.charAt(0)==='c'){body=codePlay(q)}
   else if(q.t==='intro'){
     body='<div class="card"><div class="lab">Nowe słówka</div><div class="hint">Kliknij głośniczek i posłuchaj. Za chwilę je poćwiczysz.</div>'+q.ws.map(function(x){return'<div class="nw"><div class="nwp">'+pic(x)+'</div><div class="nwt"><b>'+esc(x.en)+'</b><br><small>'+esc(x.pl)+'</small></div>'+sp(x.en)+'</div>'}).join('')+'<div class="row"><button class="btn" data-act="next" id="nx">Zaczynamy</button></div></div>'}
   else if(q.t==='mc'){var en=q.dir==='en2pl';
@@ -889,7 +1101,14 @@ document.addEventListener('click',function(e){var b=e.target.closest('[data-act]
     if(f2.w.k===w2.k){q.done[w2.k]=1;if(Object.keys(q.done).length===q.ws.length){q.ws.forEach(function(x){bump({en:x.k},!q.first[x.k])});var ok2=q.mist<=1;credit(ok2,null,false);S.ok=ok2;S.phase='fb'}render()}
     else{q.first[f2.w.k]=1;q.first[w2.k]=1;q.mist++;q.bad[f2.w.k+f2.side]=1;q.bad[w2.k+sd]=1;render()}}
   else if(a==='kid'){D.profiles[+b.dataset.i].kid=b.checked;if(+b.dataset.i===D.active)D.subject=null;save()}
-  else if(a==='home'){view='home';msg='';S=null;render()}
+  else if(a==='cadd'){if(q.status==='run')return;cEdit(q);q.prog.push(b.dataset.t);render()}
+  else if(a==='cdel'){if(q.status==='run')return;cEdit(q);q.prog.splice(+b.dataset.i,1);render()}
+  else if(a==='cundo'){cEdit(q);q.prog.pop();render()}
+  else if(a==='cclear'){cEdit(q);q.prog=[];render()}
+  else if(a==='crun'){runProg(q)}
+  else if(a==='csol'){cEdit(q);q.prog=q.sol.slice();q.hint=true;render()}
+  else if(a==='checkc'){checkCseq()}
+  else if(a==='home'){clearTimeout(codeTimer);view='home';msg='';S=null;render()}
   else if(a==='tab'){D.tab=b.dataset.t;save();view='home';render()}
   else if(a==='settings'){view='settings';msg='';confirmReset=false;render()}
   else if(a==='say'){speak(b.dataset.t,b.dataset.l)}
