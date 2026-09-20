@@ -960,7 +960,10 @@ function stlText(g,name){var s=g.s,tris=[];
   var nm=name.replace(/[^A-Za-z0-9_]/g,'_')||'model',t='solid '+nm+'\n';
   tris.forEach(function(q){t+='facet normal '+q[0][0]+' '+q[0][1]+' '+q[0][2]+'\n outer loop\n';for(var i=1;i<4;i++)t+='  vertex '+q[i][0]+' '+q[i][1]+' '+q[i][2]+'\n';t+=' endloop\nendfacet\n'});
   return t+'endsolid '+nm+'\n'}
-function dlFile(name,text){try{var b=new Blob([text],{type:'model/stl'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=name+'.stl';document.body.appendChild(a);a.click();document.body.removeChild(a);setTimeout(function(){URL.revokeObjectURL(a.href)},3000)}catch(e){}}
+function plainDl(name,text){try{var b=new Blob([text],{type:'model/stl'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=name+'.stl';document.body.appendChild(a);a.click();document.body.removeChild(a);setTimeout(function(){URL.revokeObjectURL(a.href)},3000)}catch(e){}}
+function dlFile(name,text){
+  if(window.claude&&window.claude.use){window.claude.use('downloads').then(function(d){if(d){d.save({filename:name+'.txt',data:text}).then(function(){msg='Zapisano '+name+'.txt. Zmień rozszerzenie na .stl.';render()},function(){})}else plainDl(name,text)}).catch(function(){plainDl(name,text)});return}
+  plainDl(name,text)}
 var PRESETS=[[4,3,'Mały 4×4×3'],[6,5,'Średni 6×6×5'],[6,8,'Wysoki 6×6×8'],[8,8,'Duży 8×8×8']];
 function buildView(){var g=BLD,st=bstats(g),cells='',mm=function(v){return v*g.s},sg=g.stage?stageOf(g.stage):null;
   for(var y=0;y<g.n;y++)for(var x=0;x<g.n;x++){var on=bget(g,x,y,g.z),under=g.z>0&&bget(g,x,y,g.z-1);cells+='<button class="bc'+(on?' on':under?' under':'')+'" data-act="wcell" data-x="'+x+'" data-y="'+y+'" aria-label="Pole '+(x+1)+','+(y+1)+(on?', blok':'')+'"></button>'}
@@ -975,7 +978,7 @@ function buildView(){var g=BLD,st=bstats(g),cells='',mm=function(v){return v*g.s
     '<div class="lab">Wielkość jednego bloku</div><div class="seg" style="margin-top:6px">'+[5,6,8,10,12,15].map(function(s){return'<label><input type="radio" name="bs" data-act="wsize" data-s="'+s+'"'+(g.s===s?' checked':'')+'> '+s+' mm</label>'}).join('')+'</div>'+
     '<div class="row"><button class="btn" data-act="wsave">Zapisz</button><button class="btn alt" data-act="wexp"'+(st.cnt?'':' disabled')+'>Pobierz STL</button><button class="btn alt" data-act="wshow"'+(st.cnt?'':' disabled')+'>Pokaż kod STL</button><button class="btn alt" data-act="wclear">Wyczyść</button></div>'+
     (g.show&&st.cnt?'<div class="hint">Skopiuj cały tekst do pliku o nazwie <b>model.stl</b> i otwórz go w Bambu Studio.</div><textarea readonly id="stl" aria-label="Kod STL" style="min-height:160px;font-family:monospace;font-size:12px">'+esc(stlText(g,g.name))+'</textarea>':'')+
-    '<div class="note">Przed wydrukiem w Bambu Studio sprawdź rozmiar, ustaw model płasko na stole i pokaż go dorosłemu.</div></div>'}
+    '<div class="note">Przed wydrukiem w Bambu Studio sprawdź rozmiar, ustaw model płasko na stole i pokaż go dorosłemu. Jeśli plik zapisał się jako .txt, zmień rozszerzenie na .stl.</div></div>'}
 function bsave(){var p=d3(),g=BLD,rec={name:g.name,n:g.n,h:g.h,s:g.s,c:g.c.join(''),stage:g.stage||null};if(g.i>=0)p.designs[g.i]=rec;else{p.designs.push(rec);g.i=p.designs.length-1}save();msg='Zapisano projekt „'+g.name+'”.'}
 
 /* ---------- sessions ---------- */
