@@ -961,10 +961,16 @@ function stlText(g,name){var s=g.s,tris=[];
   tris.forEach(function(q){t+='facet normal '+q[0][0]+' '+q[0][1]+' '+q[0][2]+'\n outer loop\n';for(var i=1;i<4;i++)t+='  vertex '+q[i][0]+' '+q[i][1]+' '+q[i][2]+'\n';t+=' endloop\nendfacet\n'});
   return t+'endsolid '+nm+'\n'}
 function plainDl(name,text){try{var b=new Blob([text],{type:'model/stl'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=name+'.stl';document.body.appendChild(a);a.click();document.body.removeChild(a);setTimeout(function(){URL.revokeObjectURL(a.href)},3000)}catch(e){}}
+var CRCT=null;
+function crc32(u){if(!CRCT){CRCT=[];for(var n=0;n<256;n++){var c=n;for(var k=0;k<8;k++)c=(c&1)?(0xEDB88320^(c>>>1)):(c>>>1);CRCT[n]=c>>>0}}var c2=0xFFFFFFFF;for(var i=0;i<u.length;i++)c2=CRCT[(c2^u[i])&255]^(c2>>>8);return (c2^0xFFFFFFFF)>>>0}
+function zipStore(fname,text){var enc=new TextEncoder(),nm=enc.encode(fname),d=enc.encode(text),crc=crc32(d),
+  lh=new Uint8Array(30+nm.length),lv=new DataView(lh.buffer);lv.setUint32(0,0x04034b50,true);lv.setUint16(4,20,true);lv.setUint16(6,0x0800,true);lv.setUint16(8,0,true);lv.setUint16(10,0,true);lv.setUint16(12,0x21,true);lv.setUint32(14,crc,true);lv.setUint32(18,d.length,true);lv.setUint32(22,d.length,true);lv.setUint16(26,nm.length,true);lv.setUint16(28,0,true);lh.set(nm,30);
+  var off=lh.length+d.length,cd=new Uint8Array(46+nm.length),cv=new DataView(cd.buffer);cv.setUint32(0,0x02014b50,true);cv.setUint16(4,20,true);cv.setUint16(6,20,true);cv.setUint16(8,0x0800,true);cv.setUint16(10,0,true);cv.setUint16(12,0,true);cv.setUint16(14,0x21,true);cv.setUint32(16,crc,true);cv.setUint32(20,d.length,true);cv.setUint32(24,d.length,true);cv.setUint16(28,nm.length,true);cv.setUint32(42,0,true);cd.set(nm,46);
+  var end=new Uint8Array(22),ev=new DataView(end.buffer);ev.setUint32(0,0x06054b50,true);ev.setUint16(8,1,true);ev.setUint16(10,1,true);ev.setUint32(12,cd.length,true);ev.setUint32(16,off,true);
+  var out=new Uint8Array(lh.length+d.length+cd.length+end.length);out.set(lh,0);out.set(d,lh.length);out.set(cd,off);out.set(end,off+cd.length);return out}
 function dlFile(name,text){
-  if(window.claude&&window.claude.use){window.claude.use('downloads').then(function(d){if(d){d.save({filename:name+'.txt',data:text}).then(function(){msg='Zapisano '+name+'.txt. Zmień rozszerzenie na .stl.';render()},function(){})}else plainDl(name,text)}).catch(function(){plainDl(name,text)});return}
+  if(window.claude&&window.claude.use){window.claude.use('downloads').then(function(d){if(d){d.save({filename:name+'.zip',data:zipStore(name+'.stl',text)}).then(function(){msg='Zapisano '+name+'.zip. Rozpakuj go: w środku jest '+name+'.stl.';render()},function(){})}else plainDl(name,text)}).catch(function(){plainDl(name,text)});return}
   plainDl(name,text)}
-var PRESETS=[[4,3,'Mały 4×4×3'],[6,5,'Średni 6×6×5'],[6,8,'Wysoki 6×6×8'],[8,8,'Duży 8×8×8']];
 function buildView(){var g=BLD,st=bstats(g),cells='',mm=function(v){return v*g.s},sg=g.stage?stageOf(g.stage):null;
   for(var y=0;y<g.n;y++)for(var x=0;x<g.n;x++){var on=bget(g,x,y,g.z),under=g.z>0&&bget(g,x,y,g.z-1);cells+='<button class="bc'+(on?' on':under?' under':'')+'" data-act="wcell" data-x="'+x+'" data-y="'+y+'" aria-label="Pole '+(x+1)+','+(y+1)+(on?', blok':'')+'"></button>'}
   var warns='';if(st.cnt&&st.floating)warns+='<div class="fb bad">Uwaga: '+st.floating+' '+pl3(st.floating,['blok wisi','bloki wiszą','bloków wisi'])+' w powietrzu. Drukarka postawi je tylko z podporami. Włącz podpory w Bambu Studio albo dodaj bloki pod spodem.</div>';
@@ -978,7 +984,7 @@ function buildView(){var g=BLD,st=bstats(g),cells='',mm=function(v){return v*g.s
     '<div class="lab">Wielkość jednego bloku</div><div class="seg" style="margin-top:6px">'+[5,6,8,10,12,15].map(function(s){return'<label><input type="radio" name="bs" data-act="wsize" data-s="'+s+'"'+(g.s===s?' checked':'')+'> '+s+' mm</label>'}).join('')+'</div>'+
     '<div class="row"><button class="btn" data-act="wsave">Zapisz</button><button class="btn alt" data-act="wexp"'+(st.cnt?'':' disabled')+'>Pobierz STL</button><button class="btn alt" data-act="wshow"'+(st.cnt?'':' disabled')+'>Pokaż kod STL</button><button class="btn alt" data-act="wclear">Wyczyść</button></div>'+
     (g.show&&st.cnt?'<div class="hint">Skopiuj cały tekst do pliku o nazwie <b>model.stl</b> i otwórz go w Bambu Studio.</div><textarea readonly id="stl" aria-label="Kod STL" style="min-height:160px;font-family:monospace;font-size:12px">'+esc(stlText(g,g.name))+'</textarea>':'')+
-    '<div class="note">Przed wydrukiem w Bambu Studio sprawdź rozmiar, ustaw model płasko na stole i pokaż go dorosłemu. Jeśli plik zapisał się jako .txt, zmień rozszerzenie na .stl.</div></div>'}
+    '<div class="note">Przed wydrukiem w Bambu Studio sprawdź rozmiar, ustaw model płasko na stole i pokaż go dorosłemu. W Claude plik zapisuje się jako ZIP, rozpakuj go, a w środku jest plik .stl.</div></div>'}
 function bsave(){var p=d3(),g=BLD,rec={name:g.name,n:g.n,h:g.h,s:g.s,c:g.c.join(''),stage:g.stage||null};if(g.i>=0)p.designs[g.i]=rec;else{p.designs.push(rec);g.i=p.designs.length-1}save();msg='Zapisano projekt „'+g.name+'”.'}
 
 /* ---------- sessions ---------- */
