@@ -1180,7 +1180,7 @@ function hello(){var sk=streak();return header()+'<div class="subjbar"><button c
 function tabs(){return'<div class="tabs" role="tablist"><button role="tab" aria-selected="'+(D.tab!=='ex')+'" data-act="tab" data-t="path">Ścieżka</button><button role="tab" aria-selected="'+(D.tab==='ex')+'" data-act="tab" data-t="ex">Ćwiczenia</button></div>'}
 function home(){
   if(AUTH.on&&D.subject&&!hasModule(modOf(D.subject)))D.subject=null;
-  if(!D.subject||!subjAllowed(D.subject))return lockBadges(subjectsView());
+  if(!D.subject||!subjAllowed(D.subject))return lockBadges(subjectsView())+'<button class="link" data-act="settings">Ustawienia i kopia postępów</button>';
   var h=hello();
   if(D.subject==='3d')return threeDHome(h);
   if(isCode(D.subject))return codeHome(h);
