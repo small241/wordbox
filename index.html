@@ -1008,7 +1008,42 @@ var CODECARD='<button class="subj-card" data-act="subject" data-s="'+'CODESUBJ'+
 /* ---------- projekty 3D ---------- */
 var PROJ_STEPS=['Wymyśl','Narysuj','Zmierz','Zaprojektuj','Wydrukuj','Sprawdź'];
 function cellsBox(x0,x1,y0,y1,z0,z1,c){var r=[];for(var z=z0;z<=z1;z++)for(var y=y0;y<=y1;y++)for(var x=x0;x<=x1;x++)r.push([x,y,z,c||1]);return r}
+
+/* ---------- bohaterowie: Kostek i Kostka (16 x 16 x 28) ---------- */
+function vmk(){var V={},o={
+  set:function(x0,x1,y0,y1,z0,z1,c){for(var z=z0;z<=z1;z++)for(var y=y0;y<=y1;y++)for(var x=x0;x<=x1;x++)V[x+','+y+','+z]=c;return o},
+  px:function(x,y,z,c){V[x+','+y+','+z]=c;return o},
+  del:function(x0,x1,y0,y1,z0,z1){for(var z=z0;z<=z1;z++)for(var y=y0;y<=y1;y++)for(var x=x0;x<=x1;x++)delete V[x+','+y+','+z];return o},
+  face:function(y,x0,zt,rows,map){rows.forEach(function(r,i){r.split('').forEach(function(ch,j){if(ch!=='.')V[(x0+j)+','+y+','+(zt-i)]=map[ch]})});return o},
+  cells:function(){return Object.keys(V).map(function(k){var p=k.split(',');return[+p[0],+p[1],+p[2],V[k]]})}};return o}
+function heroBody(m,c){
+  m.set(4,7,3,6,0,8,c.leg).set(8,11,3,6,0,8,c.leg).set(4,11,3,6,0,0,1).set(4,11,3,6,1,2,2).set(4,11,7,7,0,1,2);
+  m.set(4,11,3,6,9,17,c.top).set(0,3,3,6,9,17,1).set(12,15,3,6,9,17,1).set(0,3,3,6,13,17,c.top).set(12,15,3,6,13,17,c.top);
+  m.set(4,11,1,8,18,25,1)}
+function heroKostek(){var m=vmk();heroBody(m,{leg:4,top:3});
+  m.set(4,11,3,6,3,3,2).set(5,10,7,7,10,12,3).set(6,6,7,7,14,16,1).set(9,9,7,7,14,16,1).set(6,9,1,2,15,18,3);
+  m.set(5,10,1,2,10,15,4).set(5,5,7,7,13,17,4).set(10,10,7,7,13,17,4).set(5,5,3,6,17,17,4).set(10,10,3,6,17,17,4);
+  m.set(4,11,1,8,24,25,2).set(4,11,1,2,18,25,2).set(4,4,1,7,21,25,2).set(11,11,1,7,21,25,2);
+  m.set(6,9,3,6,26,26,2).set(7,8,3,4,27,27,2).set(9,9,6,7,26,26,2);
+  m.set(3,3,4,6,20,22,4).set(12,12,4,6,20,22,4).set(3,3,5,5,23,26,4).set(12,12,5,5,23,26,4).set(3,12,5,5,26,26,4);
+  m.face(8,4,25,['BBBBBBBB','BBBBWBBB','BWWWWWWB','BKIWWIKB','BWWWWWWB','BKWWWWKB','WKKKKKKW','WWWWWWWW'],{B:2,W:1,K:2,I:4});
+  m.set(7,8,9,9,21,21,1);
+  m.set(13,14,7,7,0,7,4).px(13,7,0,4).del(14,14,7,7,0,0).set(13,14,6,8,8,8,2).set(13,14,7,7,9,11,2).set(13,14,7,7,12,12,4);
+  return m.cells()}
+function heroKostka(){var m=vmk();heroBody(m,{leg:1,top:5});
+  m.set(3,12,2,7,8,10,5);[3,5,7,9,11].forEach(function(x){m.set(x,x,8,8,8,9,5)});
+  m.set(4,11,7,7,11,11,2).set(7,8,8,8,11,11,3).set(5,10,1,2,9,16,3);
+  m.set(5,5,7,7,12,17,3).set(10,10,7,7,12,17,3).set(5,5,3,6,17,17,3).set(10,10,3,6,17,17,3);
+  m.set(4,11,1,8,24,25,2).set(4,11,1,2,16,25,2).set(4,4,1,7,17,25,2).set(11,11,1,7,17,25,2);
+  m.set(7,8,0,0,14,24,2).set(7,8,0,1,25,26,2).set(6,9,0,0,21,22,5);
+  m.set(8,9,4,7,26,27,5).set(11,12,4,7,26,27,5).set(10,10,5,6,26,27,2);
+  m.face(8,4,25,['BBBBBBBB','BBWBBWBB','BWWWWWWB','BKIWWIKB','BWWWWWWB','BRWWWWRB','BWWKKWWB','BWWWWWWB'],{B:2,W:1,K:2,I:3,R:5});
+  m.px(4,8,22,2).px(11,8,22,2).set(7,8,9,9,21,21,1);
+  m.set(1,2,7,7,0,17,2).set(0,3,6,8,18,19,3).set(1,2,6,8,20,21,3).set(1,2,7,7,22,22,3);
+  return m.cells()}
 var TPL={
+ kostek3:heroKostek,
+ kostka3:heroKostka,
  steve2:function(){return cellsBox(3,5,1,4,0,6,4).concat(cellsBox(6,8,1,4,0,6,4),cellsBox(3,8,1,4,0,1,2),cellsBox(3,8,1,4,7,13,3),cellsBox(3,8,1,4,7,7,2),
    cellsBox(0,2,1,4,7,13,1),cellsBox(9,11,1,4,7,13,1),cellsBox(0,2,1,4,11,13,3),cellsBox(9,11,1,4,11,13,3),
    cellsBox(3,8,0,5,14,19,1),cellsBox(3,8,0,5,18,19,2),cellsBox(3,8,0,1,14,19,2),cellsBox(3,3,0,4,17,17,2),cellsBox(8,8,0,4,17,17,2),
@@ -1036,6 +1071,8 @@ var TPL={
  shield:function(){var r=cellsBox(1,4,0,4,0,0,4).filter(function(q){return !(q[1]===4&&(q[0]===1||q[0]===4))});return r.concat(cellsBox(2,3,1,3,1,1,1))}
 };
 var COLL=[
+ {id:'kostek',t:'Kostek — bohater',n:16,h:28,s:4,tpl:'kostek3',d:'Nasz bohater: słuchawki, nastroszony czub, bluza z kangurką, plecak i miecz oparty o ziemię. 4 kolory, około 11 cm wysokości.'},
+ {id:'kostka',t:'Kostka — bohaterka',n:16,h:28,s:4,tpl:'kostka3',d:'Nasza bohaterka: kucyk, kokarda, spódnica w plisy, zielony plecak i kostur z kryształem. 4 kolory, około 11 cm wysokości.'},
  {id:'steve',t:'Ludzik — wersja prosta',n:6,h:8,s:8,tpl:'steve',d:'Głowa, tułów, ręce i nogi z dużych klocków. Dobry na pierwszy raz.'},
  {id:'steve2',t:'Ludzik — wersja szczegółowa',n:12,h:20,s:6,tpl:'steve2',d:'Ta sama postać na drobniejszej siatce: twarz, włosy, rękawy, pasek i buty. Dla tych, którym duże klocki już nie wystarczają.'},
  {id:'sword',t:'Miecz',n:4,h:7,s:8,tpl:'sword',d:'Rękojeść, gałka i ostrze. Ile bloków ma mieć ostrze?'},
@@ -1051,7 +1088,7 @@ function d3(){var p=P();if(!p.designs)p.designs=[];if(!p.printq)p.printq=[];if(!
 function stageOf(id){for(var i=0;i<COLL.length;i++)if(COLL[i].id===id)return COLL[i];return null}
 function designFor(id){var p=d3(),r=null;p.designs.forEach(function(d,i){if(d.stage===id&&/[1-9]/.test(d.c))r={d:d,i:i}});return r}
 function printItem(idx){var r=null;d3().printq.forEach(function(x){if(x.di===idx)r=x});return r}
-var SHOP={steve:{price:8,kid:'c:k1',adult:'c:o1'},steve2:{price:14,kid:'c:k3',adult:'c:o3'},sword:{price:6,kid:'c:k1',adult:'c:o1'},pick:{price:6,kid:'c:k2',adult:'c:o2'},shield:{price:6,kid:'c:k2',adult:'c:o3'},creeper:{price:10,kid:'c:k3',adult:'c:o4'},skeleton:{price:12,kid:'c:k4',adult:'c:o5'},zombie:{price:12,kid:'c:k4',adult:'c:o5'},spider:{price:15,kid:'c:k5',adult:'c:o6'},ender:{price:18,kid:'c:k5',adult:'c:o6'}};
+var SHOP={kostek:{price:12,kid:'c:k1',adult:'c:o1'},kostka:{price:12,kid:'c:k1',adult:'c:o1'},steve:{price:8,kid:'c:k1',adult:'c:o1'},steve2:{price:14,kid:'c:k3',adult:'c:o3'},sword:{price:6,kid:'c:k1',adult:'c:o1'},pick:{price:6,kid:'c:k2',adult:'c:o2'},shield:{price:6,kid:'c:k2',adult:'c:o3'},creeper:{price:10,kid:'c:k3',adult:'c:o4'},skeleton:{price:12,kid:'c:k4',adult:'c:o5'},zombie:{price:12,kid:'c:k4',adult:'c:o5'},spider:{price:15,kid:'c:k5',adult:'c:o6'},ender:{price:18,kid:'c:k5',adult:'c:o6'}};
 function shopReq(id){var k=P().kid?SHOP[id].kid:SHOP[id].adult;return SK[k]||null}
 function owned(id){var sh=P().shop||{};return sh[id]!=null||!!designFor(id)}
 var THUMBS={};
