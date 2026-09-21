@@ -169,6 +169,7 @@ pre.code{background:#111a33;color:#e8eeff;border-radius:12px;padding:14px;font-f
 .acct{font-size:13px;color:var(--muted);margin-bottom:6px;display:flex;gap:10px;flex-wrap:wrap;align-items:center}.acct .link{margin:0;padding:0;font-size:13px}.acct b{color:var(--ink)}.syncerr{color:var(--bad);font-weight:800}.subj-card{position:relative}.lockb{position:absolute;top:10px;right:12px;background:var(--ink);color:var(--bg);border-radius:999px;padding:2px 10px;font-size:12px;font-weight:800}
 .agebadge{background:var(--ink);color:var(--bg);border-radius:999px;padding:1px 10px;font-weight:800;font-size:12px}.subjbar .link{font-size:13px}
 .swatch{display:inline-block;width:110px;height:110px;border-radius:50%;border:4px solid var(--line);vertical-align:middle}.nwp .swatch{width:44px;height:44px;border-width:3px}
+.bonustag{background:#FFF4D6;border:2px solid var(--sun);border-radius:12px;padding:6px 12px;font-weight:800;font-size:13px;margin:-4px 0 10px;color:#6B4A00}
 .testbar{background:#FFE8E0;border:2px solid var(--accent);color:#8A2B0C;border-radius:12px;padding:6px 12px;font-weight:800;font-size:13px;margin-bottom:8px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 .testbar .link{margin:0;padding:0;font-size:13px}
 .conf{position:fixed;left:0;right:0;top:0;bottom:0;pointer-events:none;z-index:60;overflow:hidden}
@@ -304,6 +305,7 @@ function buildUnits(){
   U=ok.concat(yk,U.filter(function(u){return u.sec==='mine'}),U.filter(function(u){return u.sec==='x'}));
   buildSections()}
 /* Sekcja = kilka kolejnych lekcji z zeszytu, razem ok. 16 słówek. Sekcja ma (liczba porcji po ok. 5 słówek) lekcji po 10 zadań + końcowy test sekcji. */
+function enGroups(){return lvl()===7?['old','mine']:['old','y','mine']}
 function buildSections(){
   SEC=[];SK={};var T=16,MAXL=T*1.4;
   function mkSec(g,parts,parent){
@@ -313,12 +315,12 @@ function buildSections(){
     for(var i=0;i<nch;i++){var sz=base+(i<extra?1:0);chunks.push(words.slice(pos,pos+sz));pos+=sz}
     var s={subj:'en',key:g+':'+parts[0].id,g:g,parts:parts,words:words,sents:sents,lessons:lessons,chunks:chunks,n:chunks.length+1,parent:parent,free:g==='y'};
     SEC.push(s);SK[s.key]=s;return s}
-  ['old','y','mine'].forEach(function(g){
+  enGroups().forEach(function(g){
     var parts=[];U.filter(function(u){return u.sec===g}).forEach(function(u){
       var pc=u.words.length>MAXL*1.3?Math.ceil(u.words.length/T):1,per=Math.ceil(u.words.length/pc);
       for(var i=0;i<pc;i++)parts.push({id:u.k+(pc>1?'#'+i:''),base:u,words:u.words.slice(i*per,(i+1)*per)})});
     var cur=[],cw=0;parts.forEach(function(p){if(cur.length&&cw+p.words.length>MAXL){mkSec(g,cur);cur=[];cw=0}cur.push(p);cw+=p.words.length});if(cur.length)mkSec(g,cur)});
-  U.filter(function(u){return u.sec==='x'}).forEach(function(u){mkSec('x',[{id:u.k,base:u,words:u.words}],u.parent)});
+  U.filter(function(u){return u.sec==='x'&&!(lvl()===7&&u.parent&&!/^Z/.test(String(u.parent)))}).forEach(function(u){mkSec('x',[{id:u.k,base:u,words:u.words}],u.parent)});
   buildMath();
   buildKid();
   buildCode();
@@ -385,7 +387,8 @@ var CODE_DEF=[
 {subj:'code',key:'c:o6',title:'Lua i MakeCode',sub:'Roblox Studio i Minecraft Education',topic:'lua'}];
 function buildCode(){CODE_DEF.forEach(function(d){var s={subj:d.subj,key:d.key,g:'k',kid:true,title:d.title,sub:d.sub,topic:d.topic,parts:[],words:[],kw:[],sents:[],lessons:[],chunks:[],n:3,free:true,parent:null};SEC.push(s);SK[s.key]=s})}
 /* ---------- moduł Kieszonkowe ---------- */
-function lvl(){var p=P();return p.lvl||(p.kid?6:8)}
+var LVLUP=0;
+function lvl(){var p=P();return (p.lvl||(p.kid?6:8))+LVLUP}
 function isLife(sj){return sj==='fin'}
 function lmc(lab,eq,ans,opts,expl){return{t:'nname',lab:lab,eq:eq,ans:ans,opts:shuffle(opts.slice(0,4)),expl:expl||ans}}
 function lnum(lab,text,ans,expl){var L=lvl(),q={t:L===6?'nmc':'nin',lab:lab,text:text,ans:ans,expl:expl||text.replace('□',ans)};
@@ -1247,7 +1250,7 @@ function authView(){var m=AUTH.mode||'in',T={in:'Zaloguj się',up:'Załóż kont
   if(m==='up'&&!AUTH.nomail)f+='<label for="a_name">Imię i nazwisko</label><input type="text" id="a_name" autocomplete="name" style="margin:4px 0 10px">';
   if(m!=='new'&&!(m==='up'&&AUTH.nomail))f+='<label for="a_email">'+(m==='in'?'Adres e-mail lub login (samo imię)':'Adres e-mail')+'</label><input type="text" id="a_email" inputmode="email" autocapitalize="off" autocomplete="email" style="margin:4px 0 10px">';
   if(m==='in')f+=pwField('a_pw','Hasło','current-password');
-  if(m==='up')f+='<label for="a_age">Wiek ucznia</label><div class="seg" style="margin:4px 0 10px">'+[6,7,8,9].map(function(a){return'<label><input type="radio" name="a_age" data-act="aage" data-a="'+a+'"'+((AUTH.age||8)===a?' checked':'')+'> '+a+' lat</label>'}).join('')+'</div>';
+  if(m==='up')f+='<label for="a_age">Wiek ucznia</label><div class="seg" style="margin:4px 0 10px">'+[[6,'zerówka'],[7,'1 klasa'],[8,'2 klasa']].map(function(o){var a=o[0];return'<label><input type="radio" name="a_age" data-act="aage" data-a="'+a+'"'+((AUTH.age||8)===a?' checked':'')+'> '+a+' lat · '+o[1]+'</label>'}).join('')+'</div>';
   if(m==='up')f+=pwField('a_pw','Hasło (min. 8 znaków)','new-password')+pwField('a_pw2','Powtórz hasło','new-password')+'<div class="chk"><input type="checkbox" id="a_ok"><label for="a_ok">Zgadzam się na przechowywanie mojego imienia, nazwiska i adresu e-mail w celu prowadzenia konta.</label></div>';
   if(m==='new')f+=pwField('a_pw','Nowe hasło (min. 8 znaków)','new-password')+pwField('a_pw2','Powtórz nowe hasło','new-password');
   var btn={in:'Zaloguj',up:'Załóż konto',reset:'Wyślij link do resetu','new':'Zapisz hasło'}[m];
@@ -1339,11 +1342,38 @@ function orderAct(a,b){var c=sbc(),id=b&&b.dataset?+b.dataset.id:0;
 /* ---------- sessions ---------- */
 var S=null,view='home',msg='',confirmReset=false,setup=null;
 function begin(kind,qs,extra){S={kind:kind,qs:qs,i:0,score:0,xp:0,phase:'ask',log:[],tries:0,heard:'',err:''};for(var k in extra||{})S[k]=extra[k];view='play';render();autoSay()}
-function scoredN(){return S.qs.filter(function(q){return q.t!=='intro'&&q.t!=='mintro'&&q.t!=='rintro'}).length}
+function scoredN(){return S.qs.filter(function(q){return q.t!=='intro'&&q.t!=='mintro'&&q.t!=='rintro'&&!q.bonus}).length}
+function curBonus(){return !!(S&&S.qs&&S.qs[S.i]&&S.qs[S.i].bonus)}
 function autoSay(){var q=S.qs[S.i];if(q&&(q.t==='listen'||(q.t==='build'&&q.dir==='listen')))speak(q.t==='listen'?q.w.en:clean(q.s.en));else if(q&&q.t==='rlpick')speak(q.w.txt,q.w.lang)}
+/* ---------- wyzwania ponad program ---------- */
+var NOBONUS=false;
+function mBonus(tp){var a,b,s,m,k,x;
+  if(tp==='sub'||tp==='sbn'){m=ri(11,20);k=ri(2,9);return{t:'nin',lab:'Wyzwanie: odejmowanie do 20',text:m+' − '+k+' = □',ans:m-k,expl:m+' − '+k+' = '+(m-k)}}
+  if(tp==='unk'){b=ri(11,20);a=ri(2,9);return{t:'nin',lab:'Wyzwanie: jaka liczba pasuje?',text:'□ + '+a+' = '+b,ans:b-a,expl:(b-a)+' + '+a+' = '+b}}
+  if(tp==='cmp'){a=ri(10,99);b=Math.random()<.2?a:ri(10,99);var sg=a<b?'<':a>b?'>':'=';return{t:'ncmp',lab:'Wyzwanie: porównaj liczby dwucyfrowe',l:String(a),r:String(b),ans:sg,expl:a+' '+sg+' '+b}}
+  if(tp==='dig'||tp==='two'){x=ri(11,98);if(Math.random()<.5)return{t:'nin',lab:'Wyzwanie: jaka liczba jest po?',text:x+' → □',ans:x+1,expl:'Po '+x+' jest '+(x+1)};return{t:'nin',lab:'Wyzwanie: jaka liczba jest przed?',text:'□ ← '+x,ans:x-1,expl:'Przed '+x+' jest '+(x-1)}}
+  s=ri(11,20);a=ri(Math.max(2,s-9),9);return{t:'nin',lab:'Wyzwanie: dodawanie do 20',text:a+' + '+(s-a)+' = □',ans:s,expl:a+' + '+(s-a)+' = '+s}}
+function nextSecOf(s){var N=nSecs(s.subj),i=N.indexOf(s);return i>-1?N[i+1]||null:null}
+function takeQs(list,n){return list.filter(function(q){return q.t!=='intro'&&q.t!=='mintro'&&q.t!=='rintro'&&q.t!=='pairs'&&q.t!=='rpairs'}).slice(0,n)}
+function bonusFor(s,j){var out=[],nx=nextSecOf(s);
+  if(isCode(s.subj))return out;
+  if(s.subj==='en'){var known={};s.words.forEach(function(w){known[w.en.toLowerCase()]=1});
+    var pool=[];SEC.forEach(function(x){if(x.g==='x'&&s.lessons.indexOf(x.parent)>-1)pool=pool.concat(x.words)});
+    if(D.extras===false||pool.length<2){EXTRA_DEF.forEach(function(d){if(s.lessons.indexOf(String(d[2]))>-1)BONUS.filter(function(b){return b.g===d[0]}).forEach(function(w){pool.push(w)})})}
+    pool=uniq(pool.filter(function(w){return w&&w.en&&!known[w.en.toLowerCase()]}));
+    if(pool.length<2&&nx)pool=pool.concat(nx.words.filter(function(w){return !known[w.en.toLowerCase()]}));
+    shuffle(pool).slice(0,3).forEach(function(w,i){out.push(mk(i===2?'listen':'mc',w))});return out}
+  if(s.subj==='math'){[s.topic,s.topic,nx?nx.topic:s.topic].forEach(function(tp){out.push(mBonus(tp==='mix'?pickOne(['add','sub','unk','cmp']):tp))});return out}
+  if(isLife(s.subj)){LVLUP=1;try{out.push(LGEN[s.gen]())}finally{LVLUP=0}
+    out.push(LGEN[(nx||s).gen]());out.push(LGEN[s.gen]());return out}
+  // wersja dla 6 lat: dwa zadania z kolejnej sekcji (albo z testu tej sekcji)
+  NOBONUS=true;try{out=takeQs(kidQs(nx||s,nx?0:s.n-1),2)}finally{NOBONUS=false}
+  return out}
+function withBonus(s,j,qs){if(NOBONUS)return qs;var b=[];try{b=bonusFor(s,j)}catch(e){b=[]}
+  b.forEach(function(q){if(q){q.bonus=true;qs.push(q)}});return qs}
 function startSkip(k){var s=SK[k];if(!s||!secOpen(s)||secDone(s))return;POOLMODE='path';P().last=k;save();
   begin('skip',isLife(s.subj)?lifeQs(s,s.n-1):s.kid?kidQs(s,s.n-1):s.subj==='math'?mathQs(s,s.n-1):lessonQs(s,s.n-1),{s:s,j:s.n-1})}
-function startLesson(k,j){var s=SK[k];if(!s||!lessonOpen(s,j))return;if(isCode(s.subj)&&!codeGate(s,j)){view='home';render();return}POOLMODE='path';P().last=k;save();begin('level',isLife(s.subj)?lifeQs(s,j):s.kid?kidQs(s,j):s.subj==='math'?mathQs(s,j):lessonQs(s,j),{s:s,j:j})}
+function startLesson(k,j){var s=SK[k];if(!s||!lessonOpen(s,j))return;if(isCode(s.subj)&&!codeGate(s,j)){view='home';render();return}POOLMODE='path';P().last=k;save();begin('level',withBonus(s,j,isLife(s.subj)?lifeQs(s,j):s.kid?kidQs(s,j):s.subj==='math'?mathQs(s,j):lessonQs(s,j)),{s:s,j:j})}
 function startReview(){POOLMODE='all';var pool=knownAll().filter(function(w){return P().stats[w.en]});if(pool.length<4)pool=knownAll();
   var w=pool.slice().sort(function(a,b){return box(a)-box(b)}).slice(0,Math.min(pool.length,25));
   var qs=seq(w,10).map(function(x,k){return mk(['mc','write','pic','listen','speak'][k%5],x)});
@@ -1372,7 +1402,7 @@ function startPractice(ws){POOLMODE='all';begin('review',seq(ws,Math.min(12,Math
 function credit(ok,w,scored){
   snd(ok?'ok':'bad');
   if(w&&scored!==false)bump(w,ok);
-  if(ok){S.score++;S.xp+=10;P().xp+=10;var d=dstr(new Date()),days=P().days;days[d]=(days[d]||0)+1}
+  if(ok){var xb=curBonus();if(xb)S.bonusOk=(S.bonusOk||0)+1;else S.score++;S.xp+=xb?20:10;P().xp+=xb?20:10;var d=dstr(new Date()),days=P().days;days[d]=(days[d]||0)+1}
   save()}
 function done(ok,w,info){
   credit(ok,w);S.ok=ok;
@@ -1469,7 +1499,7 @@ function testView(){
 function fb(ok,ans,say,extra,lang){return'<div class="fb '+(ok?'ok':'bad')+'">'+(ok?'Super! ✓':'Prawie. Poprawna odpowiedź:')+(ok&&!extra?'':'<span>'+esc(ans)+(say?sp(say,'sm',lang):'')+'</span>')+'</div><div class="row"><button class="btn" data-act="next" id="nx">Dalej</button></div>'}
 function play(){
   var q=S.qs[S.i],fbk=S.phase==='fb',body='',cnt=S.qs.filter(function(x){return x.t!=='intro'&&x.t!=='mintro'&&x.t!=='rintro'}).length,cur=S.qs.slice(0,S.i+1).filter(function(x){return x.t!=='intro'&&x.t!=='mintro'&&x.t!=='rintro'}).length;
-  var top='<div class="sess-top"><button class="x" data-act="home" aria-label="Zakończ">×</button><div class="bar"><i style="width:'+(S.i/S.qs.length*100)+'%"></i></div><span class="lab">'+((q.t==='intro'||q.t==='mintro'||q.t==='rintro')?'Nowe':cur+'/'+cnt)+'</span>'+(readAloudOn()?'<button class="relab" data-act="relab" aria-label="Przeczytaj polecenie">🔊</button>':'')+'</div>';
+  var top='<div class="sess-top"><button class="x" data-act="home" aria-label="Zakończ">×</button><div class="bar"><i style="width:'+(S.i/S.qs.length*100)+'%"></i></div><span class="lab">'+((q.t==='intro'||q.t==='mintro'||q.t==='rintro')?'Nowe':cur+'/'+cnt)+'</span>'+(readAloudOn()?'<button class="relab" data-act="relab" aria-label="Przeczytaj polecenie">🔊</button>':'')+'</div>'+(q.bonus?'<div class="bonustag">⭐ Wyzwanie ponad program — nie obniża gwiazdek, daje podwójne XP</div>':'');
   var w=q.w;
   if(q.t.charAt(0)==='n'||q.t==='mintro'){body=mathPlay(q)}
   else if(q.t.charAt(0)==='r'){body=kidPlay(q)}
@@ -1525,7 +1555,8 @@ function result(){
     '<div class="row" style="justify-content:center"><button class="btn" data-act="home">Wróć do ścieżki</button></div></div>'}
   var st=S.kind==='level'?S.st:stars(S.r),ok=S.kind!=='level'||st>0,nx=S.kind==='level'&&ok?afterLesson():null,fin=S.kind==='level'&&S.j===S.s.n-1;
   var lab=S.kind==='level'?'Sekcja '+secNo(S.s)+' · '+(fin?'Test sekcji':'Lekcja '+(S.j+1)):'Koniec rundy';
-  var extra=S.kind==='level'&&S.nowDone&&!S.wasDone?'<div class="fb ok" style="text-align:left">Sekcja ukończona! Zwroty z tej sekcji wrócą w kolejnych, żeby je utrwalić.</div>':'';
+  var bN=S.qs.filter(function(q){return q.bonus}).length,bonusInfo=bN?'<div class="fb ok" style="text-align:left">⭐ Wyzwania ponad program: '+(S.bonusOk||0)+' z '+bN+'</div>':'';
+  var extra=bonusInfo+(S.kind==='level'&&S.nowDone&&!S.wasDone?'<div class="fb ok" style="text-align:left">Sekcja ukończona! Zwroty z tej sekcji wrócą w kolejnych, żeby je utrwalić.</div>':'');
   return header()+'<div class="card res"><div class="lab">'+lab+'</div><div class="stars" aria-label="'+st+' z 3 gwiazdek">'+'★'.repeat(st)+'<span style="opacity:.25">'+'★'.repeat(3-st)+'</span></div><div class="big">'+S.score+' / '+S.n+'</div><div class="hint">+'+S.xp+' XP. '+(S.kind==='level'&&!ok?'Potrzeba co najmniej 60%. Spróbuj jeszcze raz!':S.r>=.9?'Świetna robota!':S.r>=.6?'Dobrze idzie!':'Ćwicz dalej.')+'</div>'+extra+
   '<div class="row" style="justify-content:center">'+(nx?'<button class="btn" data-act="lesson" data-k="'+esc(nx.s.key)+'" data-j="'+nx.j+'">Dalej</button>':'')+(S.kind==='level'?'<button class="btn alt" data-act="lesson" data-k="'+esc(S.s.key)+'" data-j="'+S.j+'">Jeszcze raz</button>':'<button class="btn" data-act="review">Jeszcze raz</button>')+'<button class="btn alt" data-act="home">Menu</button></div></div>'}
 function parseImport(t,swap,dflt){var out=[],bad=0,cur=dflt||'M';
@@ -1536,7 +1567,7 @@ function parseImport(t,swap,dflt){var out=[],bad=0,cur=dflt||'M';
     var a=m[0].trim(),b=m.slice(1).join(' ').trim();out.push(swap?{en:b,pl:a,l:cur}:{en:a,pl:b,l:cur})});return{out:out,bad:bad}}
 function settings(){
   return header()+'<h2 style="margin-bottom:6px">Ustawienia</h2>'+(msg?'<div class="fb ok">'+esc(msg)+'</div>':'')+
-  '<div class="sec"><h3>Imiona</h3>'+D.profiles.map(function(p,i){return'<div style="margin-bottom:8px"><input type="text" id="nm'+i+'" data-name="'+i+'" value="'+esc(p.name)+'" aria-label="Imię '+(i+1)+'" maxlength="16"><div class="seg" style="margin-top:6px">'+[6,7,8].map(function(a){return'<label><input type="radio" name="lv'+i+'" data-act="plvl" data-i="'+i+'" data-a="'+a+'"'+(((p.lvl||(p.kid?6:8))===a)?' checked':'')+'> '+a+' lat</label>'}).join('')+'</div></div>'}).join('')+'</div>'+
+  '<div class="sec"><h3>Imiona</h3>'+D.profiles.map(function(p,i){return'<div style="margin-bottom:8px"><input type="text" id="nm'+i+'" data-name="'+i+'" value="'+esc(p.name)+'" aria-label="Imię '+(i+1)+'" maxlength="16"><div class="seg" style="margin-top:6px">'+[[6,'zerówka'],[7,'1 klasa'],[8,'2 klasa']].map(function(o){var a=o[0];return'<label><input type="radio" name="lv'+i+'" data-act="plvl" data-i="'+i+'" data-a="'+a+'"'+(((p.lvl||(p.kid?6:8))===a)?' checked':'')+'> '+a+' lat · '+o[1]+'</label>'}).join('')+'</div></div>'}).join('')+'</div>'+
   '<div class="sec"><h3>Dzienny cel</h3><div class="seg">'+[10,20,30,50].map(function(n){return'<label><input type="radio" name="goal" data-act="goal" data-n="'+n+'"'+((D.goal||20)===n?' checked':'')+'> '+n+' zadań</label>'}).join('')+'</div></div>'+
   '<div class="sec"><h3>Mikrofon</h3><div class="chk"><input type="checkbox" id="micck" data-act="micon"'+(D.micOff?'':' checked')+'><label for="micck">Próbuj rozpoznawania mowy w aplikacji</label></div><div class="hint">Gdy przeglądarka blokuje mikrofon, zadania „Mów” działają przez dyktowanie z klawiatury.</div></div>'+
   '<div class="sec"><h3>Tryb testowy (dla rodzica)</h3><div class="hint">Osobny profil-piaskownica: zapas żetonów, wszystkie sekcje otwarte i bez limitu 3 poziomów dziennie. Postępy dzieci zostają nietknięte. Zamówienia wydruku i panel administratora działają dopiero po podłączeniu kont online.</div>'+
