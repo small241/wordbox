@@ -331,7 +331,7 @@ function buildMath(){MATH_SECS.forEach(function(m){var s={subj:'math',key:m.key,
 var KID_DEF=[
 {subj:'kread',key:'k:pl1',title:'Polski: A O E I U',sub:'Samogłoski i pierwsze słowa',lang:'pl',list:'arbuz|🍉,osa|🐝,oko|👁️,ucho|👂,indyk|🦃,ekran|🖥️'},
 {subj:'kread',key:'k:pl2',title:'Polski: M T K D',sub:'Mama, tata, kot, dom',lang:'pl',list:'mama|👩,tata|👨,kot|🐱,dom|🏠,kura|🐔,mak|🌺'},
-{subj:'kread',key:'k:pl3',title:'Polski: L S P R',sub:'Lody, las, pies, ryba',lang:'pl',list:'lody|🍦,las|🌲,pies|🐶,ryba|🐟,sok|🥤,ser|🧀'},
+{subj:'kread',key:'k:pl3',title:'Polski: L S P R',sub:'Lody, las, pies, ryba',lang:'pl',list:'lody|🍦,las|🌲🌳,pies|🐶,ryba|🐟,sok|🥤,ser|🧀'},
 {subj:'kread',key:'k:pl4',title:'Polski: B N W Z',sub:'Balon, nos, wąż, zebra',lang:'pl',list:'balon|🎈,nos|👃,wąż|🐍,zebra|🦓,wilk|🐺,banan|🍌'},
 {subj:'kread',key:'k:pl5',title:'Polski: J G H F Ł',sub:'Jabłko, gruszka, łódka',lang:'pl',list:'jabłko|🍎,gruszka|🍐,hipopotam|🦛,łódka|⛵,flaga|🚩,noga|🦵'},
 {subj:'kread',key:'k:pl6',title:'Polski: Ż Ś Ć Ń',sub:'Żaba, słoń, koń, miś',lang:'pl',list:'żaba|🐸,słoń|🐘,koń|🐴,miś|🧸,żyrafa|🦒,księżyc|🌙'},
@@ -1582,7 +1582,8 @@ function orderAct(a,b){var c=sbc(),id=b&&b.dataset?+b.dataset.id:0;
 
 /* ---------- sessions ---------- */
 var S=null,view='home',msg='',confirmReset=false,setup=null;
-function begin(kind,qs,extra){S={kind:kind,qs:qs,i:0,score:0,xp:0,phase:'ask',log:[],tries:0,heard:'',err:''};for(var k in extra||{})S[k]=extra[k];view='play';render();autoSay()}
+var SAIDLAB=-1;
+function begin(kind,qs,extra){S={kind:kind,qs:qs,i:0,score:0,xp:0,phase:'ask',log:[],tries:0,heard:'',err:''};for(var k in extra||{})S[k]=extra[k];SAIDLAB=-1;view='play';render();autoSay()}
 function scoredN(){return S.qs.filter(function(q){return q.t!=='intro'&&q.t!=='mintro'&&q.t!=='rintro'&&!q.bonus}).length}
 function curBonus(){return !!(S&&S.qs&&S.qs[S.i]&&S.qs[S.i].bonus)}
 function autoSay(){var q=S.qs[S.i];if(q&&(q.t==='listen'||(q.t==='build'&&q.dir==='listen')))speak(q.t==='listen'?q.w.en:clean(q.s.en));else if(q&&q.t==='rlpick')speak(q.w.txt,q.w.lang)}
@@ -1827,7 +1828,7 @@ function settings(){
 var lastView=null;
 function render(){var app=document.getElementById('app');
   app.innerHTML=view==='auth'?authView():view==='admin'?adminView():view==='unlock'?unlockView():view==='orders'?ordersView():view==='play'?play():view==='result'?result():view==='settings'?settings():view==='badges'?badgesView():view==='test'?testView():view==='build'?buildView():home();
-  if(view==='play'&&S&&S.phase==='ask')sayLab();
+  if(view==='play'&&S&&S.phase==='ask'&&S.i!==SAIDLAB){SAIDLAB=S.i;sayLab()}
   var a=document.getElementById('ans');if(a&&!a.disabled)a.focus();else{var n=document.getElementById('nx');if(n&&view==='play')n.focus()}
   if(view!==lastView||view==='play'){window.scrollTo(0,0)}lastView=view}
 
