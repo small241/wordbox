@@ -169,6 +169,25 @@ pre.code{background:#111a33;color:#e8eeff;border-radius:12px;padding:14px;font-f
 .acct{font-size:13px;color:var(--muted);margin-bottom:6px;display:flex;gap:10px;flex-wrap:wrap;align-items:center}.acct .link{margin:0;padding:0;font-size:13px}.acct b{color:var(--ink)}.syncerr{color:var(--bad);font-weight:800}.subj-card{position:relative}.lockb{position:absolute;top:10px;right:12px;background:var(--ink);color:var(--bg);border-radius:999px;padding:2px 10px;font-size:12px;font-weight:800}
 .agebadge{background:var(--ink);color:var(--bg);border-radius:999px;padding:1px 10px;font-weight:800;font-size:12px}.subjbar .link{font-size:13px}
 .swatch{display:inline-block;width:110px;height:110px;border-radius:50%;border:4px solid var(--line);vertical-align:middle}.nwp .swatch{width:44px;height:44px;border-width:3px}
+.tcard{text-align:center}
+.tgt{font-family:var(--display);font-size:clamp(64px,22vw,120px);line-height:1;margin:6px 0;text-transform:none}
+.ttxt{font-family:Consolas,Menlo,monospace;font-size:clamp(24px,6.5vw,38px);letter-spacing:.05em;margin:10px 0;overflow-wrap:anywhere;line-height:1.35}
+.ttxt .d{color:var(--ok)}.ttxt .c{background:var(--sun);border-radius:6px;padding:0 2px}.ttxt .p{color:var(--muted)}
+.tgs{font-size:.38em;margin-left:.3em;color:var(--muted);font-weight:700}
+.tfing{font-weight:800;margin:4px 0}.tmiss{margin:6px 0}
+.kb{display:flex;flex-direction:column;gap:3px;margin:12px auto 6px;max-width:660px;user-select:none}
+.kr{display:flex;gap:3px}.ksp{display:block}
+.ky{min-width:0;height:clamp(26px,7vw,42px);display:grid;place-items:center;border-radius:6px;border:2px solid var(--line);background:var(--surface);font-weight:800;font-size:clamp(9px,2.6vw,16px);text-transform:uppercase;position:relative;color:var(--ink)}
+.ky.dec{color:var(--muted);font-size:clamp(7px,1.8vw,11px)}
+.ky.bump::after{content:'';position:absolute;bottom:3px;left:30%;width:40%;height:3px;border-radius:2px;background:currentColor}
+.fcol .ky.f5{background:rgba(155,109,224,.30)}.fcol .ky.f4{background:rgba(76,141,222,.30)}.fcol .ky.f3{background:rgba(77,184,106,.30)}.fcol .ky.f2{background:rgba(242,169,59,.34)}.fcol .ky.fT{background:rgba(154,163,181,.30)}
+.ky.hl{outline:3px solid var(--accent);outline-offset:1px;background:var(--sun)!important;animation:kpulse .7s infinite alternate;z-index:1}
+@keyframes kpulse{to{transform:scale(1.07)}}
+.ky.ok{background:var(--ok-bg)!important;border-color:var(--ok)}
+.ky.bad{background:var(--bad-bg)!important;border-color:var(--bad);animation:kshake .25s}
+@keyframes kshake{25%{transform:translateX(-3px)}75%{transform:translateX(3px)}}
+.hands{width:min(100%,360px);height:auto;margin:6px auto 0;display:block}
+@media(prefers-reduced-motion:reduce){.ky.hl,.ky.bad{animation:none}}
 .bonustag{background:#FFF4D6;border:2px solid var(--sun);border-radius:12px;padding:6px 12px;font-weight:800;font-size:13px;margin:-4px 0 10px;color:#6B4A00}
 .testbar{background:#FFE8E0;border:2px solid var(--accent);color:#8A2B0C;border-radius:12px;padding:6px 12px;font-weight:800;font-size:13px;margin-bottom:8px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 .testbar .link{margin:0;padding:0;font-size:13px}
@@ -325,6 +344,7 @@ function buildSections(){
   buildKid();
   buildCode();
   buildLife();
+  buildTyping();
 }
 var MATH_SECS=[{key:'m:dig',title:'Liczby jednocyfrowe',sub:'Cyfry 0–9, liczby przed i po',topic:'dig'},{key:'m:add',title:'Dodawanie do 10',sub:'Sumy w zakresie 10',topic:'add'},{key:'m:sad',title:'Składniki i suma',sub:'3 + 4 = 7',topic:'sad'},{key:'m:com',title:'Przemienność dodawania',sub:'3 + 4 = 4 + 3',topic:'com'},{key:'m:sub',title:'Odejmowanie do 10',sub:'Różnice w zakresie 10',topic:'sub'},{key:'m:sbn',title:'Odjemna, odjemnik, różnica',sub:'7 − 3 = 4',topic:'sbn'},{key:'m:unk',title:'Działania z niewiadomą',sub:'3 + □ = 7',topic:'unk'},{key:'m:cmp',title:'Znaki <, > i =',sub:'Porównywanie liczb i działań',topic:'cmp'},{key:'m:mix',title:'Powtórka przed kartkówką',sub:'Wszystkie tematy z kartkówki razem',topic:'mix'},{key:'m:two',title:'Liczby dwucyfrowe',sub:'Dziesiątki i jedności, 10–99',topic:'two'}];
 function buildMath(){MATH_SECS.forEach(function(m){var s={subj:'math',key:m.key,g:'m',title:m.title,sub:m.sub,topic:m.topic,parts:[],words:[],sents:[],lessons:[],chunks:[],n:5,free:true,parent:null};SEC.push(s);SK[s.key]=s})}
@@ -456,13 +476,232 @@ function lifeHome(h){var nl=nextLesson(D.subject);
    :'<div class="cont"><div><div class="lab">Wszystko zaliczone</div><h3>'+esc(subjName(D.subject))+'</h3></div></div>';
   h+=nSecs(D.subject).map(secCard).join('');
   msg='';return h+'<div class="note">Ten moduł dopiero rośnie — dokładamy tematy w ciągu roku szkolnego.</div><button class="link" data-act="settings">Ustawienia</button>'}
-function lifeCards(){return'<button class="subj-card" data-act="subject" data-s="fin"><span class="si" style="background:#2E9E5B">zł</span><span><b>Kieszonkowe</b><small>Monety, reszta, oszczędzanie, mądre zakupy</small></span></button>'}
+function lifeCards(){return typCard()+'<button class="subj-card" data-act="subject" data-s="fin"><span class="si" style="background:#2E9E5B">zł</span><span><b>Kieszonkowe</b><small>Monety, reszta, oszczędzanie, mądre zakupy</small></span></button>'}
+
+/* ---------- moduł Klawiatura: szukanie liter (6 lat) i technika pisania (8 lat) ---------- */
+var TY=null;
+function isTyp(sj){return sj==='typ'}
+
+/* który palec obsługuje który klawisz (układ QWERTY, polska klawiatura programisty) */
+var TYFING={};
+(function(){function put(s,h,f){s.split('').forEach(function(c){TYFING[c]={h:h,f:f}})}
+  put('`1qaz\t','L',5);put('2wsx','L',4);put('3edc','L',3);put('45rtfgvb','L',2);
+  put('67yuhjnm','R',2);put('8ik,','R',3);put('9ol.','R',4);put("0-=p[]\\;'/\n\b",'R',5);
+  TYFING[' ']={h:'R',f:'T'};TYFING.altgr={h:'R',f:'T'};TYFING.shiftL={h:'L',f:5};TYFING.shiftR={h:'R',f:5}})();
+var TYFNAME={5:'mały palec',4:'palec serdeczny',3:'palec środkowy',2:'palec wskazujący',T:'kciuk'};
+var TYFCOL={5:'#9B6DE0',4:'#4C8DDE',3:'#4DB86A',2:'#F2A93B',T:'#9AA3B5'};
+var TYDIAC={'ą':'a','ę':'e','ó':'o','ł':'l','ż':'z','ź':'x','ć':'c','ń':'n','ś':'s'};
+var TYSHIFTED={'!':'1','?':'/',':':';','"':"'",'_':'-','+':'='};
+
+function tyRows(){
+  function row(s,pre,post){var a=(pre||[]).slice();s.split('').forEach(function(c){a.push({c:c,w:1})});return a.concat(post||[])}
+  return[
+    row('`1234567890-=',[],[{c:'\b',w:2,lab:'⌫',dec:1}]),
+    row('qwertyuiop[]',[{c:'\t',w:1.5,lab:'Tab',dec:1}],[{c:'\\',w:1.5}]),
+    row("asdfghjkl;'",[{c:'caps',w:1.8,lab:'Caps',dec:1}],[{c:'\n',w:2.2,lab:'Enter'}]),
+    row('zxcvbnm,./',[{c:'shiftL',w:2.3,lab:'Shift'}],[{c:'shiftR',w:2.7,lab:'Shift'}]),
+    [{sp:3.5},{c:' ',w:7,lab:'spacja'},{c:'altgr',w:1.5,lab:'AltGr'},{sp:3}]]}
+
+/* które klawisze wcisnąć, żeby uzyskać znak CH */
+function keyInfo(ch){var keys=[],fin=null,note='',lo=ch.toLowerCase();
+  function shiftFor(c){var f=TYFING[c];return f&&f.h==='R'?'shiftL':'shiftR'}
+  if(ch==='\n'){keys=['\n'];fin=TYFING['\n']}
+  else if(ch===' '){keys=[' '];fin=TYFING[' ']}
+  else if(TYDIAC[ch]){var b=TYDIAC[ch];keys=[b,'altgr'];fin=TYFING[b];note='AltGr (prawy Alt) + '+b.toUpperCase()}
+  else if(lo!==ch&&TYFING[lo]){keys=[lo,shiftFor(lo)];fin=TYFING[lo];note='Shift drugiej ręki + '+lo.toUpperCase()}
+  else if(TYSHIFTED[ch]){var bb=TYSHIFTED[ch];keys=[bb,shiftFor(bb)];fin=TYFING[bb];note='Shift drugiej ręki + '+bb}
+  else{keys=[ch];fin=TYFING[ch]||null}
+  return{keys:keys,fin:fin,note:note}}
+function tyBoardKey(k){if(k==='Enter')return'\n';var lo=k.toLowerCase();if(TYDIAC[lo])return TYDIAC[lo];if(TYSHIFTED[k])return TYSHIFTED[k];return lo}
+function tyMatch(exp,k){
+  if(exp==='\n')return k==='Enter';
+  if(exp===' ')return k===' ';
+  if(exp.toLowerCase()!==exp.toUpperCase()){if(exp!==exp.toLowerCase())return k===exp;return k.toLowerCase()===exp}
+  return k===exp}
+
+/* ---- materiał ---- */
+var TY_WORDS=['ala','ada','ola','ewa','ela','ula','mama','tata','kot','dom','las','sad','pies','ryba','lody','sok','ser','oko','ucho','nos','woda','kura','mak','balon','ptak','okno','lampa','kwiat','drzewo','lato','zima','rower','auto','rzeka','morze','kask','fala','laska','skala','klasa','szafa','kawa','herbata','jajko','chleb','mleko','talerz','widelec','zeszyt','plecak','dzwonek','tablica','lekcja','kreda','gumka','linijka','kolega','kotek','piesek','rybka','banan','gruszka','arbuz','ananas','cytryna','pomidor','marchewka','ziemniak','makaron','pizza','zupa','kaczka','krowa','owca','zebra','tygrys','lew','wilk','lis','sowa','bocian','motyl','pszczola'];
+var TY_PHRASES=['ala ma kota','to jest dom','mama i tata','kot pije mleko','ola ma psa','ada lubi lody','tata ma auto','ewa je ser','kot i pies','to jest las','mam balon','woda jest zimna','lubie lody','dom ma okno','ptak ma skrzydla'];
+var TY_SENT=['Dziś jest piękny dzień.','Lubię jeść lody.','Mój pies ma na imię Burek.','Jak się masz?','Super, dziękuję!','Mama gotuje obiad.','W lesie mieszka lis.','Jutro idziemy do szkoły.','Kot śpi na kanapie.','Lato jest ciepłe, a zima zimna.','Czy lubisz czytać książki?','Na łące rosną kwiaty.','Tata jedzie do pracy.','Mam nowy zeszyt.'];
+var TY_PLW=['żaba','łódka','gęś','ślimak','pałac','róża','ząb','mięso','koń','mądry','żółw','piłka','świat','księżyc','ćma','łąka','jabłko','książka','szkoła','słońce','góry','dźwięk','mały','dużo','kość','miś','zając','wąż'];
+var TY_PLL='ąęółżźćńś';
+var TY_EN=['hello','cat','dog','red','blue','school','friend','apple','book','pen','tiger','happy','mother','father','house','water'];
+var TY_AZ='abcdefghijklmnopqrstuvwxyz';
+
+var TYP_RAW=[
+ {track:'f',kind:'letters',keys:'asdf',title:'Środkowy rząd: A S D F',sub:'Znajdź litery na klawiaturze'},
+ {track:'f',kind:'letters',keys:'ghjkl',title:'Środkowy rząd: G H J K L',sub:'Dalej środkowy rząd'},
+ {track:'f',kind:'letters',keys:'qwert',title:'Górny rząd: Q W E R T',sub:'Litery nad środkowym rzędem'},
+ {track:'f',kind:'letters',keys:'yuiop',title:'Górny rząd: Y U I O P',sub:'Prawa strona górnego rzędu'},
+ {track:'f',kind:'letters',keys:'zxcvbnm',title:'Dolny rząd: Z X C V B N M',sub:'Litery pod środkowym rzędem'},
+ {track:'f',kind:'phrase',title:'Spacja i krótkie zdania',sub:'Długi klawisz na dole to spacja'},
+ {track:'f',kind:'words',title:'Pierwsze słowa',sub:'Przepisujemy całe słowa'},
+ {track:'f',kind:'name',title:'Moje imię',sub:'Napisz swoje imię'},
+ {track:'t',kind:'drill',keys:'asdfjkl;',title:'Pozycja wyjściowa: A S D F  J K L ;',sub:'Palce na środkowym rzędzie'},
+ {track:'t',kind:'drill',keys:'gh',title:'Wskazujące palce: G i H',sub:'Wskazujące sięgają o jeden klawisz dalej'},
+ {track:'t',kind:'drill',keys:'qwert',title:'Górny rząd: Q W E R T',sub:'Lewa ręka w górę'},
+ {track:'t',kind:'drill',keys:'yuiop',title:'Górny rząd: Y U I O P',sub:'Prawa ręka w górę'},
+ {track:'t',kind:'drill',keys:'zxcvbnm',title:'Dolny rząd: Z X C V B N M',sub:'Palce w dół'},
+ {track:'t',kind:'phrase',title:'Słowa i spacja',sub:'Spację naciska kciuk'},
+ {track:'t',kind:'caps',title:'Duże litery i Shift',sub:'Shift naciska mały palec drugiej ręki'},
+ {track:'t',kind:'pl',title:'Polskie znaki (AltGr)',sub:'Prawy Alt + litera'},
+ {track:'t',kind:'digits',title:'Cyfry',sub:'Górny rząd z liczbami'},
+ {track:'t',kind:'sent',title:'Zdania',sub:'Duże litery, przecinki i kropki'},
+ {track:'t',kind:'en',title:'Angielskie słówka',sub:'Piszemy słówka z lekcji angielskiego'}];
+var TYP_SECS=(function(){var cum={f:'',t:''},out=[],n={f:0,t:0};
+  TYP_RAW.forEach(function(m){var o={track:m.track,kind:m.kind,keys:m.keys||'',title:m.title,sub:m.sub};n[m.track]++;
+    o.key='t:'+m.track+n[m.track];
+    if(m.kind==='letters'||m.kind==='drill'){cum[m.track]+=o.keys;o.cum=cum[m.track]}else o.cum=cum[m.track];
+    out.push(o)});return out})();
+
+function tyName(){var n=String(P().name||'').split(' ')[0].toLowerCase().replace(/ł/g,'l');
+  try{n=n.normalize('NFD').replace(/[̀-ͯ]/g,'')}catch(e){}
+  n=n.replace(/[^a-z]/g,'');return n.length>=2?n:'kot'}
+function tyPick(pool,last){var c,t=0;do{c=pickOne(pool)}while(c===last&&pool.length>1&&t++<20);return c}
+function tyMake(pool,len){var s='',last='';for(var i=0;i<len;i++){last=tyPick(pool,last);s+=last}return s}
+function tyWords(allowed,min,max,n){var ok=TY_WORDS.filter(function(w){if(w.length<min||w.length>max)return false;if(allowed){for(var i=0;i<w.length;i++)if(allowed.indexOf(w.charAt(i))<0)return false}return true});return shuffle(ok).slice(0,n)}
+function tySingles(own,cum,n,pOwn){var o=[],last='',ow=own.split(''),cu=(cum||own).split('');for(var i=0;i<n;i++){last=tyPick(Math.random()<pOwn?ow:cu,last);o.push(last)}return o}
+function tyCap(w){return w.charAt(0).toUpperCase()+w.slice(1)}
+function tyEnWords(min,max,n){var w=[];try{w=knownAll().map(function(x){return String(x.en||'').toLowerCase()})}catch(e){}
+  w=w.filter(function(x){return /^[a-z]+$/.test(x)&&x.length>=min&&x.length<=max});var seen={},u=[];w.forEach(function(x){if(!seen[x]){seen[x]=1;u.push(x)}});
+  u=shuffle(u).slice(0,n);if(u.length<n)u=u.concat(shuffle(TY_EN.filter(function(x){return x.length>=min&&x.length<=max&&u.indexOf(x)<0})).slice(0,n-u.length));return u}
+
+function tyBonus(s){var secs=SEC.filter(function(x){return x.subj==='typ'&&x.track===s.track}),i=secs.indexOf(s),nx=secs[i+1],out=[];
+  if((s.kind==='letters'||s.kind==='drill')&&nx&&(nx.kind==='letters'||nx.kind==='drill')){var pool=nx.keys.split(''),all=pool.concat((s.cum||'').split(''));
+    out=s.track==='t'?[tyMake(pool,4),tyMake(pool,4),tyMake(all,5)]:[tyPick(pool,''),tyPick(pool,''),tyPick(pool,'')]}
+  else if(s.kind==='sent')out=shuffle(TY_SENT.filter(function(x){return x.length>=26})).slice(0,2);
+  else out=tyWords(null,6,9,3);
+  return out.map(function(t){return{t:t,bonus:true}})}
+
+function tyBuild(s,j){var it=[],k=s.kind,own=s.keys,cum=s.cum||own,i,last='';
+  function add(a){a.forEach(function(t){it.push({t:t})})}
+  if(k==='letters')add(tySingles(own,cum,j===3?18:14,j===3?.5:.7));
+  else if(k==='drill'){
+    if(j===3){var w=tyWords(cum,3,7,10);add(w);while(it.length<14)add([tyMake((Math.random()<.5?own:cum).split(''),5)])}
+    else{var len=j===0?4:5;for(i=0;i<12;i++){last=tyMake((Math.random()<.65?own:cum).split(''),len);it.push({t:last})}}}
+  else if(k==='phrase')add(shuffle(TY_PHRASES).slice(0,j===3?8:6));
+  else if(k==='words')add(tyWords(null,j===0?3:3,j===0?4:j===1?5:8,j===3?12:10));
+  else if(k==='name'){var nm=tyName();if(j<3)for(i=0;i<6;i++)it.push({t:nm});else{for(i=0;i<3;i++)it.push({t:nm});add(tyWords(null,3,6,3))}}
+  else if(k==='caps'){
+    if(j===0)add(tySingles('AKMTSLOPDR','AKMTSLOPDR',10,1));
+    else add(tyWords(null,3,j===1?5:8,j===3?12:10).map(tyCap));
+    if(j===3)add(['Ala ma kota','Ola ma psa','Ewa i Ada']);}
+  else if(k==='pl'){
+    if(j===0)add(tySingles(TY_PLL,TY_PLL,14,1));
+    else if(j===1)add(shuffle(TY_PLW).slice(0,10));
+    else if(j===2){add(tySingles(TY_PLL,TY_PLL,5,1));add(shuffle(TY_PLW).slice(0,6))}
+    else{add(shuffle(TY_PLW).slice(0,10));add(tySingles(TY_PLL,TY_PLL,4,1))}}
+  else if(k==='digits'){
+    if(j===0)add(tySingles('0123456789','0123456789',12,1));
+    else{var L2=j===1?3:j===2?4:6;for(i=0;i<10;i++)it.push({t:tyMake('0123456789'.split(''),L2)});if(j===3){it.push({t:'12.05'});it.push({t:'3,14'})}}}
+  else if(k==='sent')add(shuffle(TY_SENT).slice(0,j===3?6:5));
+  else if(k==='en')add(tyEnWords(j===0?2:3,j===0?4:j===1?5:9,j===3?12:10));
+  return it.concat(tyBonus(s))}
+
+function tyHardKeys(){var st=P().tystat||{},a=[];Object.keys(st).forEach(function(k){var o=st[k],t=o.ok+o.bad;if(k.length===1&&k!==' '&&o.bad>=2&&o.bad/t>=.15)a.push({k:k,b:o.bad})});
+  a.sort(function(x,y){return y.b-x.b});return a.slice(0,6).map(function(x){return x.k})}
+function tyHardItems(){var ks=tyHardKeys();if(!ks.length)return[];var it=[],i;
+  if(lvl()>=8)for(i=0;i<10;i++)it.push({t:tyMake(ks,4)});else for(i=0;i<14;i++)it.push({t:tyPick(ks,i?it[i-1].t:'')});return it}
+
+/* ---- przebieg ---- */
+function startTyping(s,j,hard){var items=hard?tyHardItems():tyBuild(s,j);
+  if(!items.length){msg='Jeszcze nie ma trudnych klawiszy — świetnie Ci idzie!';view='home';render();return}
+  TY={s:s,j:j,hard:!!hard,items:items,i:0,pos:0,ok:0,err:0,hints:0,okB:0,errB:0,t0:0,tEnd:0,flash:null,hint:false,skipped:0,bad:{},done:false};
+  if(s){P().last=s.key;save()}
+  view='type';render();
+  if(readAloudOn())speak(s&&s.track==='t'?'Przepisz tekst. Patrz na ekran, nie na ręce.':'Znajdź na klawiaturze literę i naciśnij ją.','pl')}
+function tyStars(acc){var t=lvl()<=6?[.90,.75,.55]:[.97,.90,.75];return acc>=t[0]?3:acc>=t[1]?2:acc>=t[2]?1:0}
+function tyAfter(s,j){if(j<s.n-1)return{s:s,j:j+1};var N=nSecs(s.subj),i=N.indexOf(s),n2=N[i+1];return n2?{s:n2,j:0}:null}
+function tyStat(ch,ok){var st=P().tystat||(P().tystat={}),k=ch.toLowerCase(),o=st[k]||(st[k]={ok:0,bad:0});if(ok)o.ok++;else o.bad++}
+function tyItemDone(){var T=TY,it=T.items[T.i];snd('ok');
+  if(!it.bonus){var d=dstr(new Date()),days=P().days;days[d]=(days[d]||0)+1}
+  T.i++;T.pos=0;T.hint=false;T.flash=null;
+  if(T.i>=T.items.length){T.tEnd=Date.now();T.done=true;tyFinish()}else render()}
+function tyFinish(){var T=TY,tot=T.ok+T.err+T.hints,acc=tot?T.ok/tot:1,mins=Math.max(.05,(T.tEnd-T.t0)/60000),cpm=Math.min(999,Math.round(T.ok/mins));
+  T.acc=acc;T.cpm=cpm;T.st=T.hard?0:tyStars(acc);T.wasDone=T.s?secDone(T.s):false;
+  if(T.s){var l=sst(T.s);if(T.st>l[T.j])l[T.j]=T.st;var bw=P().tywpm||(P().tywpm={}),bk=T.s.key+'#'+T.j;if(cpm>(bw[bk]||0)){T.newBest=bw[bk]>0;bw[bk]=cpm}}
+  T.nowDone=T.s?secDone(T.s):false;save();view='tresult';render();
+  if(T.st>=2){snd('win');confetti(T.st===3?40:24)}}
+function tyKeydown(e){if(view!=='type'||!TY||TY.done)return;var T=TY,it=T.items[T.i];if(!it)return;
+  var k=e.key;if(!k||k==='Unidentified'||k==='Dead')return;
+  if(k==='Backspace'){if(e.preventDefault)e.preventDefault();return}
+  if(k.length>1&&k!=='Enter')return;
+  if((e.ctrlKey&&!e.altKey)||e.metaKey)return;
+  if(e.preventDefault)e.preventDefault();
+  var exp=it.t.charAt(T.pos),ok=tyMatch(exp,k);
+  if(!T.t0)T.t0=Date.now();
+  if(ok){T.flash={c:tyBoardKey(exp),bad:false};
+    if(it.bonus)T.okB++;else{T.ok++;tyStat(exp,true)}
+    T.pos++;if(T.pos>=it.t.length)tyItemDone();else render()}
+  else{T.flash={c:tyBoardKey(k),bad:true};
+    if(it.bonus)T.errB++;else{T.err++;tyStat(exp,false);var bk=exp.toLowerCase();T.bad[bk]=(T.bad[bk]||0)+1}
+    snd('bad');render()}}
+
+/* ---- widoki ---- */
+function tyFingerText(info){if(!info.fin)return'';var f=info.fin;return(f.h==='L'?'Lewa ręka':'Prawa ręka')+' — '+TYFNAME[f.f]+(info.note?' · '+info.note:'')}
+function tyKb(o){return'<div class="kb'+(o.col?' fcol':'')+'" aria-hidden="true">'+tyRows().map(function(r){return'<div class="kr">'+r.map(function(k){
+    if(k.sp)return'<span class="ksp" style="flex:'+k.sp+'"></span>';
+    var f=TYFING[k.c],cls='ky'+(f?' f'+f.f:'')+(k.dec?' dec':'')+(k.c==='f'||k.c==='j'?' bump':'');
+    if(o.hl&&o.hl.indexOf(k.c)>-1)cls+=' hl';
+    if(o.flash&&o.flash.c===k.c)cls+=o.flash.bad?' bad':' ok';
+    return'<span class="'+cls+'" style="flex:'+k.w+'">'+esc(k.lab!=null?k.lab:k.c)+'</span>'}).join('')+'</div>'}).join('')+'</div>'}
+function tyHands(fin){var H=[['L',5,10,52],['L',4,42,66],['L',3,74,74],['L',2,106,66],['L','T',140,40],['R','T',200,40],['R',2,234,66],['R',3,266,74],['R',4,298,66],['R',5,330,52]],out='';
+  H.forEach(function(h){var on=fin&&fin.h===h[0]&&fin.f===h[1],y=100-h[3];
+    out+='<rect x="'+h[2]+'" y="'+y+'" width="24" height="'+(h[3]+10)+'" rx="12" fill="'+(on?TYFCOL[h[1]]:'var(--line)')+'"'+(on?' stroke="var(--ink)" stroke-width="2.5"':'')+'/>'});
+  out+='<rect x="6" y="92" width="164" height="38" rx="16" fill="var(--line)" opacity=".55"/><rect x="190" y="92" width="164" height="38" rx="16" fill="var(--line)" opacity=".55"/>';
+  return'<svg class="hands" viewBox="0 0 360 135" role="img" aria-label="Dłonie: '+(fin?esc(tyFingerText({fin:fin,note:''})):'palce na klawiszach')+'">'+out+'</svg>'}
+function typView(){var T=TY;if(!T){view='home';return home()}
+  var it=T.items[T.i];if(!it){view='home';return home()}
+  var s=T.s,mode=s?s.track:(lvl()>=8?'t':'f'),j=s?T.j:2,ch=it.t.charAt(T.pos),info=keyInfo(ch),bonus=!!it.bonus;
+  var hlOn=T.hint||(!bonus&&(mode==='f'?j===0:j<=1)),colOn=T.hint||(!bonus&&j<=1),handsOn=mode==='t'&&(T.hint||(!bonus&&j===0)),kbOn=mode==='f'||j<=2||T.hint||bonus;
+  var lab=bonus?'⭐ Wyzwanie ponad program — nie obniża gwiazdek':T.hard?'Ćwiczymy Twoje trudne klawisze':mode==='f'?(it.t.length===1?'Naciśnij tę literę':it.t.indexOf(' ')>-1?'Przepisz zdanie':'Przepisz słowo'):'Przepisz tekst — patrz na ekran, nie na ręce';
+  var txt;if(it.t.length===1){var upc=ch.toUpperCase();txt='<div class="tgt">'+esc(ch===' '?'␣':upc)+(upc!==ch?'<span class="tgs">'+esc(ch)+'</span>':'')+'</div>'}
+  else{txt='<div class="ttxt">';for(var q=0;q<it.t.length;q++){var c=it.t.charAt(q),cl=q<T.pos?'d':q===T.pos?'c':'p';txt+='<span class="'+cl+'">'+(c===' '?'&nbsp;':esc(c))+'</span>'}txt+='</div>'}
+  var ft=hlOn||colOn?tyFingerText(info):'';
+  var btns='';if(!hlOn)btns+='<button class="btn alt" data-act="tkhint" style="padding:8px 14px;font-size:15px">💡 Podpowiedź'+(bonus?'':' (kosztuje punkt)')+'</button>';
+  if(s&&s.kind==='pl')btns+='<button class="btn alt" data-act="tkskip" style="padding:8px 14px;font-size:15px" title="Gdy klawiatura nie ma polskich znaków">Nie mam polskich znaków — pomiń</button>';
+  if(it.t.length>1&&lvl()<=7&&/^[a-ząęółżźćńś]+$/.test(it.t))btns+=sp(it.t,'','pl');
+  var n=T.items.length;
+  return header()+'<div class="sess-top"><button class="x" data-act="home" aria-label="Zakończ">×</button><div class="bar"><i style="width:'+(T.i/n*100)+'%"></i></div><span class="lab">'+(T.i+1)+'/'+n+'</span></div>'+
+    '<div class="card tcard" data-cur="'+esc(ch)+'"><div class="lab">'+esc(lab)+'</div>'+txt+
+    (ft?'<div class="hint tfing">'+esc(ft)+'</div>':'')+
+    (T.flash&&T.flash.bad?'<div class="fb bad tmiss">Nie ta litera — szukaj dalej</div>':'')+
+    (btns?'<div class="row" style="justify-content:center;margin-top:6px">'+btns+'</div>':'')+
+    (kbOn?tyKb({hl:hlOn?info.keys:null,col:colOn,flash:T.flash}):'<div class="hint" style="margin:14px 0">Klawiatura jest ukryta — pisz bez patrzenia na ręce. W razie potrzeby użyj podpowiedzi.</div>')+
+    (handsOn?tyHands(info.fin):'')+'</div>'}
+function tresultView(){var T=TY;if(!T){view='home';return home()}
+  var s=T.s,st=T.st,pc=Math.round(T.acc*100),nx=s&&st>0?tyAfter(s,T.j):null,fin=s&&T.j===s.n-1;
+  var worst=Object.keys(T.bad).sort(function(a,b){return T.bad[b]-T.bad[a]}).slice(0,3).map(function(k){return k.toUpperCase()+' ('+T.bad[k]+'×)'});
+  var lab=s?'Sekcja '+secNo(s)+' · '+(fin?'Test sekcji':'Lekcja '+(T.j+1)):'Trudne klawisze';
+  var extra=(T.hard?'':'<div class="fb ok" style="text-align:left">⭐ Wyzwania ponad program: '+T.okB+' prawidłowych klawiszy, '+T.errB+' pomyłek</div>')+(T.nowDone&&!T.wasDone?'<div class="fb ok" style="text-align:left">Sekcja ukończona! ✓</div>':'');
+  return header()+'<div class="card res"><div class="lab">'+esc(lab)+'</div>'+
+    (T.hard?'':'<div class="stars" aria-label="'+st+' z 3 gwiazdek">'+'★'.repeat(st)+'<span style="opacity:.25">'+'★'.repeat(3-st)+'</span></div>')+
+    '<div class="big">Dokładność '+pc+'%</div>'+
+    '<div class="hint">Tempo: <b>'+T.cpm+'</b> znaków na minutę (ok. '+Math.round(T.cpm/5)+' słów)'+(T.newBest?' · 🏆 nowy rekord!':'')+'<br>Poprawnie: '+T.ok+' · pomyłek: '+T.err+(T.hints?' · podpowiedzi: '+T.hints:'')+(T.skipped?' · pominięte: '+T.skipped:'')+'</div>'+
+    (worst.length?'<div class="hint">Najtrudniejsze klawisze: <b>'+esc(worst.join(', '))+'</b></div>':'<div class="hint">Bez pomyłek!</div>')+
+    (st===0&&!T.hard?'<div class="fb">Jeszcze nie tym razem. Pisz wolniej, ale dokładnie — tempo przyjdzie samo.</div>':'')+extra+
+    '<div class="row" style="justify-content:center">'+(nx?'<button class="btn" data-act="lesson" data-k="'+esc(nx.s.key)+'" data-j="'+nx.j+'">Dalej</button>':'')+
+    (s?'<button class="btn alt" data-act="lesson" data-k="'+esc(s.key)+'" data-j="'+T.j+'">Jeszcze raz</button>':'<button class="btn alt" data-act="tkhard">Jeszcze raz</button>')+
+    '<button class="btn alt" data-act="home">Do ścieżki</button></div></div>'}
+function typTracks(){var L=lvl();if(P().tall)return['f','t'];return L<=6?['f']:L===7?['f','t']:['t']}
+function buildTyping(){var tr=typTracks();TYP_SECS.forEach(function(m){if(tr.indexOf(m.track)<0)return;
+  var s={subj:'typ',key:m.key,g:'l',track:m.track,kind:m.kind,keys:m.keys,cum:m.cum,title:m.title,sub:m.sub,parts:[],words:[],sents:[],lessons:[],chunks:[],n:4,free:true,parent:null};SEC.push(s);SK[s.key]=s})}
+function typCard(){return'<button class="subj-card" data-act="subject" data-s="typ"><span class="si" style="background:#5B6AD0">⌨</span><span><b>Klawiatura</b><small>Szukanie liter i pisanie wszystkimi palcami</small></span></button>'}
+function typHome(h){var nl=nextLesson('typ'),hk=tyHardKeys(),touch=false;
+  try{touch=!!(window.matchMedia&&matchMedia('(pointer: coarse)').matches)}catch(e){}
+  h+=nl?'<div class="cont"><div><div class="lab">Dalej</div><h3>'+esc(secTitle(nl.s))+' · '+(nl.j===nl.s.n-1?'Test sekcji':'Lekcja '+(nl.j+1))+'</h3></div><button class="btn" data-act="lesson" data-k="'+esc(nl.s.key)+'" data-j="'+nl.j+'">Start</button></div>'
+   :'<div class="cont"><div><div class="lab">Wszystko zaliczone</div><h3>Klawiatura</h3></div></div>';
+  if(touch)h+='<div class="note" style="margin-bottom:10px">To ćwiczenie jest do komputera (lub tabletu z klawiaturą). Na samym ekranie dotykowym nie da się trenować pisania.</div>';
+  if(typTracks().indexOf('t')>-1)h+='<div class="card" style="margin-bottom:12px"><div class="lab">Jak pisać wszystkimi palcami</div><div class="hint">1. Palce lewej ręki na <b>A S D F</b>, prawej na <b>J K L ;</b> — wskazujące czują wypukłość na F i J.<br>2. Kciuk naciska spację.<br>3. Każdy palec ma swoje klawisze (kolory na klawiaturze).<br>4. Patrz na ekran, nie na ręce. Najpierw dokładnie, potem szybko.</div></div>';
+  h+=nSecs('typ').map(secCard).join('');
+  h+='<div class="row" style="margin-top:12px"><button class="btn alt" data-act="tkhard"'+(hk.length?'':' disabled')+'>Ćwicz trudne klawisze'+(hk.length?' ('+hk.map(function(k){return k.toUpperCase()}).join(' ')+')':'')+'</button><button class="btn alt" data-act="tkall">'+(P().tall?'Pokaż tylko ćwiczenia dla mojego wieku':'Pokaż też ćwiczenia dla innego wieku')+'</button></div>';
+  msg='';return h+'<button class="link" data-act="settings">Ustawienia</button>'}
 
 buildUnits();
 function nSecs(sj){sj=sj||'en';return SEC.filter(function(s){return s.g!=='x'&&s.subj===sj})}
 function secNo(s){return nSecs(s.subj).indexOf(s)+1}
 function secTitle(s){
-  if(s.subj==='math'||s.kid)return s.title;
+  if(s.subj==='math'||s.kid||isLife(s.subj)||isTyp(s.subj))return s.title;
   if(s.g==='x')return s.parts[0].base.title;
   var pi=s.parts.map(function(p){var m=/#(\d+)$/.exec(p.id);return m?+m[1]+1:0}).filter(Boolean),suf=pi.length?' · część '+(pi.length>1?Math.min.apply(null,pi)+'–'+Math.max.apply(null,pi):pi[0]):'';
   var ks=s.lessons.slice(),lab=ks.map(function(k){return String(k)});
@@ -470,7 +709,7 @@ function secTitle(s){
   if(s.g==='mine')return 'Moje słówka';
   var word=ks.length>1?'Lekcje ':'Lekcja ',rng=ks.length>1&&nums.every(function(n,i){return i===0||n===nums[i-1]+1})?nums[0]+'–'+nums[nums.length-1]:nums.join(', ');
   return pre+word+rng+suf}
-function secSub(s){if(s.subj==='math'||s.kid)return s.sub||'';return (s.g==='y'||s.g==='old')?s.lessons.map(function(k){return LT[k]||''}).filter(Boolean).join(' · '):''}
+function secSub(s){if(s.subj==='math'||s.kid||isLife(s.subj)||isTyp(s.subj))return s.sub||'';return (s.g==='y'||s.g==='old')?s.lessons.map(function(k){return LT[k]||''}).filter(Boolean).join(' · '):''}
 function sst(s){var p=P().sec;if(!p[s.key])p[s.key]=[];var a=p[s.key];while(a.length<s.n)a.push(0);return a}
 function secDone(s){return sst(s).every(function(x){return x>0})}
 function secStarted(s){return sst(s).some(function(x){return x>0})}
@@ -801,8 +1040,8 @@ function speak(t,lang){if(!SPK)return;try{var lg=SPKLANG[lang]||lang||'en-US',pr
   var vs=speechSynthesis.getVoices();if(!vcache[lg])vcache[lg]=vs.filter(function(v){return v.lang.replace('_','-').toLowerCase()===lg.toLowerCase()})[0]||vs.filter(function(v){return v.lang.toLowerCase().indexOf(pre)===0})[0]||null;
   if(vcache[lg])u.voice=vcache[lg];speechSynthesis.speak(u)}catch(e){}}
 function sp(t,c,l){return SPK?'<button class="sp'+(c?' '+c:'')+'" data-act="say" data-t="'+esc(t)+'"'+(l?' data-l="'+l+'"':'')+' aria-label="Posłuchaj">'+ICON.spk+'</button>':''}
-function subjAllowed(s){if(isLife(s))return true;return P().kid?(isKidSubj(s)||s==='kcode'||s==='3d'):(s==='en'||s==='math'||s==='code'||s==='3d')}
-function subjName(s){return {en:'Angielski',math:'Matematyka',ken:'Angielski',kmath:'Matematyka',kread:'Czytanie i pisanie',code:'Programowanie',kcode:'Programowanie','3d':'Projekty 3D',fin:'Kieszonkowe'}[s]||''}
+function subjAllowed(s){if(isLife(s)||isTyp(s))return true;return P().kid?(isKidSubj(s)||s==='kcode'||s==='3d'):(s==='en'||s==='math'||s==='code'||s==='3d')}
+function subjName(s){return {en:'Angielski',math:'Matematyka',ken:'Angielski',kmath:'Matematyka',kread:'Czytanie i pisanie',code:'Programowanie',kcode:'Programowanie','3d':'Projekty 3D',fin:'Kieszonkowe',typ:'Klawiatura'}[s]||''}
 function kidSubjects(){return header()+'<div class="lab" style="margin-top:6px">Cześć, '+esc(P().name)+'!</div><h2 style="font-size:32px;margin-bottom:14px">Czego się dziś uczysz?</h2><div class="subjects">'+
   '<button class="subj-card" data-act="subject" data-s="kread"><span class="si" style="background:var(--teal)">Aa</span><span><b>Czytanie i pisanie</b><small>Litery, sylaby, słowa po polsku i angielsku</small></span></button>'+
   '<button class="subj-card" data-act="subject" data-s="kmath"><span class="si" style="background:var(--accent)">1 2</span><span><b>Matematyka</b><small>Liczenie, cyfry, dodawanie i odejmowanie do 10</small></span></button>'+
@@ -1438,7 +1677,7 @@ var BKTXT='';
 /* ---------- konta i dostęp do modułów (Supabase) ---------- */
 var AUTH={on:!!((typeof SB_URL!=='undefined'&&SB_URL&&SB_KEY)||window.__SB_MOCK),user:null,profile:null,mods:{},modDefs:[],mode:'in',nomail:false,err:'',info:'',busy:false,recovery:false,adm:null,unlock:null,syncErr:false};
 var SBC=null,syncTimer=null;
-var MODS={en:'en',ken:'en',math:'math',kmath:'math',kread:'read',code:'code',kcode:'code','3d':'3d',fin:'life'};
+var MODS={en:'en',ken:'en',math:'math',kmath:'math',kread:'read',code:'code',kcode:'code','3d':'3d',fin:'life',typ:'typing'};
 function modOf(s){return MODS[s]||s}
 function modInfo(id){return AUTH.modDefs.filter(function(m){return m.id===id})[0]}
 function isAdmin(){return !!(AUTH.profile&&AUTH.profile.role==='admin')}
@@ -1615,7 +1854,7 @@ function withBonus(s,j,qs){if(NOBONUS)return qs;var b=[];try{b=bonusFor(s,j)}cat
   b.forEach(function(q){if(q){q.bonus=true;qs.push(q)}});return qs}
 function startSkip(k){var s=SK[k];if(!s||!secOpen(s)||secDone(s))return;POOLMODE='path';P().last=k;save();
   begin('skip',isLife(s.subj)?lifeQs(s,s.n-1):s.kid?kidQs(s,s.n-1):s.subj==='math'?mathQs(s,s.n-1):lessonQs(s,s.n-1),{s:s,j:s.n-1})}
-function startLesson(k,j){var s=SK[k];if(!s||!lessonOpen(s,j))return;if(isCode(s.subj)&&!codeGate(s,j)){view='home';render();return}POOLMODE='path';P().last=k;save();begin('level',withBonus(s,j,isLife(s.subj)?lifeQs(s,j):s.kid?kidQs(s,j):s.subj==='math'?mathQs(s,j):lessonQs(s,j)),{s:s,j:j})}
+function startLesson(k,j){var s=SK[k];if(!s||!lessonOpen(s,j))return;if(isTyp(s.subj)){startTyping(s,j);return}if(isCode(s.subj)&&!codeGate(s,j)){view='home';render();return}POOLMODE='path';P().last=k;save();begin('level',withBonus(s,j,isLife(s.subj)?lifeQs(s,j):s.kid?kidQs(s,j):s.subj==='math'?mathQs(s,j):lessonQs(s,j)),{s:s,j:j})}
 function startReview(){POOLMODE='all';var pool=knownAll().filter(function(w){return P().stats[w.en]});if(pool.length<4)pool=knownAll();
   var w=pool.slice().sort(function(a,b){return box(a)-box(b)}).slice(0,Math.min(pool.length,25));
   var qs=seq(w,10).map(function(x,k){return mk(['mc','write','pic','listen','speak'][k%5],x)});
@@ -1693,14 +1932,14 @@ function ring(){var g=D.goal||20,n=Math.min(g,todayN()),c=2*Math.PI*26,off=c*(1-
 var OFF=[0,34,54,34,0,-34,-54,-34];
 function secCard(s){
   var open=secOpen(s),st=sst(s),done=secDone(s),nd=st.filter(Boolean).length,no=s.g==='x'?'Dodatkowa':'Sekcja '+secNo(s);
-  var head='<div class="uh"><div><div class="lab">'+no+'</div><h3>'+esc(secTitle(s))+'</h3>'+(secSub(s)?'<div class="hintline">'+esc(secSub(s))+'</div>':'')+'</div><small>'+(open?'Lekcje '+nd+'/'+s.n+(s.subj==='math'||s.kid?'':' · opanowane '+secMastered(s)+'/'+s.words.length):s.words.length+' słówek')+'</small></div>';
+  var head='<div class="uh"><div><div class="lab">'+no+'</div><h3>'+esc(secTitle(s))+'</h3>'+(secSub(s)?'<div class="hintline">'+esc(secSub(s))+'</div>':'')+'</div><small>'+(open?'Lekcje '+nd+'/'+s.n+(s.subj==='math'||s.kid||isLife(s.subj)||isTyp(s.subj)?'':' · opanowane '+secMastered(s)+'/'+s.words.length):s.words.length+' słówek')+'</small></div>';
   if(!open)return'<section class="unit locked">'+head+'<div class="hint">'+(s.g==='x'?'Odblokuje się po ukończeniu sekcji z Lekcją '+esc(s.parent)+'.':'Odblokuje się po ukończeniu poprzedniej sekcji.')+'</div><button class="link" data-act="opensec" data-k="'+esc(s.key)+'">Zacznij od tej sekcji</button></section>';
   var cur=-1;for(var j=0;j<s.n;j++)if(!st[j]){cur=j;break}
   var nodes='';for(var i=0;i<s.n;i++){var fin=i===s.n-1,can=i===0||st[i-1]>0,cls=st[i]?'done':i===cur?'cur':can?'open':'lock',inner=st[i]?'★'.repeat(st[i]):(fin?'🏆':(i+1));
     nodes+='<div class="pn" style="transform:translateX('+OFF[i%OFF.length]+'px)"><button class="node '+cls+(fin?' fin':'')+'" data-act="lesson" data-k="'+esc(s.key)+'" data-j="'+i+'"'+(can?'':' disabled')+' aria-label="'+(fin?'Test sekcji':'Lekcja '+(i+1))+(st[i]?', gwiazdki: '+st[i]:'')+'"><span class="nc">'+inner+'</span><span class="nl">'+(i===cur?'Start':fin?'Test sekcji':'Lekcja '+(i+1))+'</span></button></div>'}
-  var skipb=(!done&&s.n>1&&!isCode(s.subj))?'<div class="row" style="justify-content:center;margin-top:6px"><button class="link" data-act="skiptest" data-k="'+esc(s.key)+'">Już to umiem — sprawdź mnie</button></div>':'';
+  var skipb=(!done&&s.n>1&&!isCode(s.subj)&&!isTyp(s.subj))?'<div class="row" style="justify-content:center;margin-top:6px"><button class="link" data-act="skiptest" data-k="'+esc(s.key)+'">Już to umiem — sprawdź mnie</button></div>':'';
   return'<section class="unit" id="sec_'+esc(s.key)+'">'+head+'<div class="pathcol">'+nodes+'</div>'+skipb+(done?'<div class="fb ok" style="margin-top:10px">Sekcja ukończona! ✓</div>':'')+'</section>'}
-function hello(){var sk=streak();return header()+'<div class="subjbar"><button class="link" data-act="subjects">‹ Przedmioty</button> · <b>'+subjName(D.subject)+'</b> · '+agePick()+'</div>'+(isKidSubj(D.subject)||isCode(D.subject)||D.subject==='3d'?'':tabs())+'<div class="hello"><div><div class="lab">Cześć,</div><h2>'+esc(P().name)+'!</h2></div><div class="stats"><div class="streak" title="Seria dni">'+(sk?'🔥 '+sk+(sk===1?' dzień':' dni'):'Zacznij serię!')+'</div>'+ring()+'</div></div>'+tokChip()+badgeChip()}
+function hello(){var sk=streak();return header()+'<div class="subjbar"><button class="link" data-act="subjects">‹ Przedmioty</button> · <b>'+subjName(D.subject)+'</b> · '+agePick()+'</div>'+(isKidSubj(D.subject)||isCode(D.subject)||isLife(D.subject)||isTyp(D.subject)||D.subject==='3d'?'':tabs())+'<div class="hello"><div><div class="lab">Cześć,</div><h2>'+esc(P().name)+'!</h2></div><div class="stats"><div class="streak" title="Seria dni">'+(sk?'🔥 '+sk+(sk===1?' dzień':' dni'):'Zacznij serię!')+'</div>'+ring()+'</div></div>'+tokChip()+badgeChip()}
 function badgeChip(){if(isCode(D.subject)||D.subject==='3d')return'';var L=badgeList(),n=L.filter(function(b){return b.on}).length;
   return'<div class="frz"><button class="link" data-act="badges">🏅 Odznaki '+n+'/'+L.length+'</button></div>'}
 function tabs(){return'<div class="tabs" role="tablist"><button role="tab" aria-selected="'+(D.tab!=='ex')+'" data-act="tab" data-t="path">Ścieżka</button><button role="tab" aria-selected="'+(D.tab==='ex')+'" data-act="tab" data-t="ex">Ćwiczenia</button></div>'}
@@ -1711,6 +1950,7 @@ function home(){
   if(D.subject==='3d')return threeDHome(h);
   if(isCode(D.subject))return codeHome(h);
   if(isLife(D.subject))return lifeHome(h);
+  if(isTyp(D.subject))return typHome(h);
   if(isKidSubj(D.subject))return kidHome(h);
   if(D.subject==='math')return mathHome(h);
   if(D.tab==='ex'){
@@ -1827,13 +2067,14 @@ function settings(){
   '<div class="row"><button class="btn" data-act="home">Gotowe</button></div><div class="note">Postępy zapisują się w przeglądarce, na tym urządzeniu. Na telefonie i komputerze są osobne.</div>'}
 var lastView=null;
 function render(){var app=document.getElementById('app');
-  app.innerHTML=view==='auth'?authView():view==='admin'?adminView():view==='unlock'?unlockView():view==='orders'?ordersView():view==='play'?play():view==='result'?result():view==='settings'?settings():view==='badges'?badgesView():view==='test'?testView():view==='build'?buildView():home();
+  app.innerHTML=view==='auth'?authView():view==='admin'?adminView():view==='unlock'?unlockView():view==='orders'?ordersView():view==='play'?play():view==='result'?result():view==='settings'?settings():view==='type'?typView():view==='tresult'?tresultView():view==='badges'?badgesView():view==='test'?testView():view==='build'?buildView():home();
   if(view==='play'&&S&&S.phase==='ask'&&S.i!==SAIDLAB){SAIDLAB=S.i;sayLab()}
   var a=document.getElementById('ans');if(a&&!a.disabled)a.focus();else{var n=document.getElementById('nx');if(n&&view==='play')n.focus()}
   if(view!==lastView||view==='play'){window.scrollTo(0,0)}lastView=view}
 
 /* ---------- events ---------- */
 document.addEventListener('input',function(e){if(e.target.getAttribute&&e.target.getAttribute('data-dname')&&BLD){BLD.name=e.target.value||'Mój projekt';return}var i=e.target.getAttribute&&e.target.getAttribute('data-name');if(i!==null&&i!==undefined){D.profiles[+i].name=e.target.value||'Syn '+(+i+1);save()}});
+document.addEventListener('keydown',tyKeydown);
 document.addEventListener('keydown',function(e){if(e.key==='Enter'&&view==='auth'&&e.target.tagName==='INPUT'&&e.target.type!=='checkbox'){e.preventDefault();authSubmit();return}if(e.key!=='Enter'||view!=='play'||!S)return;
   if(e.target.id==='ans'&&S.phase==='ask'){e.preventDefault();checkWrite()}else if(S.phase==='fb'&&e.target.tagName!=='BUTTON')next()});
 document.addEventListener('click',function(e){var b=e.target.closest('[data-act]');if(!b)return;var a=b.dataset.act,q=S&&S.qs?S.qs[S.i]:null;
@@ -1850,6 +2091,10 @@ document.addEventListener('click',function(e){var b=e.target.closest('[data-act]
   else if(a==='jump'){var js=SEC.filter(function(z){return z.subj==='en'&&z.g===b.dataset.k})[0],el=js&&document.getElementById('sec_'+js.key);if(el&&el.scrollIntoView)el.scrollIntoView({behavior:'smooth',block:'start'})}
   else if(a==='say'){speak(b.dataset.t,b.dataset.l)}
   else if(a==='relab'){sayLab(true)}
+  else if(a==='tkhint'){if(TY&&!TY.hint){TY.hint=true;if(!TY.items[TY.i].bonus)TY.hints++;render()}}
+  else if(a==='tkskip'){var T2=TY;if(T2){T2.skipped++;T2.items.splice(T2.i,1);T2.pos=0;T2.hint=false;T2.flash=null;if(T2.i>=T2.items.length){T2.tEnd=Date.now()||0;T2.done=true;tyFinish()}else render()}}
+  else if(a==='tkhard'){startTyping(null,0,true)}
+  else if(a==='tkall'){P().tall=!P().tall;save();buildUnits();render()}
   else if(a==='aage'){AUTH.age=+b.dataset.a;render()}
   else if(a==='plvl'){var pi=+b.dataset.i,pv=+b.dataset.a;D.profiles[pi].lvl=pv;D.profiles[pi].kid=(pv===6);save();if(pi===D.active){buildUnits();if(!subjAllowed(D.subject))D.subject=null}msg='Zapisane: '+D.profiles[pi].name+' — wersja dla '+pv+' lat.';render()}
   else if(a==='badges'){view='badges';msg='';render()}
