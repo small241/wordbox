@@ -169,6 +169,17 @@ pre.code{background:#111a33;color:#e8eeff;border-radius:12px;padding:14px;font-f
 .acct{font-size:13px;color:var(--muted);margin-bottom:6px;display:flex;gap:10px;flex-wrap:wrap;align-items:center}.acct .link{margin:0;padding:0;font-size:13px}.acct b{color:var(--ink)}.syncerr{color:var(--bad);font-weight:800}.subj-card{position:relative}.lockb{position:absolute;top:10px;right:12px;background:var(--ink);color:var(--bg);border-radius:999px;padding:2px 10px;font-size:12px;font-weight:800}
 .agebadge{background:var(--ink);color:var(--bg);border-radius:999px;padding:1px 10px;font-weight:800;font-size:12px}.subjbar .link{font-size:13px}
 .swatch{display:inline-block;width:110px;height:110px;border-radius:50%;border:4px solid var(--line);vertical-align:middle}.nwp .swatch{width:44px;height:44px;border-width:3px}
+.jars{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0}
+.jar{display:flex;gap:10px;align-items:center;background:var(--surface);border:2px solid var(--line);border-radius:18px;padding:10px 12px;box-shadow:var(--shadow)}
+.jar b{font-family:var(--display);font-size:17px;display:block}.jar small{display:block;color:var(--muted);font-weight:700;font-size:12px;line-height:1.3}
+.jamt{font-family:var(--display);font-size:24px;line-height:1.1;margin:2px 0}
+.jarsvg{flex:none}.jbtns{flex-wrap:wrap;gap:8px;margin:6px 0 10px}.jbtns .btn{padding:8px 12px;font-size:14px}
+.jform{background:var(--bg)}.jrow{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:8px 0}
+.jrow label{font-weight:800;min-width:78px}.jrow select{border:2px solid var(--line);border-radius:12px;padding:8px;font:inherit;background:var(--surface);color:var(--ink)}
+.jinv{display:flex;gap:12px;justify-content:space-between;flex-wrap:wrap;border-top:2px solid var(--line);padding-top:10px;margin-top:10px}
+.jspark{display:block}.jlog>div{padding:3px 0;border-bottom:1px solid var(--line);font-size:14px}.jlog small{color:var(--muted);margin-right:6px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+@media(max-width:420px){.jars{grid-template-columns:1fr}}
 .tcard{text-align:center}
 .tgt{font-family:var(--display);font-size:clamp(64px,22vw,120px);line-height:1;margin:6px 0;text-transform:none}
 .ttxt{font-family:Consolas,Menlo,monospace;font-size:clamp(24px,6.5vw,38px);letter-spacing:.05em;margin:10px 0;overflow-wrap:anywhere;line-height:1.35}
@@ -446,6 +457,7 @@ var LGEN={
 };
 var LIFE_SECS=[
  {subj:'fin',key:'l:f1',title:'Monety i banknoty',sub:'Ile to razem, co więcej',min:6,gen:'coins'},
+ {subj:'fin',key:'l:f7',title:'Moje słoiki',sub:'Który słoik na co i co wolno przekładać',min:6,gen:'jars'},
  {subj:'fin',key:'l:f2',title:'Potrzeba czy zachcianka',sub:'Na co naprawdę warto wydać',min:6,gen:'need'},
  {subj:'fin',key:'l:f3',title:'Płacenie i reszta',sub:'Ile dostaniesz z powrotem',min:6,gen:'pay'},
  {subj:'fin',key:'l:f4',title:'Oszczędzanie na cel',sub:'Ile tygodni do celu',min:7,gen:'save'},
@@ -471,7 +483,7 @@ var LINTRO={
  shop:['Mądre zakupy','Ta sama rzecz może mieć różne ceny. Warto policzyć <b>cenę za jedną sztukę</b> i dopiero wtedy wybrać.'],
  earn:['Skąd się biorą pieniądze','Pieniądze biorą się z <b>pracy</b>. Kto coś sprzedaje, najpierw musi to kupić albo zrobić — różnica między ceną sprzedaży a kosztem to <b>zysk</b>.']
 };
-function lifeHome(h){var nl=nextLesson(D.subject);
+function lifeHome(h){var nl=nextLesson(D.subject);h+=jarCard();
   h+=nl?'<div class="cont"><div><div class="lab">Dalej</div><h3>'+esc(secTitle(nl.s))+' · '+(nl.j===nl.s.n-1?'Test sekcji':'Lekcja '+(nl.j+1))+'</h3></div><button class="btn" data-act="lesson" data-k="'+esc(nl.s.key)+'" data-j="'+nl.j+'">Start</button></div>'
    :'<div class="cont"><div><div class="lab">Wszystko zaliczone</div><h3>'+esc(subjName(D.subject))+'</h3></div></div>';
   h+=nSecs(D.subject).map(secCard).join('');
@@ -699,6 +711,135 @@ function typHome(h){var nl=nextLesson('typ'),hk=tyHardKeys(),touch=false;
   h+=nSecs('typ').map(secCard).join('');
   h+='<div class="row" style="margin-top:12px"><button class="btn alt" data-act="tkhard"'+(hk.length?'':' disabled')+'>Ćwicz trudne klawisze'+(hk.length?' ('+hk.map(function(k){return k.toUpperCase()}).join(' ')+')':'')+'</button>'+(lvl()<=6?'<button class="btn alt" data-act="tkall">'+(P().tall?'Ukryj naukę techniki 10 palców':'Pokaż też naukę techniki 10 palców')+'</button>':'')+'</div>';
   msg='';return h+'<button class="link" data-act="settings">Ustawienia</button>'}
+
+/* ---------- Skarbonka: cztery słoiki z zasadami przekładania ---------- */
+/* Kieszonkowe dzielimy na: Na teraz · Oszczędności · Prezent.
+   Przekładać wolno TYLKO z „Na teraz” do Oszczędności i Prezentu. Z Prezentu tylko kupujemy prezenty.
+   Z Oszczędności pieniądze idą tylko do Inwestycji (kupno aktywa). W Inwestycjach tylko inwestujemy
+   i zapisujemy, jak zmienia się wartość akcji, krypto i kruszców. Kwoty trzymamy w groszach. */
+var JAR_DEF={now:{n:'Na teraz',c:'#E8833A',r:'Bieżące wydatki i cele, np. rower'},save:{n:'Oszczędności',c:'#2E9E5B',r:'Stąd pieniądze idą tylko do inwestycji'},
+  gift:{n:'Prezent',c:'#C54B8C',r:'Tylko kupujemy prezenty'},inv:{n:'Inwestycje',c:'#4C6EF5',r:'Akcje, krypto i kruszce — tylko inwestujemy'}};
+var JMOVES={now:['save','gift']};
+var JCATS={akcje:'Akcje',krypto:'Krypto',kruszce:'Kruszce'};
+var JU={f:null,err:'',ok:'',v:{},reset:false};
+
+function jarOf(){var p=P();if(!p.jar)p.jar={now:0,save:0,gift:0,inv:[],log:[]};return p.jar}
+function jz(g){var neg=g<0;g=Math.abs(g);var z=Math.floor(g/100),gr=g%100;return(neg?'−':'')+z+(gr?','+('0'+gr).slice(-2):'')+' zł'}
+function jparse(s,zero){s=String(s==null?'':s).trim().replace(/\s/g,'').replace(/zł$/i,'').replace(',','.');if(!/^\d{1,6}(\.\d{1,2})?$/.test(s))return null;var g=Math.round(parseFloat(s)*100);return(g>0||(zero&&g===0))?g:null}
+function jtot(j){var c=0,v=0;j.inv.forEach(function(a){c+=a.cost;v+=a.vals[a.vals.length-1].v});return{cost:c,val:v}}
+function jbal(k){var j=jarOf();return k==='inv'?jtot(j).val:j[k]}
+function jall(){var j=jarOf();return j.now+j.save+j.gift+jtot(j).val}
+function jlog(k,a,f,t,n){var j=jarOf();j.log.unshift({d:dstr(new Date()),k:k,a:a,f:f||'',t:t||'',n:String(n||'').slice(0,40)});if(j.log.length>200)j.log.length=200}
+function jno(m){return{ok:false,msg:m}}
+function jyes(m){return{ok:true,msg:m}}
+
+/* dlaczego nie wolno przełożyć z F do T (null = wolno) — jeden zapis zasad dla ekranu i dla zadań */
+function jwhy(f,t){
+  if(f===t)return'To ten sam słoik.';
+  if(f==='gift')return'Ze słoika Prezent można tylko kupować prezenty. Nie przekładamy z niego pieniędzy.';
+  if(f==='inv')return'Pieniądze w Inwestycjach tylko inwestujemy. Nie wyjmujemy ich ani nie przekładamy.';
+  if(f==='save')return t==='inv'?'Do Inwestycji pieniądze wchodzą przez kupno akcji, krypto albo kruszców. Użyj „Zainwestuj”.':'Z Oszczędności pieniądze idą tylko do inwestycji.';
+  if(t==='inv')return'Do Inwestycji nie wchodzi się prosto z „Na teraz”. Najpierw odłóż do Oszczędności, potem zainwestuj.';
+  if((JMOVES[f]||[]).indexOf(t)<0)return'Tak przekładać nie wolno.';
+  return null}
+
+function jincome(parts,note){var j=jarOf(),s=parts.now+parts.save+parts.gift;if(!(s>0))return jno('Wpisz, ile dostałeś kieszonkowego.');
+  j.now+=parts.now;j.save+=parts.save;j.gift+=parts.gift;jlog('income',s,'','',note);save();return jyes('Dodano '+jz(s)+' do słoików.')}
+function jmove(f,t,a){var j=jarOf(),w=jwhy(f,t);if(w)return jno(w);if(!(a>0))return jno('Wpisz kwotę.');
+  if(a>j[f])return jno('W słoiku „'+JAR_DEF[f].n+'” masz tylko '+jz(j[f])+'.');
+  j[f]-=a;j[t]+=a;jlog('move',a,f,t);save();return jyes('Przełożono '+jz(a)+': '+JAR_DEF[f].n+' → '+JAR_DEF[t].n+'.')}
+function jspend(kind,a,note){var j=jarOf();if(kind!=='now'&&kind!=='gift')return jno('Z tego słoika nie wydajemy.');
+  if(!(a>0))return jno('Wpisz kwotę.');if(a>j[kind])return jno('W słoiku „'+JAR_DEF[kind].n+'” masz tylko '+jz(j[kind])+'.');
+  j[kind]-=a;jlog(kind==='gift'?'gift':'spend',a,kind,'',note);save();return jyes(kind==='gift'?'Kupiono prezent za '+jz(a)+'.':'Wydano '+jz(a)+'.')}
+function jinvest(name,cat,a){var j=jarOf();name=String(name||'').trim().replace(/\s+/g,' ');
+  if(name.length<2)return jno('Wpisz, co kupujesz (np. „Złoto 1 g”).');if(name.length>30)name=name.slice(0,30);
+  if(!JCATS[cat])return jno('Wybierz rodzaj: akcje, krypto albo kruszce.');if(!(a>0))return jno('Wpisz kwotę.');
+  if(a>j.save)return jno('W Oszczędnościach masz tylko '+jz(j.save)+'. Inwestować można tylko z tego słoika.');
+  j.save-=a;j.inv.push({id:Date.now().toString(36)+j.inv.length,name:name,cat:cat,cost:a,vals:[{d:dstr(new Date()),v:a}]});
+  jlog('invest',a,'save','inv',name);save();return jyes('Zainwestowano '+jz(a)+': '+name+'.')}
+function jvalue(id,v){var j=jarOf(),as=j.inv.filter(function(x){return x.id===id})[0];if(!as)return jno('Nie ma takiej inwestycji.');
+  if(v==null)return jno('Wpisz aktualną wartość.');var d=dstr(new Date()),last=as.vals[as.vals.length-1];
+  if(last.d===d)last.v=v;else as.vals.push({d:d,v:v});if(as.vals.length>80)as.vals.splice(1,1);
+  jlog('value',v,'','',as.name);save();return jyes('Zapisano wartość: '+as.name+' — '+jz(v)+'.')}
+function jreset(){var p=P();p.jar={now:0,save:0,gift:0,inv:[],log:[]};save()}
+
+/* ---- widok ---- */
+function jarSvg(k,frac){var c=JAR_DEF[k].c,h=Math.max(0,Math.min(1,frac))*46;
+  return'<svg class="jarsvg" viewBox="0 0 60 78" width="54" height="70" aria-hidden="true"><clipPath id="jc'+k+'"><rect x="8" y="16" width="44" height="54" rx="9"/></clipPath>'+
+    '<rect x="8" y="16" width="44" height="54" rx="9" fill="none" stroke="'+c+'" stroke-width="3"/><rect x="14" y="6" width="32" height="9" rx="3" fill="'+c+'"/>'+
+    '<g clip-path="url(#jc'+k+')"><rect x="8" y="'+(70-h)+'" width="44" height="'+h+'" fill="'+c+'" opacity=".55"/></g></svg>'}
+function jarCard(){var j=jarOf();return'<button class="subj-card" data-act="jar"><span class="si" style="background:#E8833A"><svg viewBox="0 0 60 78" width="30" height="40" aria-hidden="true"><rect x="8" y="16" width="44" height="54" rx="9" fill="none" stroke="#fff" stroke-width="5"/><rect x="14" y="6" width="32" height="9" rx="3" fill="#fff"/><rect x="8" y="42" width="44" height="28" rx="9" fill="#fff" opacity=".6"/></svg></span><span><b>Moja skarbonka</b><small>Cztery słoiki: Na teraz, Oszczędności, Prezent, Inwestycje'+(jall()>0?' · razem '+jz(jall()):'')+'</small></span></button>'}
+function jf(id,def){return JU.v[id]!=null?JU.v[id]:(def||'')}
+function jin(id,ph,def){return'<input type="text" inputmode="decimal" id="'+id+'" value="'+esc(jf(id,def))+'" placeholder="'+esc(ph||'0')+'" autocomplete="off" style="max-width:120px">'}
+function jspark(a){var v=a.vals;if(v.length<2)return'<span class="hint" style="margin:0">Zapisz kolejną wartość, a pojawi się wykres.</span>';
+  var mn=Math.min.apply(null,v.map(function(x){return x.v})),mx=Math.max.apply(null,v.map(function(x){return x.v})),W=130,H=38,sp=mx-mn||1;
+  var pts=v.map(function(x,i){return(2+i*(W-4)/(v.length-1)).toFixed(1)+','+(H-3-(x.v-mn)/sp*(H-6)).toFixed(1)}).join(' '),up=v[v.length-1].v>=v[0].v;
+  return'<svg class="jspark" viewBox="0 0 '+W+' '+H+'" width="'+W+'" height="'+H+'" role="img" aria-label="Wykres wartości"><polyline points="'+pts+'" fill="none" stroke="'+(up?'var(--ok)':'var(--bad)')+'" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/></svg>'}
+function jgain(c,v){var d=v-c,pc=c?Math.round(d/c*1000)/10:0;return'<b style="color:'+(d>=0?'var(--ok)':'var(--bad)')+'">'+(d>=0?'+':'')+jz(d)+' ('+(d>=0?'+':'')+String(pc).replace('.',',').replace('-','−')+'%)</b>'}
+var JLOGT={income:function(e){return'Kieszonkowe +'+jz(e.a)},move:function(e){return'Przełożono '+jz(e.a)+': '+JAR_DEF[e.f].n+' → '+JAR_DEF[e.t].n},spend:function(e){return'Wydano '+jz(e.a)+(e.n?' — '+e.n:'')},
+  gift:function(e){return'Prezent za '+jz(e.a)+(e.n?' — '+e.n:'')},invest:function(e){return'Zainwestowano '+jz(e.a)+' — '+e.n},value:function(e){return'Wartość: '+e.n+' = '+jz(e.a)}};
+function jopt(sel){return Object.keys(JAR_DEF).map(function(k){return'<option value="'+k+'"'+(sel===k?' selected':'')+'>'+JAR_DEF[k].n+'</option>'}).join('')}
+function jarView(){var j=jarOf(),it=jtot(j),f=JU.f,tot=jall()||1,h='';
+  h+=header()+'<div class="subjbar"><button class="link" data-act="home">‹ Kieszonkowe</button> · <b>Moja skarbonka</b></div>';
+  if(JU.err)h+='<div class="fb bad">'+esc(JU.err)+'</div>';if(JU.ok)h+='<div class="fb ok">'+esc(JU.ok)+'</div>';
+  h+='<div class="card"><div class="lab">Razem w słoikach</div><div class="big">'+jz(jall())+'</div></div><div class="jars">';
+  Object.keys(JAR_DEF).forEach(function(k){h+='<div class="jar" data-jar="'+k+'">'+jarSvg(k,jbal(k)/tot)+'<div><b>'+JAR_DEF[k].n+'</b><div class="jamt">'+jz(jbal(k))+'</div><small>'+JAR_DEF[k].r+'</small></div></div>'});
+  h+='</div><div class="row jbtns"><button class="btn'+(f==='income'?'':' alt')+'" data-act="jopen" data-f="income">Dodaj kieszonkowe</button><button class="btn'+(f==='move'?'':' alt')+'" data-act="jopen" data-f="move">Przełóż</button>'+
+    '<button class="btn'+(f==='spend'?'':' alt')+'" data-act="jopen" data-f="spend">Wydaj</button><button class="btn'+(f==='gift'?'':' alt')+'" data-act="jopen" data-f="gift">Kup prezent</button><button class="btn'+(f==='invest'?'':' alt')+'" data-act="jopen" data-f="invest">Zainwestuj</button></div>';
+  if(f==='income')h+='<div class="card jform"><div class="lab">Podziel kieszonkowe na słoiki</div><div class="hint">Ile dostałeś? '+jin('ji_total','np. 20')+' <button class="link" data-act="jpre" data-p="60,30,10">60/30/10</button> <button class="link" data-act="jpre" data-p="50,30,20">50/30/20</button> <button class="link" data-act="jpre" data-p="100,0,0">wszystko na teraz</button></div>'+
+    '<div class="jrow"><label for="ji_now">Na teraz</label>'+jin('ji_now')+'</div><div class="jrow"><label for="ji_save">Oszczędności</label>'+jin('ji_save')+'</div><div class="jrow"><label for="ji_gift">Prezent</label>'+jin('ji_gift')+'</div>'+
+    '<div class="hint">Do Inwestycji pieniądze trafiają później, z Oszczędności.</div><div class="row"><button class="btn" data-act="jincome">Dodaj</button></div></div>';
+  if(f==='move')h+='<div class="card jform"><div class="lab">Przełóż pieniądze</div><div class="jrow"><label for="jm_from">Z</label><select id="jm_from">'+jopt(jf('jm_from','now'))+'</select><label for="jm_to">do</label><select id="jm_to">'+jopt(jf('jm_to','save'))+'</select></div>'+
+    '<div class="jrow"><label for="jm_amt">Ile</label>'+jin('jm_amt')+'</div><div class="hint">Wolno tylko z „Na teraz” do Oszczędności i do Prezentu. Spróbuj inaczej, a aplikacja wyjaśni dlaczego nie.</div><div class="row"><button class="btn" data-act="jmove">Przełóż</button></div></div>';
+  if(f==='spend')h+='<div class="card jform"><div class="lab">Wydaj ze słoika „Na teraz”</div><div class="jrow"><label for="jx_amt">Ile</label>'+jin('jx_amt')+'</div><div class="jrow"><label for="jx_note">Na co</label><input type="text" id="jx_note" maxlength="40" value="'+esc(jf('jx_note'))+'" placeholder="np. lody" style="max-width:200px"></div><div class="row"><button class="btn" data-act="jspend">Wydaj</button></div></div>';
+  if(f==='gift')h+='<div class="card jform"><div class="lab">Kup prezent ze słoika „Prezent”</div><div class="jrow"><label for="jg_amt">Ile</label>'+jin('jg_amt')+'</div><div class="jrow"><label for="jg_note">Dla kogo</label><input type="text" id="jg_note" maxlength="40" value="'+esc(jf('jg_note'))+'" placeholder="np. kwiaty dla babci" style="max-width:200px"></div><div class="row"><button class="btn" data-act="jgift">Kup</button></div></div>';
+  if(f==='invest')h+='<div class="card jform"><div class="lab">Zainwestuj z Oszczędności</div><div class="jrow"><label for="jv_name">Co kupujesz</label><input type="text" id="jv_name" maxlength="30" value="'+esc(jf('jv_name'))+'" placeholder="np. Złoto 1 g" style="max-width:200px"></div>'+
+    '<div class="jrow"><label for="jv_cat">Rodzaj</label><select id="jv_cat">'+Object.keys(JCATS).map(function(k){return'<option value="'+k+'"'+(jf('jv_cat','akcje')===k?' selected':'')+'>'+JCATS[k]+'</option>'}).join('')+'</select><label for="jv_amt">Ile</label>'+jin('jv_amt')+'</div>'+
+    '<div class="hint">W Oszczędnościach masz '+jz(j.save)+'.</div><div class="row"><button class="btn" data-act="jinvest">Zainwestuj</button></div></div>';
+  if(j.inv.length){h+='<div class="card"><div class="lab">Moje inwestycje</div><div class="hint">Zainwestowano '+jz(it.cost)+' · dziś warte '+jz(it.val)+' · '+jgain(it.cost,it.val)+'</div>';
+    j.inv.forEach(function(a){var cur=a.vals[a.vals.length-1].v;h+='<div class="jinv"><div><b>'+esc(a.name)+'</b> <small>'+JCATS[a.cat]+'</small><div>'+jz(a.cost)+' → <b>'+jz(cur)+'</b> '+jgain(a.cost,cur)+'</div><div class="hint" style="margin:2px 0">od '+a.vals[0].d+', zapisów: '+a.vals.length+'</div></div><div>'+jspark(a)+
+      '<div class="jrow"><label for="jw_'+a.id+'" class="sr">Aktualna wartość</label>'+jin('jw_'+a.id,'ile dziś')+'<button class="btn alt" data-act="jvalue" data-id="'+a.id+'" style="padding:6px 12px;font-size:14px">Zapisz</button></div></div></div>'});h+='</div>'}
+  h+='<div class="card"><div class="lab">Zasady słoików</div><div class="hint" style="line-height:1.55">• Kieszonkowe dzielisz na <b>Na teraz</b>, <b>Oszczędności</b> i <b>Prezent</b>.<br>• Z „Na teraz” wydajesz albo przekładasz <b>tylko</b> do Oszczędności i Prezentu.<br>• Z „Prezent” <b>tylko</b> kupujesz prezenty.<br>• Z „Oszczędności” pieniądze idą <b>tylko</b> do Inwestycji.<br>• W „Inwestycje” <b>tylko</b> inwestujesz: akcje, krypto, kruszce.<br>• Cel, np. rower, kupujesz ze słoika „Na teraz”.</div></div>';
+  if(j.log.length){h+='<div class="card"><div class="lab">Historia</div><div class="jlog">'+j.log.slice(0,15).map(function(e){return'<div><small>'+e.d+'</small> '+esc((JLOGT[e.k]||function(){return''})(e))+'</div>'}).join('')+'</div></div>'}
+  h+=JU.reset?'<div class="row"><button class="btn alt" data-act="jreset">Na pewno? Wyzeruj skarbonkę</button><button class="link" data-act="jresetno">Nie</button></div>':'<button class="link" data-act="jreset">Wyzeruj skarbonkę</button>';
+  return h}
+function jget(id){var el=document.getElementById(id);return el?el.value:''}
+function jkeep(ids){ids.forEach(function(id){JU.v[id]=jget(id)})}
+function jdone(r,ids){JU.err=r.ok?'':r.msg;JU.ok=r.ok?r.msg:'';if(r.ok){JU.v={};JU.f=null;if(r.msg)snd('ok')}else{jkeep(ids||[]);snd('bad')}render()}
+function jarAct(a,b){
+  if(a==='jar'){view='jar';JU.err=JU.ok='';JU.f=null;JU.v={};JU.reset=false;render();return true}
+  if(a==='jopen'){JU.f=JU.f===b.dataset.f?null:b.dataset.f;JU.err=JU.ok='';JU.v={};render();return true}
+  if(a==='jpre'){var t=jparse(jget('ji_total')),pc=b.dataset.p.split(',').map(Number);
+    if(!t){JU.err='Najpierw wpisz, ile dostałeś.';jkeep(['ji_total']);render();return true}
+    var s=Math.round(t*pc[1]/100),g=Math.round(t*pc[2]/100),n=t-s-g,fm=function(x){return x?String(x/100).replace('.',','):''};
+    JU.err=JU.ok='';JU.v={ji_total:jget('ji_total'),ji_now:fm(n),ji_save:fm(s),ji_gift:fm(g)};render();return true}
+  if(a==='jincome'){var ids=['ji_total','ji_now','ji_save','ji_gift'],p={now:0,save:0,gift:0},bad=false;
+    [['now','ji_now'],['save','ji_save'],['gift','ji_gift']].forEach(function(x){var s=jget(x[1]).trim();if(s===''||s==='0')return;var g=jparse(s);if(g==null)bad=true;else p[x[0]]=g});
+    if(bad)return jdone(jno('Wpisz kwoty cyframi, np. 12 albo 12,50.'),ids),true;
+    var tot=jparse(jget('ji_total'));if(jget('ji_total').trim()!==''&&tot==null)return jdone(jno('Kwotę wpisz cyframi, np. 20 albo 20,50.'),ids),true;
+    if(p.now+p.save+p.gift===0&&tot)p.now=tot;
+    if(tot&&p.now+p.save+p.gift!==tot&&jget('ji_total').trim()!=='')return jdone(jno('Suma słoików ('+jz(p.now+p.save+p.gift)+') nie zgadza się z tym, co dostałeś ('+jz(tot)+').'),ids),true;
+    jdone(jincome(p,''),ids);return true}
+  if(a==='jmove'){var ids2=['jm_from','jm_to','jm_amt'],am=jparse(jget('jm_amt'));jdone(jmove(jget('jm_from'),jget('jm_to'),am==null?0:am),ids2);return true}
+  if(a==='jspend'){var am2=jparse(jget('jx_amt'));jdone(am2==null?jno('Wpisz kwotę cyframi.'):jspend('now',am2,jget('jx_note')),['jx_amt','jx_note']);return true}
+  if(a==='jgift'){var am3=jparse(jget('jg_amt'));jdone(am3==null?jno('Wpisz kwotę cyframi.'):jspend('gift',am3,jget('jg_note')),['jg_amt','jg_note']);return true}
+  if(a==='jinvest'){var am4=jparse(jget('jv_amt'));jdone(am4==null?jno('Wpisz kwotę cyframi.'):jinvest(jget('jv_name'),jget('jv_cat'),am4),['jv_name','jv_cat','jv_amt']);return true}
+  if(a==='jvalue'){var id=b.dataset.id,vv=jparse(jget('jw_'+id),true);jdone(vv==null?jno('Wpisz aktualną wartość cyframi.'):jvalue(id,vv),['jw_'+id]);return true}
+  if(a==='jreset'){if(!JU.reset){JU.reset=true;render();return true}JU.reset=false;jreset();JU.err='';JU.ok='Skarbonka wyzerowana.';JU.f=null;render();return true}
+  if(a==='jresetno'){JU.reset=false;render();return true}
+  return false}
+
+/* ---- zadania: który słoik i czy tak wolno ---- */
+var JSCEN=[['Kupujesz lody po szkole','now'],['Kupujesz bułkę na przerwie','now'],['Płacisz za wymarzony rower, na który zbierałeś','now','Cele, takie jak rower, kupujemy ze słoika „Na teraz”.'],
+  ['Kupujesz prezent urodzinowy dla babci','gift'],['Kupujesz kartkę dla taty na Dzień Ojca','gift'],['Odkładasz pieniądze na przyszłość','save'],['Chcesz, żeby pieniądze spokojnie poczekały','save'],
+  ['Kupujesz akcje firmy','inv'],['Kupujesz trochę złota','inv'],['Kupujesz kryptowalutę','inv']];
+var JQS=[['now','save'],['now','gift'],['now','inv'],['save','inv'],['save','now'],['gift','now'],['gift','inv'],['gift','save'],['inv','now'],['inv','save']];
+LGEN.jars=function(){var L=lvl();
+  if(L<7||Math.random()<.5){var it=pickOne(JSCEN),ks=['now','save','gift','inv'];
+    return lmc('Który to słoik?','<span style="font-size:.55em">'+esc(it[0])+'</span>',JAR_DEF[it[1]].n,ks.map(function(k){return JAR_DEF[k].n}),it[2]||'To słoik „'+JAR_DEF[it[1]].n+'”: '+JAR_DEF[it[1]].r.toLowerCase()+'.')}
+  var q=pickOne(JQS),f=q[0],t=q[1],why=jwhy(f,t),yes=(!why)||(f==='save'&&t==='inv');
+  return lyn('Czy tak wolno?','<span style="font-size:.55em">Z „'+JAR_DEF[f].n+'” do „'+JAR_DEF[t].n+'”</span>',yes,yes?(f==='save'?'Tak: z Oszczędności kupujesz akcje, krypto albo kruszce.':'Tak: z „Na teraz” wolno przekładać do Oszczędności i do Prezentu.'):'Nie. '+why)};
+LINTRO.jars=['Moje słoiki','Skarbonka ma cztery słoiki: <b>Na teraz</b> (bieżące wydatki), <b>Oszczędności</b> (odkładamy), <b>Prezent</b> (tylko prezenty) i <b>Inwestycje</b> (akcje, krypto i kruszce). Przekładamy tylko w jedną stronę: z „Na teraz” do Oszczędności i Prezentu, a z Oszczędności do Inwestycji.'];
 
 buildUnits();
 function nSecs(sj){sj=sj||'en';return SEC.filter(function(s){return s.g!=='x'&&s.subj===sj})}
@@ -2085,7 +2226,7 @@ function settings(){
   '<div class="row"><button class="btn" data-act="home">Gotowe</button></div><div class="note">Postępy zapisują się w przeglądarce, na tym urządzeniu. Na telefonie i komputerze są osobne.</div>'}
 var lastView=null;
 function render(){var app=document.getElementById('app');
-  app.innerHTML=view==='auth'?authView():view==='admin'?adminView():view==='unlock'?unlockView():view==='orders'?ordersView():view==='play'?play():view==='result'?result():view==='settings'?settings():view==='type'?typView():view==='tresult'?tresultView():view==='badges'?badgesView():view==='test'?testView():view==='build'?buildView():home();
+  app.innerHTML=view==='auth'?authView():view==='admin'?adminView():view==='unlock'?unlockView():view==='orders'?ordersView():view==='play'?play():view==='result'?result():view==='settings'?settings():view==='jar'?jarView():view==='type'?typView():view==='tresult'?tresultView():view==='badges'?badgesView():view==='test'?testView():view==='build'?buildView():home();
   if(view==='play'&&S&&S.phase==='ask'&&S.i!==SAIDLAB){SAIDLAB=S.i;sayLab()}
   var a=document.getElementById('ans');if(a&&!a.disabled)a.focus();else{var n=document.getElementById('nx');if(n&&view==='play')n.focus()}
   if(view!==lastView||view==='play'){window.scrollTo(0,0)}lastView=view}
@@ -2108,6 +2249,7 @@ document.addEventListener('click',function(e){var b=e.target.closest('[data-act]
   else if(a==='mtest'){startMathTest()}
   else if(a==='jump'){var js=SEC.filter(function(z){return z.subj==='en'&&z.g===b.dataset.k})[0],el=js&&document.getElementById('sec_'+js.key);if(el&&el.scrollIntoView)el.scrollIntoView({behavior:'smooth',block:'start'})}
   else if(a==='say'){speak(b.dataset.t,b.dataset.l)}
+  else if(/^j(ar|open|pre|income|move|spend|gift|invest|value|reset|resetno)$/.test(a)){jarAct(a,b)}
   else if(a==='relab'){sayLab(true)}
   else if(a==='tkhint'){if(TY&&!TY.hint){TY.hint=true;if(!TY.items[TY.i].bonus)TY.hints++;render()}}
   else if(a==='tkskip'){var T2=TY;if(T2){T2.skipped++;T2.items.splice(T2.i,1);T2.pos=0;T2.hint=false;T2.flash=null;if(T2.i>=T2.items.length){T2.tEnd=Date.now()||0;T2.done=true;tyFinish()}else render()}}
