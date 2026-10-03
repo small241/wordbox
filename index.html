@@ -610,7 +610,7 @@ function startTyping(s,j,hard){var items=hard?tyHardItems():tyBuild(s,j);
   if(s){P().last=s.key;save()}
   view='type';render();
   if(readAloudOn())speak(s&&s.track==='t'?'Przepisz tekst. Patrz na ekran, nie na ręce.':'Znajdź na klawiaturze literę i naciśnij ją.','pl')}
-function tyStars(acc){var t=lvl()<=6?[.90,.75,.55]:[.97,.90,.75];return acc>=t[0]?3:acc>=t[1]?2:acc>=t[2]?1:0}
+function tyStars(acc,track){var t=(lvl()<=6||track==='f')?[.90,.75,.55]:[.97,.90,.75];return acc>=t[0]?3:acc>=t[1]?2:acc>=t[2]?1:0}
 function tyAfter(s,j){if(j<s.n-1)return{s:s,j:j+1};var N=nSecs(s.subj),i=N.indexOf(s),n2=N[i+1];return n2?{s:n2,j:0}:null}
 function tyStat(ch,ok){var st=P().tystat||(P().tystat={}),k=ch.toLowerCase(),o=st[k]||(st[k]={ok:0,bad:0});if(ok)o.ok++;else o.bad++}
 function tyItemDone(){var T=TY,it=T.items[T.i];snd('ok');
@@ -618,7 +618,7 @@ function tyItemDone(){var T=TY,it=T.items[T.i];snd('ok');
   T.i++;T.pos=0;T.hint=false;T.flash=null;
   if(T.i>=T.items.length){T.tEnd=Date.now();T.done=true;tyFinish()}else render()}
 function tyFinish(){var T=TY,tot=T.ok+T.err+T.hints,acc=tot?T.ok/tot:1,mins=Math.max(.05,(T.tEnd-T.t0)/60000),cpm=Math.min(999,Math.round(T.ok/mins));
-  T.acc=acc;T.cpm=cpm;T.st=T.hard?0:tyStars(acc);T.wasDone=T.s?secDone(T.s):false;
+  T.acc=acc;T.cpm=cpm;T.st=T.hard?0:tyStars(acc,T.s?T.s.track:(lvl()>=8?'t':'f'));T.wasDone=T.s?secDone(T.s):false;
   if(T.s){var l=sst(T.s);if(T.st>l[T.j])l[T.j]=T.st;var bw=P().tywpm||(P().tywpm={}),bk=T.s.key+'#'+T.j;if(cpm>(bw[bk]||0)){T.newBest=bw[bk]>0;bw[bk]=cpm}}
   T.nowDone=T.s?secDone(T.s):false;save();view='tresult';render();
   if(T.st>=2){snd('win');confetti(T.st===3?40:24)}}
@@ -645,18 +645,21 @@ function tyKb(o){return'<div class="kb'+(o.col?' fcol':'')+'" aria-hidden="true"
     if(o.hl&&o.hl.indexOf(k.c)>-1)cls+=' hl';
     if(o.flash&&o.flash.c===k.c)cls+=o.flash.bad?' bad':' ok';
     return'<span class="'+cls+'" style="flex:'+k.w+'">'+esc(k.lab!=null?k.lab:k.c)+'</span>'}).join('')+'</div>'}).join('')+'</div>'}
-function tyHands(fin){var H=[['L',5,10,52],['L',4,42,66],['L',3,74,74],['L',2,106,66],['L','T',140,40],['R','T',200,40],['R',2,234,66],['R',3,266,74],['R',4,298,66],['R',5,330,52]],out='';
-  H.forEach(function(h){var on=fin&&fin.h===h[0]&&fin.f===h[1],y=100-h[3];
-    out+='<rect x="'+h[2]+'" y="'+y+'" width="24" height="'+(h[3]+10)+'" rx="12" fill="'+(on?TYFCOL[h[1]]:'var(--line)')+'"'+(on?' stroke="var(--ink)" stroke-width="2.5"':'')+'/>'});
+function tyCtx(T){var it=T.items[T.i],s=T.s,mode=s?s.track:(lvl()>=8?'t':'f'),j=s?T.j:2,ch=it.t.charAt(T.pos),info=keyInfo(ch),bonus=!!it.bonus;
+  var hlOn=T.hint||(!bonus&&(mode==='f'?j===0:j<=1)),colOn=T.hint||(!bonus&&j<=1);
+  return{it:it,mode:mode,j:j,ch:ch,info:info,bonus:bonus,hlOn:hlOn,colOn:colOn,handsOn:colOn,kbOn:mode==='f'||j<=2||T.hint||bonus}}
+function tyFins(info){var a=[];info.keys.forEach(function(k){var f=TYFING[k];if(f)a.push(f)});return a}
+function tyHands(info){var fins=tyFins(info),H=[['L',5,10,52],['L',4,42,66],['L',3,74,74],['L',2,106,66],['L','T',140,40],['R','T',200,40],['R',2,234,66],['R',3,266,74],['R',4,298,66],['R',5,330,52]],out='';
+  H.forEach(function(h){var on=fins.some(function(f){return f.h===h[0]&&f.f===h[1]}),y=100-h[3];
+    out+='<rect x="'+h[2]+'" y="'+y+'" width="24" height="'+(h[3]+10)+'" rx="12" fill="'+(on?TYFCOL[h[1]]:'var(--line)')+'"'+(on?' stroke="var(--ink)" stroke-width="2.5" class="on"':'')+'/>'});
   out+='<rect x="6" y="92" width="164" height="38" rx="16" fill="var(--line)" opacity=".55"/><rect x="190" y="92" width="164" height="38" rx="16" fill="var(--line)" opacity=".55"/>';
-  return'<svg class="hands" viewBox="0 0 360 135" role="img" aria-label="Dłonie: '+(fin?esc(tyFingerText({fin:fin,note:''})):'palce na klawiszach')+'">'+out+'</svg>'}
+  return'<svg class="hands" viewBox="0 0 360 135" role="img" aria-label="Dłonie: '+esc(tyFingerText(info))+'">'+out+'</svg>'}
 function typView(){var T=TY;if(!T){view='home';return home()}
-  var it=T.items[T.i];if(!it){view='home';return home()}
-  var s=T.s,mode=s?s.track:(lvl()>=8?'t':'f'),j=s?T.j:2,ch=it.t.charAt(T.pos),info=keyInfo(ch),bonus=!!it.bonus;
-  var hlOn=T.hint||(!bonus&&(mode==='f'?j===0:j<=1)),colOn=T.hint||(!bonus&&j<=1),handsOn=mode==='t'&&(T.hint||(!bonus&&j===0)),kbOn=mode==='f'||j<=2||T.hint||bonus;
+  if(!T.items[T.i]){view='home';return home()}
+  var c=tyCtx(T),it=c.it,s=T.s,mode=c.mode,ch=c.ch,info=c.info,bonus=c.bonus,hlOn=c.hlOn,colOn=c.colOn,handsOn=c.handsOn,kbOn=c.kbOn;
   var lab=bonus?'⭐ Wyzwanie ponad program — nie obniża gwiazdek':T.hard?'Ćwiczymy Twoje trudne klawisze':mode==='f'?(it.t.length===1?'Naciśnij tę literę':it.t.indexOf(' ')>-1?'Przepisz zdanie':'Przepisz słowo'):'Przepisz tekst — patrz na ekran, nie na ręce';
   var txt;if(it.t.length===1){var upc=ch.toUpperCase();txt='<div class="tgt">'+esc(ch===' '?'␣':upc)+(upc!==ch?'<span class="tgs">'+esc(ch)+'</span>':'')+'</div>'}
-  else{txt='<div class="ttxt">';for(var q=0;q<it.t.length;q++){var c=it.t.charAt(q),cl=q<T.pos?'d':q===T.pos?'c':'p';txt+='<span class="'+cl+'">'+(c===' '?'&nbsp;':esc(c))+'</span>'}txt+='</div>'}
+  else{txt='<div class="ttxt">';for(var q=0;q<it.t.length;q++){var cc=it.t.charAt(q),cl=q<T.pos?'d':q===T.pos?'c':'p';txt+='<span class="'+cl+'">'+(cc===' '?'&nbsp;':esc(cc))+'</span>'}txt+='</div>'}
   var ft=hlOn||colOn?tyFingerText(info):'';
   var btns='';if(!hlOn)btns+='<button class="btn alt" data-act="tkhint" style="padding:8px 14px;font-size:15px">💡 Podpowiedź'+(bonus?'':' (kosztuje punkt)')+'</button>';
   if(s&&s.kind==='pl')btns+='<button class="btn alt" data-act="tkskip" style="padding:8px 14px;font-size:15px" title="Gdy klawiatura nie ma polskich znaków">Nie mam polskich znaków — pomiń</button>';
@@ -665,10 +668,10 @@ function typView(){var T=TY;if(!T){view='home';return home()}
   return header()+'<div class="sess-top"><button class="x" data-act="home" aria-label="Zakończ">×</button><div class="bar"><i style="width:'+(T.i/n*100)+'%"></i></div><span class="lab">'+(T.i+1)+'/'+n+'</span></div>'+
     '<div class="card tcard" data-cur="'+esc(ch)+'"><div class="lab">'+esc(lab)+'</div>'+txt+
     (ft?'<div class="hint tfing">'+esc(ft)+'</div>':'')+
+    (handsOn?tyHands(info):'')+
     (T.flash&&T.flash.bad?'<div class="fb bad tmiss">Nie ta litera — szukaj dalej</div>':'')+
     (btns?'<div class="row" style="justify-content:center;margin-top:6px">'+btns+'</div>':'')+
-    (kbOn?tyKb({hl:hlOn?info.keys:null,col:colOn,flash:T.flash}):'<div class="hint" style="margin:14px 0">Klawiatura jest ukryta — pisz bez patrzenia na ręce. W razie potrzeby użyj podpowiedzi.</div>')+
-    (handsOn?tyHands(info.fin):'')+'</div>'}
+    (kbOn?tyKb({hl:hlOn?info.keys:null,col:colOn,flash:T.flash}):'<div class="hint" style="margin:14px 0">Klawiatura jest ukryta — pisz bez patrzenia na ręce. W razie potrzeby użyj podpowiedzi.</div>')+'</div>'}
 function tresultView(){var T=TY;if(!T){view='home';return home()}
   var s=T.s,st=T.st,pc=Math.round(T.acc*100),nx=s&&st>0?tyAfter(s,T.j):null,fin=s&&T.j===s.n-1;
   var worst=Object.keys(T.bad).sort(function(a,b){return T.bad[b]-T.bad[a]}).slice(0,3).map(function(k){return k.toUpperCase()+' ('+T.bad[k]+'×)'});
@@ -683,7 +686,7 @@ function tresultView(){var T=TY;if(!T){view='home';return home()}
     '<div class="row" style="justify-content:center">'+(nx?'<button class="btn" data-act="lesson" data-k="'+esc(nx.s.key)+'" data-j="'+nx.j+'">Dalej</button>':'')+
     (s?'<button class="btn alt" data-act="lesson" data-k="'+esc(s.key)+'" data-j="'+T.j+'">Jeszcze raz</button>':'<button class="btn alt" data-act="tkhard">Jeszcze raz</button>')+
     '<button class="btn alt" data-act="home">Do ścieżki</button></div></div>'}
-function typTracks(){var L=lvl();if(P().tall)return['f','t'];return L<=6?['f']:L===7?['f','t']:['t']}
+function typTracks(){var L=lvl();if(P().tall)return['f','t'];return L<=6?['f']:['f','t']}
 function buildTyping(){var tr=typTracks();TYP_SECS.forEach(function(m){if(tr.indexOf(m.track)<0)return;
   var s={subj:'typ',key:m.key,g:'l',track:m.track,kind:m.kind,keys:m.keys,cum:m.cum,title:m.title,sub:m.sub,parts:[],words:[],sents:[],lessons:[],chunks:[],n:4,free:true,parent:null};SEC.push(s);SK[s.key]=s})}
 function typCard(){return'<button class="subj-card" data-act="subject" data-s="typ"><span class="si" style="background:#5B6AD0">⌨</span><span><b>Klawiatura</b><small>Szukanie liter i pisanie wszystkimi palcami</small></span></button>'}
@@ -694,7 +697,7 @@ function typHome(h){var nl=nextLesson('typ'),hk=tyHardKeys(),touch=false;
   if(touch)h+='<div class="note" style="margin-bottom:10px">To ćwiczenie jest do komputera (lub tabletu z klawiaturą). Na samym ekranie dotykowym nie da się trenować pisania.</div>';
   if(typTracks().indexOf('t')>-1)h+='<div class="card" style="margin-bottom:12px"><div class="lab">Jak pisać wszystkimi palcami</div><div class="hint">1. Palce lewej ręki na <b>A S D F</b>, prawej na <b>J K L ;</b> — wskazujące czują wypukłość na F i J.<br>2. Kciuk naciska spację.<br>3. Każdy palec ma swoje klawisze (kolory na klawiaturze).<br>4. Patrz na ekran, nie na ręce. Najpierw dokładnie, potem szybko.</div></div>';
   h+=nSecs('typ').map(secCard).join('');
-  h+='<div class="row" style="margin-top:12px"><button class="btn alt" data-act="tkhard"'+(hk.length?'':' disabled')+'>Ćwicz trudne klawisze'+(hk.length?' ('+hk.map(function(k){return k.toUpperCase()}).join(' ')+')':'')+'</button><button class="btn alt" data-act="tkall">'+(P().tall?'Pokaż tylko ćwiczenia dla mojego wieku':'Pokaż też ćwiczenia dla innego wieku')+'</button></div>';
+  h+='<div class="row" style="margin-top:12px"><button class="btn alt" data-act="tkhard"'+(hk.length?'':' disabled')+'>Ćwicz trudne klawisze'+(hk.length?' ('+hk.map(function(k){return k.toUpperCase()}).join(' ')+')':'')+'</button>'+(lvl()<=6?'<button class="btn alt" data-act="tkall">'+(P().tall?'Ukryj naukę techniki 10 palców':'Pokaż też naukę techniki 10 palców')+'</button>':'')+'</div>';
   msg='';return h+'<button class="link" data-act="settings">Ustawienia</button>'}
 
 buildUnits();
