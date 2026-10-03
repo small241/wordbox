@@ -1039,9 +1039,24 @@ function labText(){var el=document.querySelector('#app .card .lab');return el?(e
 function sayLab(force){if(!SPK||(!force&&!readAloudOn()))return;var q=S&&S.qs[S.i];
   if(q&&(q.t==='listen'||q.t==='rlpick'||(q.t==='build'&&q.dir==='listen')))return;
   var t=labText();if(t)speak(t,'pl')}
-function speak(t,lang){if(!SPK)return;try{var lg=SPKLANG[lang]||lang||'en-US',pre=lg.slice(0,2);speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(t);u.lang=lg;u.rate=.85;
-  var vs=speechSynthesis.getVoices();if(!vcache[lg])vcache[lg]=vs.filter(function(v){return v.lang.replace('_','-').toLowerCase()===lg.toLowerCase()})[0]||vs.filter(function(v){return v.lang.toLowerCase().indexOf(pre)===0})[0]||null;
-  if(vcache[lg])u.voice=vcache[lg];speechSynthesis.speak(u)}catch(e){}}
+/* ---------- nagrania lektora: klucz pliku z tekstu (ta sama funkcja w aplikacji i w skrypcie gen-audio) ---------- */
+function auNorm(t){return String(t).replace(/[\[\]]/g,'').replace(/\s+/g,' ').trim().toLowerCase()}
+function auHash(t){var s=auNorm(t),a=0x811c9dc5,b=0x9747b28c,i,c;
+  for(i=0;i<s.length;i++){c=s.charCodeAt(i);a^=c;a=Math.imul(a,0x01000193)>>>0;b^=c+i;b=Math.imul(b,0x85ebca6b)>>>0}
+  return('00000000'+a.toString(16)).slice(-8)+('00000000'+b.toString(16)).slice(-8)}
+
+var AUMAN=null,AUCUR=null;
+function auLoad(){try{if(AUMAN!==null||!/^https?:$/.test(location.protocol)||location.hostname.indexOf('claude')>-1||!window.fetch)return;AUMAN={};
+  fetch('audio/manifest.json',{cache:'no-cache'}).then(function(r){return r.ok?r.json():null}).then(function(m){if(m&&m.files)AUMAN=m.files}).catch(function(){})}catch(e){AUMAN={}}}
+function auPlay(t,lg,fallback){if(D.clips===false||!AUMAN||!window.Audio||lg!=='en-US')return false;var h=auHash(t);if(!AUMAN[h])return false;
+  try{if(AUCUR){AUCUR.pause();AUCUR=null}if(SPK)speechSynthesis.cancel();
+    var a=new Audio('audio/'+h+'.mp3');AUCUR=a;a.onerror=function(){if(AUCUR===a)AUCUR=null;fallback()};
+    var pr=a.play();if(pr&&pr.catch)pr.catch(function(){if(AUCUR===a){AUCUR=null;fallback()}});return true}catch(e){return false}}
+function speak(t,lang){var lg=SPKLANG[lang]||lang||'en-US';
+  function tts(){if(!SPK)return;try{var pre=lg.slice(0,2);speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(t);u.lang=lg;u.rate=.85;
+    var vs=speechSynthesis.getVoices();if(!vcache[lg])vcache[lg]=vs.filter(function(v){return v.lang.replace('_','-').toLowerCase()===lg.toLowerCase()})[0]||vs.filter(function(v){return v.lang.toLowerCase().indexOf(pre)===0})[0]||null;
+    if(vcache[lg])u.voice=vcache[lg];speechSynthesis.speak(u)}catch(e){}}
+  if(auPlay(t,lg,tts))return;tts()}
 function sp(t,c,l){return SPK?'<button class="sp'+(c?' '+c:'')+'" data-act="say" data-t="'+esc(t)+'"'+(l?' data-l="'+l+'"':'')+' aria-label="Posłuchaj">'+ICON.spk+'</button>':''}
 function subjAllowed(s){if(isLife(s)||isTyp(s))return true;return P().kid?(isKidSubj(s)||s==='kcode'||s==='3d'):(s==='en'||s==='math'||s==='code'||s==='3d')}
 function subjName(s){return {en:'Angielski',math:'Matematyka',ken:'Angielski',kmath:'Matematyka',kread:'Czytanie i pisanie',code:'Programowanie',kcode:'Programowanie','3d':'Projekty 3D',fin:'Kieszonkowe',typ:'Klawiatura'}[s]||''}
@@ -2057,7 +2072,7 @@ function settings(){
   '<div class="sec"><h3>Mikrofon</h3><div class="chk"><input type="checkbox" id="micck" data-act="micon"'+(D.micOff?'':' checked')+'><label for="micck">Próbuj rozpoznawania mowy w aplikacji</label></div><div class="hint">Gdy przeglądarka blokuje mikrofon, zadania „Mów” działają przez dyktowanie z klawiatury.</div></div>'+
   '<div class="sec"><h3>Tryb testowy (dla rodzica)</h3><div class="hint">Osobny profil-piaskownica: zapas żetonów, wszystkie sekcje otwarte i bez limitu 3 poziomów dziennie. Postępy dzieci zostają nietknięte. Zamówienia wydruku i panel administratora działają dopiero po podłączeniu kont online.</div>'+
   '<div class="row">'+(testIdx()<0?'<button class="btn alt" data-act="mktest">Utwórz profil testowy</button>':'<button class="btn alt" data-act="mktest">Przełącz na profil testowy</button><button class="btn alt" data-act="tdel">Usuń profil testowy</button>')+'</div></div>'+
-  '<div class="sec"><h3>Dźwięk i efekty</h3><div class="chk"><input type="checkbox" id="sndck" data-act="sound"'+(D.sound!==false?' checked':'')+'><label for="sndck">Dźwięki przy odpowiedziach</label></div><div class="chk"><input type="checkbox" id="fxck" data-act="fx"'+(D.fx!==false?' checked':'')+'><label for="fxck">Konfetti po udanej lekcji</label></div><div class="chk"><input type="checkbox" id="rdck" data-act="read"'+(D.read!==false?' checked':'')+'><label for="rdck">Czytaj polecenia na głos (wersja dla 6 lat)</label></div></div>'+
+  '<div class="sec"><h3>Dźwięk i efekty</h3><div class="chk"><input type="checkbox" id="sndck" data-act="sound"'+(D.sound!==false?' checked':'')+'><label for="sndck">Dźwięki przy odpowiedziach</label></div><div class="chk"><input type="checkbox" id="fxck" data-act="fx"'+(D.fx!==false?' checked':'')+'><label for="fxck">Konfetti po udanej lekcji</label></div><div class="chk"><input type="checkbox" id="rdck" data-act="read"'+(D.read!==false?' checked':'')+'><label for="rdck">Czytaj polecenia na głos (wersja dla 6 lat)</label></div><div class="chk"><input type="checkbox" id="clck" data-act="clips"'+(D.clips!==false?' checked':'')+'><label for="clck">Angielski: użyj nagranego lektora, gdy jest dostępny</label></div></div>'+
   '<div class="sec"><h3>Ścieżka</h3><div class="chk"><input type="checkbox" id="exck" data-act="extras"'+(D.extras!==false?' checked':'')+'><label for="exck">Pokazuj dodatkowe sekcje spoza zeszytu (dom, jedzenie, liczby do 100...)</label></div><div class="row"><button class="btn alt" data-act="openall">Odblokuj wszystkie sekcje</button></div></div>'+
   '<div class="sec"><h3>Dodaj słówka</h3><div class="hint">Jedno w linii: <b>apple - jabłko</b>. Wiersz <b>Lekcja 7</b> albo <b>Zeszły rok - Lekcja 3</b> przypisuje kolejne słówka do tej lekcji. Ścieżka sama podzieli słówka na sekcje.</div>'+
   '<textarea id="imp" placeholder="Lekcja 7&#10;apple - jabłko&#10;dog - pies" aria-label="Lista słówek"></textarea>'+
@@ -2197,6 +2212,7 @@ document.addEventListener('click',function(e){var b=e.target.closest('[data-act]
   else if(a==='sound'){D.sound=b.checked;save();if(b.checked)snd('ok')}
   else if(a==='fx'){D.fx=b.checked;save();if(b.checked)confetti(16)}
   else if(a==='read'){D.read=b.checked;save()}
+  else if(a==='clips'){D.clips=b.checked;save();if(b.checked)speak('hello','en')}
   else if(a==='goal'){D.goal=+b.dataset.n;save()}
   else if(a==='extras'){D.extras=b.checked;save();buildUnits()}
   else if(a==='add'){var r=parseImport(document.getElementById('imp').value,document.getElementById('swap').checked,(document.getElementById('impl').value||'M').trim().toUpperCase());
@@ -2206,6 +2222,7 @@ document.addEventListener('click',function(e){var b=e.target.closest('[data-act]
   else if(a==='del'){D.custom.splice(+b.dataset.i,1);save();buildUnits();render()}
   else if(a==='reset'){if(!confirmReset){confirmReset=true;render();return}var p=P();p.stats={};p.xp=0;p.sec={};p.open={};p.last=null;p.days={};confirmReset=false;save();msg='Postępy wyzerowane.';render()}});
 if(SPK)try{speechSynthesis.getVoices()}catch(e){}
+auLoad();
 try{if('serviceWorker' in navigator&&location.protocol==='https:'&&location.hostname.indexOf('claude')<0)navigator.serviceWorker.register('sw.js').catch(function(){})}catch(e){}
 initAuth();
 })();

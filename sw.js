@@ -19,8 +19,8 @@ self.addEventListener('fetch', function (e) {
   if (new URL(req.url).origin !== self.location.origin) return;  // Supabase i CDN pomijamy
   e.respondWith(
     fetch(req).then(function (res) {
-      var copy = res.clone();
-      caches.open(CACHE).then(function (c) { c.put(req, copy); });
+      // do pamięci tylko pełne odpowiedzi (audio przychodzi też jako 206 — tych nie wolno zapisywać)
+      if (res.status === 200) { var copy = res.clone(); caches.open(CACHE).then(function (c) { return c.put(req, copy); }).catch(function () {}); }
       return res;
     }).catch(function () {
       return caches.match(req).then(function (m) { return m || caches.match('./index.html'); });
